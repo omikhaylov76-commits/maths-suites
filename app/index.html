@@ -382,6 +382,48 @@ to{opacity:1;transform:translateX(0)}
 .done-btns button:active{transform:scale(.975)}
 
 /* десктоп */
+
+/* ── modules ── */
+.mods{display:flex;flex-direction:column;gap:12px}
+.mod{
+  display:block;width:100%;text-align:left;
+  padding:20px 22px;background:var(--card);
+  border:1px solid var(--mist);border-radius:var(--r-card);
+  transition:transform var(--t-fast) var(--e),border-color var(--t-base) var(--e),box-shadow var(--t-base) var(--e);
+}
+.mod:active{transform:scale(.985)}
+.mod.open{border-color:var(--ember);border-width:1.5px;
+  box-shadow:0 1px 2px rgba(45,47,52,.04),0 6px 18px rgba(246,119,72,.08)}
+.mod.lock{opacity:.6}
+.mod-top{display:flex;align-items:flex-start;gap:14px}
+.mod-ic{
+  flex:0 0 40px;height:40px;display:grid;place-items:center;
+  border-radius:12px;background:var(--dust);
+}
+.mod.open .mod-ic{background:var(--ember-soft)}
+.mod-b{flex:1;min-width:0}
+.mod-n{font:600 17px/1.25 "Inter",sans-serif;letter-spacing:-.02em;display:block}
+.mod-s{font:400 13px/1 "Inter",sans-serif;color:var(--slate);margin-top:5px;display:block}
+.mod-go{flex:0 0 auto;color:var(--fog);margin-top:9px}
+.mod.open .mod-go{color:var(--ember)}
+.mod-bar{height:4px;background:var(--dust);border-radius:99px;overflow:hidden;margin-top:15px}
+.mod-fill{height:100%;background:var(--ember);border-radius:99px;width:0;transition:width 620ms var(--e)}
+.mod-cnt{
+  display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;
+  font:500 12px/1 "Inter",sans-serif;color:var(--slate);
+}
+.mod-cnt b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.mod-soon{
+  display:inline-block;margin-top:13px;padding:5px 11px;
+  background:var(--dust);border-radius:99px;
+  font:600 11px/1 "Inter",sans-serif;color:var(--slate);letter-spacing:.04em;
+}
+@media(min-width:900px){
+  .mods{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .mod:hover{border-color:var(--mist);box-shadow:0 2px 12px rgba(45,47,52,.06)}
+  .mod.open:hover{border-color:var(--ember)}
+}
+
 @media (min-width:900px){
   .screens{min-height:100vh}
   .pad{max-width:1080px;padding:38px 40px 60px}
@@ -417,13 +459,42 @@ to{opacity:1;transform:translateX(0)}
 
 <div class="screens">
 
-  <section class="screen on" id="s-home">
+  <section class="screen on" id="s-mods">
+    <div class="pad">
+      <div class="hero">
+        <h1>Mathématiques</h1>
+        <p class="sub">Première spécialité · programme 2026</p>
+      </div>
+      <div class="meter">
+        <div class="meter-top">
+          <span class="meter-lbl">PROGRESSION</span>
+          <span class="meter-val" id="mm-val">0 / 8</span>
+        </div>
+        <div class="meter-bar"><div class="meter-fill" id="mm-fill"></div></div>
+      </div>
+      <div class="streak" id="mm-streak" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5.5-2.5S6 10 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z"/></svg>
+        <span><b id="mm-streak-n">0</b> <span id="mm-streak-w">jours d'affilée</span></span>
+      </div>
+      <p class="list-lbl" style="margin-top:34px">MODULES</p>
+      <div class="mods" id="mods"></div>
+      <a class="foot-link" href="../">
+        Ouvrir le cours
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <section class="screen" id="s-home">
     <div class="pad">
       <div class="home-grid">
         <div class="home-left">
+          <button class="back" id="home-back" style="margin:0 0 14px -8px" aria-label="Modules">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
           <div class="hero">
-            <h1>Les suites</h1>
-            <p class="sub">Première spécialité · programme 2026</p>
+            <h1 id="h-nom">Suites numériques</h1>
+            <p class="sub" id="h-sous">Algèbre · période 2</p>
           </div>
           <div class="meter">
             <div class="meter-top">
@@ -503,6 +574,469 @@ to{opacity:1;transform:translateX(0)}
    Première spé · programme 2026
    Chapitres 2 à 5 = sujets du DS
    ═══════════════════════════════════════════════════ */
+
+const CH_SOMMES = {
+  n:6, nom:"Sommes de termes", sous:"Gauss, arithmétique, géométrique", pret:true, ds:false,
+  cartes:[
+    {
+      k:"LA SOMME DE GAUSS", t:"Additionner 1 + 2 + … + n",
+      c:`<p>Comment additionner tous les entiers de 1 à 100 sans calculatrice ? Il existe une formule :</p>
+        <div class="show">1 + 2 + 3 + … + <span class="v">n</span> = <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px"><span class="v">n</span>(<span class="v">n</span> + 1)</span><span style="display:block;padding:0 6px">2</span></span></div>
+        <p>Pour <span class="v">n</span> = 100 : 100 × 101 ÷ 2 = <b>5 050</b>.</p>
+        <div class="note"><b>Attention.</b> Cette formule commence à <b>1</b>, pas à 0. Ajouter 0 ne change rien au résultat.</div>`,
+      lent:`<p><b>L'astuce de Gauss, enfant.</b></p>
+        <p>On raconte que son maître, pour avoir la paix, demanda à la classe d'additionner tous les nombres de 1 à 100. Gauss donna la réponse en quelques secondes.</p>
+        <p>Son idée : écrire la somme deux fois, une fois à l'endroit, une fois à l'envers.</p>
+        <div class="show" style="font-size:15px;text-align:left;padding:18px 20px">
+          1 &nbsp;+&nbsp; 2 &nbsp;+&nbsp; 3 &nbsp;+ … +&nbsp; 100<br>
+          100 &nbsp;+&nbsp; 99 &nbsp;+&nbsp; 98 &nbsp;+ … +&nbsp; 1
+        </div>
+        <p>Colonne par colonne, chaque paire donne <b>101</b> : 1+100, 2+99, 3+98…</p>
+        <p>Il y a 100 colonnes, donc le double de la somme vaut 100 × 101 = 10 100. La somme elle-même : la moitié, soit <b>5 050</b>.</p>
+        <p>C'est exactement ce que dit la formule : on multiplie, puis on divise par 2 parce qu'on a compté deux fois.</p>`
+    },
+    {
+      k:"SUITE ARITHMÉTIQUE", t:"Premier plus dernier, divisé par deux",
+      c:`<p>Pour une suite arithmétique, la somme se calcule avec une formule très simple :</p>
+        <div class="show" style="font-size:16px"><span class="v">S</span> = (nombre de termes) × <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px">premier + dernier</span><span style="display:block;padding:0 6px">2</span></span></div>
+        <p>Pour <span class="v">u<sub>0</sub> + u<sub>1</sub> + … + u<sub>n</sub></span> :</p>
+        <div class="show"><span class="v">S</span> = (<span class="v">n</span> + 1) × <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px"><span class="v">u<sub>0</sub></span> + <span class="v">u<sub>n</sub></span></span><span style="display:block;padding:0 6px">2</span></span></div>
+        <div class="note"><b>Le piège.</b> De <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>n</sub></span> il y a <span class="v">(n+1)</span> termes, pas <span class="v">n</span>.</div>`,
+      lent:`<p><b>Pourquoi « premier plus dernier divisé par deux » ?</b></p>
+        <p>Parce que c'est la <b>moyenne</b> de la suite.</p>
+        <p>Prends 2, 5, 8, 11, 14. Le premier vaut 2, le dernier 14. Leur moyenne : (2+14)÷2 = 8.</p>
+        <p>Regarde le terme du milieu : c'est justement 8. Ce n'est pas un hasard — dans une suite arithmétique, les termes sont répartis régulièrement, donc la moyenne tombe pile au centre.</p>
+        <p><b>Et ensuite ?</b> Si chaque terme « vaut en moyenne » 8 et qu'il y en a 5, la somme fait 5 × 8 = <b>40</b>.</p>
+        <p>Vérifions : 2 + 5 + 8 + 11 + 14 = 40. ✓</p>
+        <p>La formule dit exactement cela : <b>combien de termes</b> × <b>leur valeur moyenne</b>.</p>`
+    },
+    {
+      k:"SUITE GÉOMÉTRIQUE", t:"Une formule avec une puissance",
+      c:`<p>Pour une suite géométrique de raison <span class="v">q</span> ≠ 1 :</p>
+        <div class="show">1 + <span class="v">q</span> + <span class="v">q</span>² + … + <span class="v">q</span><sup><span class="v">n</span></sup> = <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px">1 − <span class="v">q</span><sup><span class="v">n+1</span></sup></span><span style="display:block;padding:0 6px">1 − <span class="v">q</span></span></span></div>
+        <p>Pour une suite quelconque, on multiplie par le premier terme :</p>
+        <div class="show"><span class="v">S</span> = <span class="v">u<sub>0</sub></span> × <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px">1 − <span class="v">q</span><sup><span class="v">n+1</span></sup></span><span style="display:block;padding:0 6px">1 − <span class="v">q</span></span></span></div>
+        <div class="note"><b>L'exposant.</b> C'est le <b>nombre de termes</b>, pas le dernier rang. De <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>n</sub></span> : <span class="v">n+1</span> termes, donc <span class="v">q</span><sup><span class="v">n+1</span></sup>.</div>`,
+      lent:`<p><b>Une formule à retenir par sa structure, pas par cœur.</b></p>
+        <p>Lis-la comme une phrase :</p>
+        <div class="show" style="font-size:15px">premier terme × <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px">1 − raison<sup>nombre de termes</sup></span><span style="display:block;padding:0 6px">1 − raison</span></span></div>
+        <p>Trois choses à repérer dans l'énoncé : le <b>premier terme</b>, la <b>raison</b>, le <b>nombre de termes</b>. Le reste se remplit tout seul.</p>
+        <p><b>Exemple.</b> 3 + 6 + 12 + 24 + 48</p>
+        <p>Premier terme : 3. Raison : 2. Nombre de termes : 5.</p>
+        <div class="show" style="font-size:15px">3 × <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px">1 − 2<sup>5</sup></span><span style="display:block;padding:0 6px">1 − 2</span></span> = 3 × <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 6px">−31</span><span style="display:block;padding:0 6px">−1</span></span> = 93</div>
+        <p>Vérification : 3+6+12+24+48 = 93. ✓</p>
+        <p><b>Le moins au-dessus et en dessous</b> s'annulent — ne t'en inquiète pas, c'est normal quand <span class="v">q</span> > 1.</p>`
+    },
+    {
+      k:"PIÈGE PRINCIPAL", t:"Compter les termes",
+      c:`<p>L'erreur numéro un du chapitre. Les formules demandent le <b>nombre de termes</b>, pas le dernier rang.</p>
+        <div class="show" style="text-align:left;padding:19px 21px;font-size:15.5px">
+          <div style="margin-bottom:10px">de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>10</sub></span> &nbsp;→&nbsp; <b>11</b> termes</div>
+          <div style="margin-bottom:10px">de <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>10</sub></span> &nbsp;→&nbsp; <b>10</b> termes</div>
+          <div>de <span class="v">u<sub>p</sub></span> à <span class="v">u<sub>n</sub></span> &nbsp;→&nbsp; <span class="v">(n − p + 1)</span> termes</div>
+        </div>
+        <div class="note"><b>Réflexe de contrôle.</b> Avant d'appliquer une formule de somme, écris d'abord combien de termes tu additionnes. Une ligne qui évite la moitié des erreurs.</div>`,
+      lent:`<p><b>Reprends l'image des poteaux.</b></p>
+        <p>Une clôture de 10 mètres avec un poteau chaque mètre : il faut <b>11</b> poteaux, pas 10. Celui du départ compte aussi.</p>
+        <p><b>Pourquoi c'est si grave ici ?</b></p>
+        <p>Parce que dans une somme, chaque terme oublié change le résultat. Ce n'est pas une petite imprécision : la réponse est fausse.</p>
+        <p><b>La méthode sûre.</b> Avant tout calcul, écris une ligne :</p>
+        <div class="show" style="font-size:15px">« De <span class="v">u<sub>3</sub></span> à <span class="v">u<sub>12</sub></span> : 12 − 3 + 1 = 10 termes »</div>
+        <p>Ensuite seulement, applique la formule. Ces cinq secondes sauvent des points en devoir.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"AUTOMATISME", type:"num", q:`Calculer 1 + 2 + 3 + … + 10.`,
+        rep:55, ind:"un entier", ok:`10 × 11 ÷ 2 = <b>55</b>`, no:`Applique <span class="v">n</span>(<span class="v">n</span>+1)÷2 avec <span class="v">n</span> = 10.`,
+        regle:`Somme de Gauss : <span class="v">n</span>(<span class="v">n</span>+1)÷2`,
+        aides:[`La formule est <span class="v">n</span>(<span class="v">n</span>+1)÷2.`,`10 × 11 = 110, puis divise par 2.`],
+        sol:[`Formule : <span class="v">n</span>(<span class="v">n</span>+1)÷2 avec <span class="v">n</span> = 10`,`10 × 11 = 110`,`110 ÷ 2 = <b>55</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Combien de termes additionne-t-on dans <span class="v">u<sub>0</sub> + u<sub>1</sub> + … + u<sub>7</sub></span> ?`,
+        rep:8, ind:"un entier", ok:`7 − 0 + 1 = <b>8</b> termes`, no:`Les deux bornes sont incluses.`,
+        regle:`Toujours compter avant d'appliquer une formule.`,
+        aides:[`N'oublie pas <span class="v">u<sub>0</sub></span>.`,`7 − 0 + 1.`],
+        sol:[`Premier rang : 0, dernier rang : 7`,`7 − 0 + 1`,`<b>8</b> termes`] },
+      { k:"AUTOMATISME", type:"num", q:`Suite arithmétique : <span class="v">u<sub>0</sub></span> = 3, <span class="v">u<sub>4</sub></span> = 15.<br>Calculer <span class="v">u<sub>0</sub> + u<sub>1</sub> + … + u<sub>4</sub></span>.`,
+        rep:45, ind:"un entier", ok:`5 × (3+15)÷2 = 5 × 9 = <b>45</b>`, no:`Nombre de termes × moyenne du premier et du dernier.`,
+        regle:`<span class="v">S</span> = (nb de termes) × (premier + dernier) ÷ 2`,
+        aides:[`Combien de termes de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>4</sub></span> ?`,`5 termes. Moyenne : (3+15)÷2 = 9.`],
+        sol:[`Nombre de termes : 4 − 0 + 1 = 5`,`Moyenne : (3 + 15) ÷ 2 = 9`,`5 × 9 = <b>45</b>`] },
+      { k:"QCM", type:"qcm", q:`Dans la formule de la somme géométrique, que représente l'exposant de <span class="v">q</span> au numérateur ?`,
+        opts:[{t:`Le nombre de termes`,ok:true,why:`Exact. De <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>n</sub></span> : <span class="v">n</span>+1 termes, donc <span class="v">q</span><sup><span class="v">n+1</span></sup>.`},
+              {t:`Le dernier rang`,ok:false,why:`Non : le dernier rang est <span class="v">n</span>, mais l'exposant vaut <span class="v">n</span>+1.`},
+              {t:`La raison`,ok:false,why:`La raison est <span class="v">q</span> elle-même, pas son exposant.`}],
+        regle:`L'exposant = nombre de termes additionnés.`,
+        aides:[`Compte les termes de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>n</sub></span>.`,`Il y en a <span class="v">n</span>+1 — et c'est justement l'exposant.`],
+        sol:[`De <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>n</sub></span> : <span class="v">n</span>+1 termes`,`La formule contient <span class="v">q</span><sup><span class="v">n+1</span></sup>`,`L'exposant est <b>le nombre de termes</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Calculer 1 + 2 + 4 + 8 + 16.`,
+        sub:`Suite géométrique de raison 2, 5 termes.`,
+        rep:31, ind:"un entier", ok:`(1 − 2<sup>5</sup>) ÷ (1 − 2) = (−31)÷(−1) = <b>31</b>`, no:`2<sup>5</sup> = 32.`,
+        regle:`<span class="v">S</span> = premier × (1 − <span class="v">q</span><sup>nb</sup>) ÷ (1 − <span class="v">q</span>)`,
+        aides:[`Premier terme 1, raison 2, 5 termes.`,`(1 − 32) ÷ (1 − 2) = (−31) ÷ (−1).`],
+        sol:[`Premier = 1, raison = 2, nombre de termes = 5`,`(1 − 2<sup>5</sup>) ÷ (1 − 2) = (1 − 32) ÷ (−1)`,`(−31) ÷ (−1) = <b>31</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME", type:"num", q:`Calculer 1 + 2 + 3 + … + 20.`,
+        rep:210, ind:"un entier", ok:`20 × 21 ÷ 2 = <b>210</b>`, no:`<span class="v">n</span>(<span class="v">n</span>+1)÷2 avec <span class="v">n</span> = 20.`,
+        regle:`Somme de Gauss.`,
+        aides:[`20 × 21 = 420.`,`Divise par 2.`],
+        sol:[`20 × 21 = 420`,`420 ÷ 2`,`<b>210</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Combien de termes de <span class="v">u<sub>4</sub></span> à <span class="v">u<sub>15</sub></span> ?`,
+        rep:12, ind:"un entier", ok:`15 − 4 + 1 = <b>12</b>`, no:`Applique <span class="v">(n − p + 1)</span>.`,
+        regle:`Les deux bornes comptent.`,
+        aides:[`15 − 4 donne les intervalles, pas les termes.`,`Ajoute 1.`],
+        sol:[`<span class="v">p</span> = 4, <span class="v">n</span> = 15`,`15 − 4 + 1`,`<b>12</b> termes`] },
+      { k:"AUTOMATISME", type:"num", q:`Suite arithmétique : <span class="v">u<sub>1</sub></span> = 2, <span class="v">u<sub>10</sub></span> = 29.<br>Calculer <span class="v">u<sub>1</sub> + … + u<sub>10</sub></span>.`,
+        rep:155, ind:"un entier", ok:`10 × (2+29)÷2 = 10 × 15,5 = <b>155</b>`, no:`10 termes, moyenne (2+29)÷2.`,
+        regle:`La moyenne peut être décimale.`,
+        aides:[`De <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>10</sub></span> : 10 termes.`,`(2 + 29) ÷ 2 = 15,5.`],
+        sol:[`Nombre de termes : 10 − 1 + 1 = 10`,`Moyenne : 31 ÷ 2 = 15,5`,`10 × 15,5 = <b>155</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Calculer 1 + 3 + 9 + 27.`,
+        sub:`Raison 3, 4 termes.`,
+        rep:40, ind:"un entier", ok:`(1 − 3<sup>4</sup>) ÷ (1 − 3) = (−80)÷(−2) = <b>40</b>`, no:`3<sup>4</sup> = 81.`,
+        regle:`Formule géométrique.`,
+        aides:[`3<sup>4</sup> = 81.`,`(1 − 81) ÷ (1 − 3) = (−80) ÷ (−2).`],
+        sol:[`Premier = 1, raison = 3, 4 termes`,`(1 − 81) ÷ (−2)`,`(−80) ÷ (−2) = <b>40</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« La formule de Gauss donne 1 + 2 + … + <span class="v">n</span>, donc pour aller de 0 à <span class="v">n</span> il faut ajouter 0. »`,
+        opts:[{t:"Vrai — et le résultat ne change pas",ok:true,why:`Ajouter 0 ne modifie rien : les deux sommes sont égales.`},
+              {t:"Faux, la formule change",ok:false,why:`Non, ajouter 0 laisse la somme identique.`}],
+        regle:`0 n'influence pas une somme.`,
+        aides:[`Que vaut 0 + 1 + 2 par rapport à 1 + 2 ?`,`La même chose.`],
+        sol:[`0 + 1 + 2 + … + <span class="v">n</span> = 1 + 2 + … + <span class="v">n</span>`,`Le terme 0 n'apporte rien`,`<b>Vrai</b> — résultat inchangé`] }
+    ],
+    [
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`Calculer 5 + 6 + 7 + … + 20.`,
+        sub:`Astuce : (1+…+20) − (1+…+4).`,
+        rep:200, ind:"un entier", ok:`210 − 10 = <b>200</b>`, no:`Calcule les deux sommes de Gauss et soustrais.`,
+        regle:`Une somme partielle = grande somme − début.`,
+        aides:[`1+…+20 = 210 et 1+…+4 = 10.`,`Soustrais la seconde de la première.`],
+        sol:[`1 + … + 20 = 20×21÷2 = 210`,`1 + … + 4 = 4×5÷2 = 10`,`210 − 10 = <b>200</b>`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`Suite arithmétique : <span class="v">u<sub>0</sub></span> = 4, <span class="v">r</span> = 3.<br>Calculer <span class="v">u<sub>0</sub> + … + u<sub>9</sub></span>.`,
+        rep:175, ind:"un entier", ok:`<span class="v">u<sub>9</sub></span> = 31, puis 10 × (4+31)÷2 = <b>175</b>`, no:`Trouve d'abord <span class="v">u<sub>9</sub></span>.`,
+        regle:`Il faut le dernier terme avant de sommer.`,
+        aides:[`<span class="v">u<sub>9</sub></span> = 4 + 9×3.`,`<span class="v">u<sub>9</sub></span> = 31. Moyenne : (4+31)÷2 = 17,5.`],
+        sol:[`<span class="v">u<sub>9</sub></span> = 4 + 9×3 = 31`,`10 termes, moyenne (4+31)÷2 = 17,5`,`10 × 17,5 = <b>175</b>`] },
+      { k:"QCM", type:"qcm", q:`Pourquoi la formule géométrique exige-t-elle <span class="v">q</span> ≠ 1 ?`,
+        opts:[{t:`Le dénominateur deviendrait nul`,ok:true,why:`1 − 1 = 0, et on ne divise pas par zéro.`},
+              {t:`La suite n'existerait pas`,ok:false,why:`Elle existe : c'est une suite constante.`},
+              {t:`La somme serait infinie`,ok:false,why:`Non, elle vaut simplement <span class="v">u<sub>0</sub></span> × nombre de termes.`}],
+        regle:`Si <span class="v">q</span> = 1, la somme vaut premier × nombre de termes.`,
+        aides:[`Remplace <span class="v">q</span> par 1 dans le dénominateur.`,`1 − 1 = 0.`],
+        sol:[`Le dénominateur vaut 1 − <span class="v">q</span>`,`Pour <span class="v">q</span> = 1 : 1 − 1 = 0`,`<b>Division par zéro impossible</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Une entreprise économise 100 € le 1<sup>er</sup> mois, 200 € le 2<sup>e</sup>, 300 € le 3<sup>e</sup>… Combien après 12 mois ?`,
+        rep:7800, ind:"en euros", ok:`100 × (1+2+…+12) = 100 × 78 = <b>7 800 €</b>`, no:`Utilise la somme de Gauss pour 12.`,
+        regle:`Une progression régulière → somme arithmétique.`,
+        aides:[`1+2+…+12 = 12×13÷2.`,`= 78. Multiplie par 100.`],
+        sol:[`1 + 2 + … + 12 = 12×13÷2 = 78`,`Chaque unité vaut 100 €`,`78 × 100 = <b>7 800 €</b>`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`Calculer 2 + 4 + 8 + 16 + 32 + 64.`,
+        sub:`Premier terme 2, raison 2, 6 termes.`,
+        rep:126, ind:"un entier", ok:`2 × (1 − 2<sup>6</sup>)÷(1 − 2) = 2 × 63 = <b>126</b>`, no:`2<sup>6</sup> = 64.`,
+        regle:`Ne pas oublier de multiplier par le premier terme.`,
+        aides:[`(1 − 64) ÷ (1 − 2) = 63.`,`Multiplie ensuite par le premier terme 2.`],
+        sol:[`(1 − 2<sup>6</sup>) ÷ (1 − 2) = (−63) ÷ (−1) = 63`,`Premier terme : 2`,`2 × 63 = <b>126</b>`] }
+    ]
+  ]
+};
+
+const CH_ALGO = {
+  n:7, nom:"Algorithmique", sous:"Seuils, boucles, Python", pret:true, ds:false,
+  cartes:[
+    {
+      k:"À QUOI ÇA SERT", t:"Chercher un seuil",
+      c:`<p>Question classique : « à partir de quel rang la suite dépasse-t-elle 1 000 ? »</p>
+        <p>Avec une suite géométrique qui grandit vite, on ne peut pas tester à la main. On écrit un petit programme qui calcule les termes un par un jusqu'à franchir le seuil.</p>
+        <div class="show" style="text-align:left;font-family:monospace;font-size:14px;line-height:2">u = 1<br>n = 0<br>while u &lt;= 1000 :<br>&nbsp;&nbsp;&nbsp;&nbsp;u = 2 * u<br>&nbsp;&nbsp;&nbsp;&nbsp;n = n + 1<br>print(n)</div>
+        <div class="note"><b>Ce que fait ce programme.</b> Tant que <span class="v">u</span> ne dépasse pas 1 000, il double et compte un pas de plus. À la sortie, <span class="v">n</span> est le rang cherché.</div>`,
+      lent:`<p><b>Un escalier dans le noir.</b></p>
+        <p>Tu montes un escalier sans savoir combien il a de marches. Ta règle : « tant que je n'ai pas atteint le premier étage, je monte et je compte ».</p>
+        <p>Arrivé en haut, tu connais le nombre de marches — sans l'avoir su à l'avance.</p>
+        <p><b>C'est exactement une boucle <span style="font-family:monospace">while</span>.</b></p>
+        <p>« Tant que la condition est vraie, refaire » — et à la sortie, le compteur donne la réponse.</p>
+        <p><b>Les trois ingrédients, toujours les mêmes :</b></p>
+        <p>1. La <b>valeur de départ</b> — où tu commences.<br>
+           2. La <b>condition</b> — tant que quoi ?<br>
+           3. Ce qui <b>change à chaque tour</b> — la suite avance, le compteur augmente.</p>`
+    },
+    {
+      k:"LIRE UN ALGORITHME", t:"Suivre les valeurs pas à pas",
+      c:`<p>Pour comprendre un programme, on remplit un tableau des valeurs, tour par tour.</p>
+        <div class="show" style="text-align:left;font-family:monospace;font-size:14px;line-height:2">u = 3<br>n = 0<br>while u &lt; 50 :<br>&nbsp;&nbsp;&nbsp;&nbsp;u = 3 * u<br>&nbsp;&nbsp;&nbsp;&nbsp;n = n + 1</div>
+        <div class="show" style="text-align:left;padding:18px 20px;font-size:15px">
+          départ : <span class="v">u</span> = 3, <span class="v">n</span> = 0<br>
+          tour 1 : <span class="v">u</span> = 9, <span class="v">n</span> = 1<br>
+          tour 2 : <span class="v">u</span> = 27, <span class="v">n</span> = 2<br>
+          tour 3 : <span class="v">u</span> = 81, <span class="v">n</span> = 3 → 81 ⩾ 50, on sort
+        </div>
+        <div class="note"><b>Résultat : <span class="v">n</span> = 3.</b> La condition est testée <b>avant</b> chaque tour, jamais après.</div>`,
+      lent:`<p><b>La règle d'or : écrire le tableau.</b></p>
+        <p>Ne cherche pas à deviner dans ta tête. Prends une feuille, fais deux colonnes, remplis ligne par ligne. C'est ce que font les correcteurs, et ça marche à tous les coups.</p>
+        <p><b>Le piège du dernier tour.</b></p>
+        <p>Dans l'exemple, <span class="v">u</span> passe à 81 puis la boucle s'arrête. Beaucoup répondent « <span class="v">n</span> = 2 » parce que 27 était encore sous 50.</p>
+        <p>Mais non : le tour qui a produit 81 a <b>bien eu lieu</b>, et le compteur a été incrémenté. La sortie se fait au test <b>suivant</b>.</p>
+        <p><b>L'ordre exact à chaque tour :</b></p>
+        <p>1. On teste la condition.<br>
+           2. Si elle est vraie, on exécute <b>tout</b> le bloc.<br>
+           3. On retourne au test.</p>`
+    },
+    {
+      k:"ÉCRIRE UN ALGORITHME", t:"Trois lignes à ne pas oublier",
+      c:`<p>Un algorithme de seuil a toujours la même structure :</p>
+        <div class="show" style="text-align:left;padding:19px 21px;font-size:15px">
+          <b>1.</b> initialiser la suite et le compteur<br>
+          <b>2.</b> <span style="font-family:monospace">while</span> + condition de seuil<br>
+          <b>3.</b> mettre à jour la suite, puis le compteur
+        </div>
+        <p>Pour une suite arithmétique, la mise à jour est une addition :</p>
+        <div class="show" style="text-align:left;font-family:monospace;font-size:14px;line-height:2">u = u + r</div>
+        <p>Pour une géométrique, une multiplication :</p>
+        <div class="show" style="text-align:left;font-family:monospace;font-size:14px;line-height:2">u = q * u</div>
+        <div class="note"><b>Oubli classique.</b> Sans <span style="font-family:monospace">n = n + 1</span>, le compteur reste à 0 et le programme ne répond pas à la question.</div>`,
+      lent:`<p><b>Pourquoi deux variables ?</b></p>
+        <p>Parce qu'on suit deux choses différentes.</p>
+        <p><span class="v">u</span> — la <b>valeur</b> de la suite. Elle grandit selon la règle : +<span class="v">r</span> ou ×<span class="v">q</span>.</p>
+        <p><span class="v">n</span> — le <b>compteur de tours</b>. Il augmente toujours de 1, quelle que soit la suite.</p>
+        <p>Ce sont deux compteurs qui avancent en parallèle, comme le compteur kilométrique et l'horloge dans une voiture.</p>
+        <p><b>La question porte presque toujours sur <span class="v">n</span></b> — « à partir de quel rang ». Mais c'est <span class="v">u</span> qui décide quand s'arrêter.</p>
+        <p><b>Danger : la boucle infinie.</b> Si tu oublies de faire évoluer <span class="v">u</span>, la condition reste vraie pour toujours et le programme ne s'arrête jamais.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`<span style="font-family:monospace">u = 1 ; n = 0 ; while u &lt; 10 : u = 2*u ; n = n+1</span><br>Que vaut <span class="v">n</span> à la sortie ?`,
+        opts:[{t:"4",ok:true,why:`u : 1→2→4→8→16. Quatre tours, et 16 ⩾ 10.`},
+              {t:"3",ok:false,why:`Après 3 tours u = 8, encore sous 10 : la boucle continue.`},
+              {t:"5",ok:false,why:`Un tour de trop : dès 16 la condition devient fausse.`}],
+        regle:`Le tour qui franchit le seuil est compté.`,
+        aides:[`Écris le tableau : u = 1, 2, 4, 8, 16.`,`Compte les tours jusqu'à dépasser 10.`],
+        sol:[`u : 1 → 2 → 4 → 8 → 16`,`Tours : 1, 2, 3, 4`,`16 ⩾ 10 : on sort avec <b>n = 4</b>`] },
+      { k:"QCM", type:"qcm", q:`Quelle ligne fait avancer une suite arithmétique de raison 5 ?`,
+        opts:[{t:`<span style="font-family:monospace">u = u + 5</span>`,ok:true,why:`Arithmétique : on ajoute la raison.`},
+              {t:`<span style="font-family:monospace">u = 5 * u</span>`,ok:false,why:`Cela serait géométrique de raison 5.`},
+              {t:`<span style="font-family:monospace">n = n + 5</span>`,ok:false,why:`Cela modifie le compteur, pas la suite.`}],
+        regle:`Arithmétique → addition. Géométrique → multiplication.`,
+        aides:[`Dans une suite arithmétique, on ajoute ou on multiplie ?`,`On ajoute la raison.`],
+        sol:[`Arithmétique : chaque terme = précédent + raison`,`En Python : u = u + 5`,`Réponse : <b>u = u + 5</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span style="font-family:monospace">u = 2 ; n = 0 ; while u &lt; 20 : u = 3*u ; n = n+1</span><br>Valeur de <span class="v">n</span> à la sortie ?`,
+        rep:3, ind:"un entier", ok:`u : 2→6→18→54. Trois tours.`, no:`Fais le tableau, tour par tour.`,
+        regle:`Tester la condition avant chaque tour.`,
+        aides:[`u = 2, puis 6, puis 18, puis 54.`,`18 est encore < 20 : un tour de plus.`],
+        sol:[`Tour 1 : u = 6, n = 1`,`Tour 2 : u = 18, n = 2 (18 < 20, on continue)`,`Tour 3 : u = 54, n = <b>3</b>`] },
+      { k:"QCM", type:"qcm", q:`Que se passe-t-il si on oublie la ligne <span style="font-family:monospace">n = n + 1</span> ?`,
+        opts:[{t:`Le programme affiche 0`,ok:true,why:`Le compteur ne bouge jamais et reste à sa valeur initiale.`},
+              {t:`Le programme ne s'arrête pas`,ok:false,why:`Il s'arrête : c'est u qui pilote la condition.`},
+              {t:`Une erreur apparaît`,ok:false,why:`Aucune erreur — le résultat est simplement faux.`}],
+        regle:`Le compteur doit être incrémenté à chaque tour.`,
+        aides:[`Si n ne change jamais, que vaut-il à la fin ?`,`Sa valeur de départ, c'est-à-dire 0.`],
+        sol:[`u évolue normalement, la boucle se termine`,`Mais n garde sa valeur initiale`,`Le programme affiche <b>0</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span style="font-family:monospace">u = 100 ; n = 0 ; while u &gt; 10 : u = u - 30 ; n = n+1</span><br>Valeur de <span class="v">n</span> ?`,
+        rep:3, ind:"un entier", ok:`u : 100→70→40→10. Trois tours, 10 n'est plus > 10.`, no:`Attention : la condition est « strictement supérieur ».`,
+        regle:`Une suite décroissante fonctionne pareil.`,
+        aides:[`u = 100, 70, 40, 10.`,`10 > 10 est faux : on sort.`],
+        sol:[`Tour 1 : u = 70, n = 1`,`Tour 2 : u = 40, n = 2`,`Tour 3 : u = 10, n = 3. Or 10 > 10 est faux → <b>3</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME", type:"num", q:`<span style="font-family:monospace">u = 1 ; n = 0 ; while u &lt; 100 : u = 3*u ; n = n+1</span><br>Valeur de <span class="v">n</span> ?`,
+        rep:5, ind:"un entier", ok:`u : 1→3→9→27→81→243. Cinq tours.`, no:`81 est encore < 100.`,
+        regle:`Puissances de 3 : 1, 3, 9, 27, 81, 243.`,
+        aides:[`Écris les valeurs successives de u.`,`81 < 100 donc un tour supplémentaire.`],
+        sol:[`u : 1 → 3 → 9 → 27 → 81 → 243`,`Tours : 1, 2, 3, 4, 5`,`243 ⩾ 100 : <b>n = 5</b>`] },
+      { k:"QCM", type:"qcm", q:`Quelle ligne convient pour une suite géométrique de raison 0,5 ?`,
+        opts:[{t:`<span style="font-family:monospace">u = 0.5 * u</span>`,ok:true,why:`Géométrique : on multiplie par la raison.`},
+              {t:`<span style="font-family:monospace">u = u - 0.5</span>`,ok:false,why:`Cela serait arithmétique de raison −0,5.`},
+              {t:`<span style="font-family:monospace">u = u / 0.5</span>`,ok:false,why:`Diviser par 0,5 revient à multiplier par 2.`}],
+        regle:`Géométrique → multiplication par <span class="v">q</span>.`,
+        aides:[`Raison = ce par quoi on multiplie.`,`u = 0.5 * u.`],
+        sol:[`Suite géométrique : <span class="v">u<sub>n+1</sub></span> = <span class="v">q</span> × <span class="v">u<sub>n</sub></span>`,`Ici <span class="v">q</span> = 0,5`,`<b>u = 0.5 * u</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span style="font-family:monospace">u = 5 ; n = 0 ; while u &lt;= 50 : u = u + 15 ; n = n+1</span><br>Valeur de <span class="v">n</span> ?`,
+        rep:4, ind:"un entier", ok:`u : 5→20→35→50→65. Quatre tours.`, no:`Attention : ⩽ inclut 50.`,
+        regle:`Le symbole ⩽ change le nombre de tours.`,
+        aides:[`u = 5, 20, 35, 50, 65.`,`50 ⩽ 50 est vrai : un tour de plus.`],
+        sol:[`Tours : u = 20, 35, 50, 65`,`À u = 50, la condition ⩽ 50 est encore vraie`,`Donc un dernier tour : <b>n = 4</b>`] },
+      { k:"QCM", type:"qcm", q:`Dans un algorithme de seuil, que représente la variable <span class="v">n</span> ?`,
+        opts:[{t:`Le rang cherché`,ok:true,why:`C'est le nombre de tours, donc le rang où le seuil est franchi.`},
+              {t:`La valeur de la suite`,ok:false,why:`Cela, c'est <span class="v">u</span>.`},
+              {t:`Le seuil`,ok:false,why:`Le seuil est la valeur fixe dans la condition.`}],
+        regle:`<span class="v">n</span> compte les tours, <span class="v">u</span> porte la valeur.`,
+        aides:[`Deux variables évoluent : laquelle répond à « à partir de quel rang » ?`,`Le compteur de tours.`],
+        sol:[`<span class="v">u</span> = la valeur de la suite`,`<span class="v">n</span> = le nombre de tours effectués`,`La question porte sur <b>le rang</b>, donc <span class="v">n</span>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« La condition d'une boucle <span style="font-family:monospace">while</span> est testée après chaque tour. »`,
+        opts:[{t:"Faux — elle est testée avant",ok:true,why:`Le test a lieu avant d'entrer dans le bloc, y compris au tout premier passage.`},
+              {t:"Vrai",ok:false,why:`Non : si la condition est fausse dès le départ, le bloc n'est jamais exécuté.`}],
+        regle:`<span style="font-family:monospace">while</span> teste <b>avant</b> d'exécuter.`,
+        aides:[`Que se passe-t-il si la condition est fausse dès le début ?`,`Le bloc n'est pas exécuté du tout.`],
+        sol:[`<span style="font-family:monospace">while</span> vérifie la condition, puis exécute si elle est vraie`,`Si elle est fausse au départ, zéro tour`,`Le test est donc <b>avant</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`Un capital de 1 000 € augmente de 10 % par an.<br><span style="font-family:monospace">while u &lt; 1300</span> — combien de tours ?`,
+        sub:`u : 1000 → 1100 → 1210 → 1331`,
+        rep:3, ind:"un entier", ok:`1331 dépasse 1300 au troisième tour.`, no:`Multiplie par 1,1 à chaque étape.`,
+        regle:`Hausse de 10 % → multiplication par 1,1.`,
+        aides:[`1000 × 1,1 = 1100, puis 1210, puis 1331.`,`1210 < 1300 : un tour de plus.`],
+        sol:[`Tour 1 : 1 100 €`,`Tour 2 : 1 210 € (encore sous 1 300)`,`Tour 3 : 1 331 € ⩾ 1 300 → <b>3 tours</b>`] },
+      { k:"QCM", type:"qcm", q:`Quel risque si on écrit <span style="font-family:monospace">while u &lt; 100</span> sans jamais modifier <span class="v">u</span> ?`,
+        opts:[{t:`Boucle infinie`,ok:true,why:`La condition reste vraie pour toujours : le programme ne s'arrête jamais.`},
+              {t:`Le programme affiche 0`,ok:false,why:`Il n'affiche rien — il ne termine pas.`},
+              {t:`Une erreur de syntaxe`,ok:false,why:`La syntaxe est correcte, le problème est logique.`}],
+        regle:`La variable testée doit évoluer.`,
+        aides:[`Si u ne change pas, la condition change-t-elle ?`,`Non — elle reste vraie indéfiniment.`],
+        sol:[`La condition porte sur u`,`Si u ne bouge jamais, elle reste vraie`,`<b>Boucle infinie</b>`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`<span style="font-family:monospace">u = 1000 ; n = 0 ; while u &gt; 100 : u = 0.5*u ; n = n+1</span><br>Valeur de <span class="v">n</span> ?`,
+        rep:4, ind:"un entier", ok:`u : 1000→500→250→125→62,5. Quatre tours.`, no:`125 est encore > 100.`,
+        regle:`Une suite décroissante franchit aussi un seuil.`,
+        aides:[`u = 1000, 500, 250, 125, 62,5.`,`125 > 100 : encore un tour.`],
+        sol:[`Tours : u = 500, 250, 125, 62,5`,`125 > 100 donc on continue`,`62,5 < 100 : sortie avec <b>n = 4</b>`] },
+      { k:"QCM", type:"qcm", q:`Dans quel ordre doivent apparaître les instructions du bloc ?`,
+        opts:[{t:`Mettre à jour <span class="v">u</span>, puis <span class="v">n</span>`,ok:true,why:`L'ordre habituel, mais les deux fonctionnent tant que chacune est exécutée une fois par tour.`},
+              {t:`Seulement <span class="v">u</span>`,ok:false,why:`Sans compteur, pas de réponse au « quel rang ».`},
+              {t:`Seulement <span class="v">n</span>`,ok:false,why:`Sans faire évoluer u, boucle infinie.`}],
+        regle:`Les deux lignes sont nécessaires.`,
+        aides:[`Combien de variables doivent évoluer à chaque tour ?`,`Deux : la suite et le compteur.`],
+        sol:[`u doit évoluer, sinon boucle infinie`,`n doit compter, sinon pas de réponse`,`<b>Les deux</b>, dans cet ordre habituellement`] },
+      { k:"AUTOMATISME", type:"num", q:`<span style="font-family:monospace">u = 0 ; n = 0 ; while u &lt; 12 : u = u + 4 ; n = n+1</span><br>Valeur de <span class="v">n</span> ?`,
+        rep:3, ind:"un entier", ok:`u : 0→4→8→12. Trois tours, 12 n'est plus < 12.`, no:`Attention au symbole strict.`,
+        regle:`< strict : on sort dès l'égalité.`,
+        aides:[`u = 0, 4, 8, 12.`,`12 < 12 est faux.`],
+        sol:[`Tour 1 : u = 4`,`Tour 2 : u = 8`,`Tour 3 : u = 12, et 12 < 12 faux → <b>n = 3</b>`] }
+    ]
+  ]
+};
+
+const CH_PROBLEMES = {
+  n:8, nom:"Problèmes", sous:"Exercices type épreuve", pret:true, ds:false,
+  cartes:[
+    {
+      k:"RECONNAÎTRE", t:"Quel type de suite dans un énoncé ?",
+      c:`<p>La première question d'un problème est toujours la même : arithmétique ou géométrique ?</p>
+        <div class="show" style="text-align:left;padding:19px 21px;font-size:15px">
+          <div style="margin-bottom:10px">« augmente de 50 € » &nbsp;→&nbsp; <b>arithmétique</b></div>
+          <div style="margin-bottom:10px">« augmente de 5 % » &nbsp;→&nbsp; <b>géométrique</b></div>
+          <div style="margin-bottom:10px">« perd 3 unités » &nbsp;→&nbsp; <b>arithmétique</b></div>
+          <div>« diminue de 20 % » &nbsp;→&nbsp; <b>géométrique</b></div>
+        </div>
+        <div class="note"><b>Repère absolu.</b> Une quantité <b>fixe</b> → on ajoute → arithmétique. Un <b>pourcentage</b> → on multiplie → géométrique.</div>`,
+      lent:`<p><b>Pourquoi le pourcentage change tout.</b></p>
+        <p>Un salaire de 2 000 € augmente de 100 € par an : 2 100, 2 200, 2 300. L'augmentation est toujours la même.</p>
+        <p>Le même salaire augmente de 5 % par an : 2 100, 2 205, 2 315. La deuxième augmentation vaut 105 €, pas 100 — parce qu'elle se calcule sur 2 100, pas sur 2 000.</p>
+        <p><b>C'est toute la différence.</b> Le pourcentage s'applique à une base qui change, donc il faut multiplier.</p>
+        <p><b>Le test à faire.</b> Demande-toi : « la variation dépend-elle de la valeur actuelle ? »</p>
+        <p>Non → arithmétique. Oui → géométrique.</p>`
+    },
+    {
+      k:"STRUCTURE TYPE", t:"Les questions se suivent toujours pareil",
+      c:`<p>Un problème de suites en devoir suit presque toujours le même déroulé :</p>
+        <div class="show" style="text-align:left;padding:19px 21px;font-size:15px">
+          <b>1.</b> Calculer les premiers termes<br>
+          <b>2.</b> Montrer que la suite est arith. / géom.<br>
+          <b>3.</b> Donner le terme général<br>
+          <b>4.</b> Calculer une valeur précise<br>
+          <b>5.</b> Chercher un seuil ou une somme
+        </div>
+        <div class="note"><b>Bonne nouvelle.</b> Chaque question s'appuie sur la précédente. Si tu bloques sur une, tu peux souvent continuer en admettant le résultat.</div>`,
+      lent:`<p><b>Un problème n'est pas un mur, c'est un escalier.</b></p>
+        <p>Beaucoup d'élèves lisent l'énoncé en entier, paniquent, et laissent blanc. C'est dommage — les questions sont volontairement graduées.</p>
+        <p><b>Question 1</b> demande juste de calculer deux ou trois termes. C'est offert : applique la règle de l'énoncé.</p>
+        <p><b>Question 2</b> demande de prouver la nature. Calcul de différence ou de quotient — rien de nouveau.</p>
+        <p><b>Question 3</b> : appliquer la formule du cours avec les valeurs trouvées.</p>
+        <p><b>Si tu bloques quelque part</b>, écris « on admet le résultat » et continue. Tu gardes les points des questions suivantes.</p>
+        <p>Une copie qui traite les questions 1, 3, 4 vaut bien mieux qu'une copie qui s'arrête à la 2.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"PROBLÈME", type:"qcm", q:`Un abonnement coûte 240 € et augmente de 8 % par an.<br>Quelle est la nature de la suite ?`,
+        opts:[{t:`Géométrique de raison 1,08`,ok:true,why:`Un pourcentage → multiplication par 1 + 8/100.`},
+              {t:`Arithmétique de raison 8`,ok:false,why:`8 % n'est pas 8 € : c'est proportionnel au prix.`},
+              {t:`Géométrique de raison 0,08`,ok:false,why:`Ce serait garder 8 % du prix.`}],
+        regle:`Hausse de <span class="v">t</span> % → raison (1 + <span class="v">t</span>/100).`,
+        aides:[`Le prix garde 100 % et gagne 8 %.`,`108 % = 1,08.`],
+        sol:[`Chaque année : nouveau prix = 108 % de l'ancien`,`108 % = 1,08`,`<b>Géométrique de raison 1,08</b>`] },
+      { k:"PROBLÈME", type:"num", q:`Une population de 5 000 habitants perd 200 habitants par an.<br>Combien après 6 ans ?`,
+        rep:3800, ind:"un entier", ok:`5000 − 6×200 = <b>3 800</b>`, no:`Perte fixe → arithmétique.`,
+        regle:`Quantité fixe retirée → arithmétique.`,
+        aides:[`200 par an pendant 6 ans.`,`5000 − 1200.`],
+        sol:[`Perte totale : 6 × 200 = 1 200`,`5 000 − 1 200`,`<b>3 800 habitants</b>`] },
+      { k:"PROBLÈME", type:"num", q:`Un capital de 2 000 € placé à 5 % par an.<br>Valeur après 2 ans ?`,
+        rep:2205, ind:"en euros", ok:`2000 × 1,05² = 2000 × 1,1025 = <b>2 205 €</b>`, no:`Applique ×1,05 deux fois.`,
+        regle:`Intérêts composés → géométrique.`,
+        aides:[`2000 × 1,05 = 2100.`,`Puis 2100 × 1,05.`],
+        sol:[`Année 1 : 2000 × 1,05 = 2 100 €`,`Année 2 : 2100 × 1,05 = 2 205 €`,`Résultat : <b>2 205 €</b>`] },
+      { k:"PROBLÈME ⭑", hard:true, type:"num", q:`Une suite arithmétique : <span class="v">u<sub>0</sub></span> = 12, <span class="v">r</span> = 7.<br>Calculer <span class="v">u<sub>0</sub> + u<sub>1</sub> + … + u<sub>5</sub></span>.`,
+        rep:177, ind:"un entier", ok:`<span class="v">u<sub>5</sub></span> = 47, puis 6 × (12+47)÷2 = <b>177</b>`, no:`Trouve <span class="v">u<sub>5</sub></span>, puis applique la somme.`,
+        regle:`Deux étapes : terme général, puis somme.`,
+        aides:[`<span class="v">u<sub>5</sub></span> = 12 + 5×7.`,`<span class="v">u<sub>5</sub></span> = 47. Six termes, moyenne (12+47)÷2.`],
+        sol:[`<span class="v">u<sub>5</sub></span> = 12 + 35 = 47`,`6 termes, moyenne = 59 ÷ 2 = 29,5`,`6 × 29,5 = <b>177</b>`] },
+      { k:"PROBLÈME", type:"qcm", q:`Dans un problème, la question 2 demande de « montrer que la suite est géométrique ».<br>Que faut-il calculer ?`,
+        opts:[{t:`Le quotient <span class="v">u<sub>n+1</sub></span>/<span class="v">u<sub>n</sub></span>`,ok:true,why:`S'il est constant, la suite est géométrique.`},
+              {t:`La différence <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>`,ok:false,why:`Cela prouverait qu'elle est arithmétique.`},
+              {t:`Les dix premiers termes`,ok:false,why:`Des exemples ne démontrent rien.`}],
+        regle:`Géométrique → quotient constant.`,
+        aides:[`Géométrique = on multiplie. Quelle opération teste cela ?`,`La division.`],
+        sol:[`Géométrique : <span class="v">u<sub>n+1</sub></span> = <span class="v">q</span> × <span class="v">u<sub>n</sub></span>`,`Donc <span class="v">u<sub>n+1</sub></span> ÷ <span class="v">u<sub>n</sub></span> = <span class="v">q</span>`,`On calcule <b>le quotient</b>`] }
+    ],
+    [
+      { k:"PROBLÈME", type:"num", q:`Un arbre mesure 150 cm et grandit de 25 cm par an.<br>Taille après 8 ans ?`,
+        rep:350, ind:"en cm", ok:`150 + 8×25 = <b>350 cm</b>`, no:`Croissance fixe → arithmétique.`,
+        regle:`<span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">nr</span>`,
+        aides:[`8 ans × 25 cm.`,`150 + 200.`],
+        sol:[`Croissance totale : 8 × 25 = 200 cm`,`150 + 200`,`<b>350 cm</b>`] },
+      { k:"PROBLÈME", type:"num", q:`Une voiture de 20 000 € perd 15 % de sa valeur par an.<br>Valeur après 2 ans ?`,
+        rep:14450, ind:"en euros", ok:`20000 × 0,85² = <b>14 450 €</b>`, no:`Il reste 85 % chaque année.`,
+        regle:`Baisse de 15 % → ×0,85.`,
+        aides:[`Coefficient : 0,85.`,`20000 × 0,85 = 17000, puis ×0,85.`],
+        sol:[`Année 1 : 20000 × 0,85 = 17 000 €`,`Année 2 : 17000 × 0,85 = 14 450 €`,`<b>14 450 €</b>`] },
+      { k:"PROBLÈME ⭑", hard:true, type:"num", q:`Suite géométrique : <span class="v">u<sub>0</sub></span> = 4, <span class="v">q</span> = 3.<br>Calculer <span class="v">u<sub>0</sub> + u<sub>1</sub> + u<sub>2</sub> + u<sub>3</sub></span>.`,
+        rep:160, ind:"un entier", ok:`4 × (1 − 3<sup>4</sup>)÷(1 − 3) = 4 × 40 = <b>160</b>`, no:`4 termes, donc exposant 4.`,
+        regle:`L'exposant = nombre de termes.`,
+        aides:[`(1 − 81) ÷ (1 − 3) = 40.`,`Multiplie par le premier terme 4.`],
+        sol:[`4 termes : exposant 4`,`(1 − 3<sup>4</sup>) ÷ (1 − 3) = (−80) ÷ (−2) = 40`,`4 × 40 = <b>160</b>`] },
+      { k:"PROBLÈME", type:"qcm", q:`Un énoncé dit : « le nombre d'inscrits double chaque mois ».<br>Nature et raison ?`,
+        opts:[{t:`Géométrique de raison 2`,ok:true,why:`Doubler = multiplier par 2.`},
+              {t:`Arithmétique de raison 2`,ok:false,why:`Ajouter 2 ne signifie pas doubler.`},
+              {t:`Géométrique de raison 0,5`,ok:false,why:`Ce serait diviser par deux.`}],
+        regle:`« Doubler » → ×2 → géométrique.`,
+        aides:[`Doubler, c'est multiplier par combien ?`,`Par 2.`],
+        sol:[`Doubler = multiplier par 2`,`Multiplication → géométrique`,`<b>Géométrique de raison 2</b>`] },
+      { k:"PROBLÈME ⭑", hard:true, type:"num", q:`Un livret contient 800 € à 3 % par an.<br>À partir de quelle année dépasse-t-il 850 € ?`,
+        sub:`800 → 824 → 848,7 → 874,2`,
+        rep:3, ind:"un entier", ok:`Au bout de <b>3</b> ans : 874,2 € > 850 €`, no:`Multiplie par 1,03 à chaque année.`,
+        regle:`Recherche de seuil par calculs successifs.`,
+        aides:[`800 × 1,03 = 824.`,`824 × 1,03 = 848,7 — encore sous 850.`],
+        sol:[`Année 1 : 824 €`,`Année 2 : 848,72 € (< 850)`,`Année 3 : 874,18 € → <b>3 ans</b>`] }
+    ],
+    [
+      { k:"PROBLÈME", type:"num", q:`Une salle de sport a 120 adhérents et en gagne 15 par mois.<br>Combien après 10 mois ?`,
+        rep:270, ind:"un entier", ok:`120 + 10×15 = <b>270</b>`, no:`Gain fixe → arithmétique.`,
+        regle:`Progression régulière → arithmétique.`,
+        aides:[`10 mois × 15 adhérents.`,`120 + 150.`],
+        sol:[`Gain : 10 × 15 = 150`,`120 + 150`,`<b>270 adhérents</b>`] },
+      { k:"PROBLÈME", type:"qcm", q:`Deux offres : A ajoute 100 € par an, B augmente de 4 % par an. Départ identique à 2 000 €.<br>Laquelle rapporte plus à très long terme ?`,
+        opts:[{t:`B, la croissance géométrique`,ok:true,why:`Une croissance en pourcentage finit toujours par dépasser une croissance fixe.`},
+              {t:`A, 100 € c'est plus que 4 %`,ok:false,why:`Vrai au début (80 € contre 100 €), mais B accélère.`},
+              {t:`Elles restent égales`,ok:false,why:`Non, les courbes divergent nettement.`}],
+        regle:`Géométrique (<span class="v">q</span> > 1) bat arithmétique à long terme.`,
+        aides:[`Compare après 30 ans.`,`A : 5 000 €. B : plus de 6 400 €.`],
+        sol:[`Au début A gagne (100 € contre 80 €)`,`Mais B augmente son gain chaque année`,`À long terme, <b>B</b> l'emporte`] },
+      { k:"PROBLÈME ⭑", hard:true, type:"num", q:`Un escalier : 1 marche le 1<sup>er</sup> jour, 2 le 2<sup>e</sup>, 3 le 3<sup>e</sup>…<br>Total de marches en 15 jours ?`,
+        rep:120, ind:"un entier", ok:`15 × 16 ÷ 2 = <b>120</b>`, no:`C'est la somme de Gauss.`,
+        regle:`1 + 2 + … + <span class="v">n</span> = <span class="v">n</span>(<span class="v">n</span>+1)÷2`,
+        aides:[`Il faut additionner 1 + 2 + … + 15.`,`15 × 16 ÷ 2.`],
+        sol:[`Somme de 1 à 15`,`15 × 16 = 240`,`240 ÷ 2 = <b>120 marches</b>`] },
+      { k:"PROBLÈME", type:"num", q:`Un téléphone coûte 900 € et perd 30 % la première année, puis 30 % la seconde.<br>Valeur après 2 ans ?`,
+        rep:441, ind:"en euros", ok:`900 × 0,7² = 900 × 0,49 = <b>441 €</b>`, no:`Il reste 70 % chaque année.`,
+        regle:`Deux baisses de 30 % ≠ une baisse de 60 %.`,
+        aides:[`Coefficient : 0,7 chaque année.`,`900 × 0,7 = 630, puis ×0,7.`],
+        sol:[`Année 1 : 900 × 0,7 = 630 €`,`Année 2 : 630 × 0,7 = 441 €`,`<b>441 €</b> (et non 360 €)`] },
+      { k:"PROBLÈME", type:"qcm", q:`Tu bloques sur la question 2 d'un problème. Que faire ?`,
+        opts:[{t:`Écrire « on admet » et passer à la 3`,ok:true,why:`Les questions suivantes rapportent des points même sans la précédente.`},
+              {t:`Tout laisser blanc`,ok:false,why:`Tu perds les points des questions que tu saurais faire.`},
+              {t:`Recommencer depuis le début`,ok:false,why:`Perte de temps sans garantie.`}],
+        regle:`Une question bloquée n'empêche pas les suivantes.`,
+        aides:[`Les questions sont notées séparément.`,`Tu peux admettre un résultat et continuer.`],
+        sol:[`Chaque question est notée indépendamment`,`Écrire « on admet le résultat de la Q2 »`,`Puis <b>traiter la suite normalement</b>`] }
+    ]
+  ]
+};
 
 const CHAPITRES = [
 
@@ -1257,10 +1791,70 @@ const CHAPITRES = [
 /* ─────────────────────────────────────────────
    6 · PROBLÈMES
    ───────────────────────────────────────────── */
-{ n:6, nom:"Problèmes", sous:"Exercices type épreuve", pret:false, ds:false }
-
+CH_SOMMES, CH_ALGO, CH_PROBLEMES
 ];
 
+
+
+/* ═══════════ MODULES ═══════════ */
+
+const MODULES = [
+  {
+    id:"suites",
+    nom:"Suites numériques",
+    sous:"Algèbre · période 2",
+    periode:2,
+    pret:true,
+    chapitres:[1,2,3,4,5,6,7,8]
+  },
+  {
+    id:"second-degre",
+    nom:"Second degré",
+    sous:"Algèbre · période 1",
+    periode:1,
+    pret:false,
+    chapitres:[]
+  },
+  {
+    id:"derivation",
+    nom:"Dérivation",
+    sous:"Analyse · période 3",
+    periode:3,
+    pret:false,
+    chapitres:[]
+  },
+  {
+    id:"expo-trigo",
+    nom:"Exponentielle et trigonométrie",
+    sous:"Analyse · période 4",
+    periode:4,
+    pret:false,
+    chapitres:[]
+  },
+  {
+    id:"produit-scalaire",
+    nom:"Produit scalaire",
+    sous:"Géométrie · période 2",
+    periode:2,
+    pret:false,
+    chapitres:[]
+  },
+  {
+    id:"probas",
+    nom:"Probabilités",
+    sous:"Probabilités · période 3",
+    periode:3,
+    pret:false,
+    chapitres:[]
+  }
+];
+
+function moduleStats(m){
+  const chs = m.chapitres.map(n=>CHAPITRES.find(c=>c.n===n)).filter(Boolean);
+  const done = chs.filter(c=>DB.ch[c.n] && DB.ch[c.n].done).length;
+  const exos = chs.reduce((s,c)=>s+(c.series||[]).flat().length,0);
+  return { total:chs.length, done, exos, chs };
+}
 
 /* ═══════════ СОСТОЯНИЕ ═══════════ */
 
@@ -1297,10 +1891,77 @@ function show(id){
 
 /* ═══════════ ГЛАВНАЯ ═══════════ */
 
+
+/* ═══════════ ÉCRAN MODULES ═══════════ */
+
+let MOD = MODULES[0];   /* module ouvert */
+
+function drawMods(){
+  /* progression globale */
+  const all = MODULES.filter(m=>m.pret);
+  let tot=0, dn=0;
+  all.forEach(m=>{ const s=moduleStats(m); tot+=s.total; dn+=s.done; });
+  $("mm-val").textContent = dn + " / " + tot + (dn>0 ? "  ·  " + Math.round(dn/tot*100) + "%" : "");
+  setTimeout(()=>{ $("mm-fill").style.width = (tot? dn/tot*100 : 0) + "%"; }, 60);
+
+  if(DB.streak>0){
+    $("mm-streak").style.display="inline-flex";
+    $("mm-streak-n").textContent = DB.streak;
+    $("mm-streak-w").textContent = DB.streak===1 ? "jour d'affilée" : "jours d'affilée";
+  }
+
+  const box = $("mods"); box.innerHTML = "";
+  MODULES.forEach(m=>{
+    const s = moduleStats(m);
+    const b = document.createElement("button");
+    b.className = "mod" + (m.pret ? " open" : " lock");
+    const pct = s.total ? Math.round(s.done/s.total*100) : 0;
+
+    b.innerHTML = `
+      <div class="mod-top">
+        <span class="mod-ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="${m.pret?'#f67748':'#9da3af'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            ${m.pret
+              ? `<path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M8 7h8M8 11h8M8 15h5"/>`
+              : `<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>`}
+          </svg>
+        </span>
+        <span class="mod-b">
+          <span class="mod-n">${m.nom}</span>
+          <span class="mod-s">${m.sous}</span>
+        </span>
+        ${m.pret ? `<span class="mod-go">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>` : ``}
+      </div>
+      ${m.pret ? `
+        <div class="mod-bar"><div class="mod-fill" style="width:${pct}%"></div></div>
+        <div class="mod-cnt">
+          <span><b>${s.done}</b> / ${s.total} chapitres</span>
+          <span>${s.exos} exercices</span>
+        </div>`
+      : `<span class="mod-soon">BIENTÔT</span>`}`;
+
+    if(m.pret) b.onclick = ()=> openModule(m);
+    box.appendChild(b);
+  });
+}
+
+function openModule(m){
+  MOD = m;
+  $("h-nom").textContent = m.nom;
+  $("h-sous").textContent = m.sous;
+  show("s-home");
+  drawHome();
+}
+
 function drawHome(){
-  const done = Object.values(DB.ch).filter(c=>c.done).length;
-  $("m-val").textContent = done + " / 6" + (done>0 ? "  ·  " + Math.round(done/6*100) + "%" : "");
-  setTimeout(()=>{ $("m-fill").style.width = (done/6*100)+"%"; }, 60);
+  const chs = MOD.chapitres.map(n=>CHAPITRES.find(c=>c.n===n)).filter(Boolean);
+  const total = chs.length;
+  const done = chs.filter(c=>DB.ch[c.n] && DB.ch[c.n].done).length;
+
+  $("m-val").textContent = done + " / " + total + (done>0 ? "  ·  " + Math.round(done/total*100) + "%" : "");
+  setTimeout(()=>{ $("m-fill").style.width = (done/total*100)+"%"; }, 60);
 
   if(DB.streak>0){
     $("streak").style.display="inline-flex";
@@ -1308,31 +1969,32 @@ function drawHome(){
     $("streak-w").textContent = DB.streak===1 ? "jour d'affilée" : "jours d'affilée";
   }
 
-  const todo = CHAPITRES.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
+  const todo = chs.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
   if(todo){
     $("r-lbl").textContent = todo.ds ? "AU PROGRAMME DU DS" : "CONTINUER";
     $("r-name").textContent = todo.nom;
     $("r-meta").textContent = todo.cartes.length + " fiches · 5 exercices · ~12 min";
-  } else {
-    const prets = CHAPITRES.filter(x=>x.pret);
-    const pick = prets[0];
+    $("resume").onclick = ()=> startCh(todo.n);
+  } else if(chs.length){
+    const pick = chs[0];
     const s = ((DB.ch[pick.n]||{}).serie||0) % pick.series.length;
     $("r-lbl").textContent = "SÉRIE " + (s+1);
     $("r-name").textContent = pick.nom;
     $("r-meta").textContent = "5 nouveaux exercices";
+    $("resume").onclick = ()=> startCh(pick.n);
   }
 
   const box=$("chs"); box.innerHTML="";
-  CHAPITRES.forEach(c=>{
+  const firstTodo = chs.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
+  chs.forEach((c,idx)=>{
     const d = DB.ch[c.n];
     const b=document.createElement("button");
-    const firstTodo = CHAPITRES.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
     b.className="ch"+(d&&d.done?" done":"")+(firstTodo&&firstTodo.n===c.n?" next":"")+(!c.pret?" lock":"");
     const meta = c.pret
-      ? (d&&d.done ? "série "+(((d.serie||0)%3)+1)+" disponible" : c.sous)
+      ? (d&&d.done ? "série "+(((d.serie||0)%c.series.length)+1)+" disponible" : c.sous)
       : "bientôt";
     b.innerHTML=`
-      <span class="ch-num">${c.n}</span>
+      <span class="ch-num">${idx+1}</span>
       <span class="ch-body">
         <span class="ch-name">${c.nom}${c.ds?`<span class="ds-tag">DS</span>`:``}</span>
         <span class="ch-meta">${meta}</span>
@@ -1804,15 +2466,16 @@ function nextSerie(){
   show("s-work");
 }
 
-$("resume").onclick=()=>{
-  const t = CHAPITRES.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done)) || CHAPITRES[0];
-  startCh(t.n);
-};
+
 $("back").onclick=()=>{ show("s-home"); drawHome(); };
+$("home-back").onclick=()=>{ show("s-mods"); drawMods(); };
 $("d-home").onclick=()=>{ show("s-home"); drawHome(); };
 $("d-more").onclick=nextSerie;
 
 document.addEventListener("keydown",e=>{
+  if($("s-home").classList.contains("on") && e.key==="Escape"){
+    show("s-mods"); drawMods(); return;
+  }
   if(!$("s-work").classList.contains("on")){
     if(e.key==="Escape"&&$("s-done").classList.contains("on")){ show("s-home"); drawHome(); }
     return;
@@ -1828,7 +2491,7 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){ show("s-home"); drawHome(); }
 });
 
-drawHome();
+drawMods();
 </script>
 </body>
 </html>

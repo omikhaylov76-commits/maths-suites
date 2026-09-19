@@ -170,17 +170,6 @@ sub,sup{font-size:.7em;line-height:0}
   border:1px solid var(--mist);border-radius:var(--r-card);
   box-shadow:0 1px 2px rgba(45,47,52,.03),0 6px 20px rgba(45,47,52,.04);animation:cardIn 250ms var(--e);
 }
-.card.back-anim{
-  animation:cardBack 250ms var(--e);
-}
-@keyframes cardIn{
-  from{opacity:0;transform:translate3d(42px,0,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
-}
-@keyframes cardBack{
-  from{opacity:0;transform:translate3d(-42px,0,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
-}
 to{opacity:1;transform:translateX(0)}
 }
 .card-k{font:500 11px/1 "Inter",sans-serif;letter-spacing:0.09em;text-transform:uppercase;color:var(--slate);margin-bottom:13px}
@@ -220,9 +209,20 @@ to{opacity:1;transform:translateX(0)}
 .slow-in p{margin:0 0 12px}
 .slow-in p:last-child{margin-bottom:0}
 
-.deck-wrap{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.viewport{
+  position:relative;overflow:hidden;
+  transition:height 300ms var(--e);
+  touch-action:pan-y;
+}
+.track{
+  display:flex;align-items:flex-start;gap:14px;
+  will-change:transform;
+  user-select:none;-webkit-user-select:none;
+}
+.slide{flex:0 0 100%;min-width:100%}
 @media(min-width:900px),(pointer:fine){
-  .deck-wrap{touch-action:auto;user-select:text;-webkit-user-select:text}
+  .viewport{touch-action:auto}
+  .track{user-select:text;-webkit-user-select:text}
 }
 .swipe-hint{
   display:flex;align-items:center;justify-content:center;gap:6px;
@@ -235,6 +235,7 @@ to{opacity:1;transform:translateX(0)}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--silver);transition:background var(--t-base) var(--e),width var(--t-base) var(--e)}
 .dot.on{background:var(--ember);width:18px;border-radius:99px}
 .nav2{display:flex;gap:10px;margin-top:14px}
+@media(pointer:coarse) and (max-width:899px){.nav2{display:none}}
 .nav2 button{
   flex:1;padding:15px;border-radius:var(--r-pill);
   font:600 15px/1 "Inter",sans-serif;
@@ -244,6 +245,7 @@ to{opacity:1;transform:translateX(0)}
 .nav2 .pri{background:var(--ember);color:#fff;box-shadow:0 2px 8px rgba(246,119,72,.22)}
 .nav2 .pri:active{background:var(--ember-deep)}
 .nav2 button:active{transform:scale(.97)}
+.nav2 button[disabled]{opacity:.32;pointer-events:none}
 
 /* вопрос */
 .q{animation:qIn var(--t-move) var(--e)}
@@ -1354,31 +1356,94 @@ function isTouchDevice(){
   return window.matchMedia("(pointer:coarse)").matches && window.innerWidth < 900;
 }
 
-/* ═══ SWIPE — continu, avec inertie ═══ */
-function bindSwipe(){
-  if(!isTouchDevice()) return;
+/* ═══════════ CARROUSEL ═══════════ */
 
-  const wrap = $("deck"), card = $("cardEl");
-  if(!wrap || !card) return;
+const GAP = 14;
+let CAR = null;   /* état du carrousel */
+
+function slideWidth(){
+  const vp = $("viewport");
+  return (vp ? vp.offsetWidth : window.innerWidth) + GAP;
+}
+
+function trackTo(i, animate){
+  const tr = $("track");
+  if(!tr) return;
+  tr.style.transition = animate
+    ? "transform 340ms var(--e)"
+    : "none";
+  tr.style.transform = `translate3d(${-i * slideWidth()}px,0,0)`;
+}
+
+function fitHeight(animate){
+  const vp = $("viewport"), tr = $("track");
+  if(!vp || !tr) return;
+  const s = tr.children[R.card];
+  if(!s) return;
+  vp.style.transition = animate ? "height 300ms var(--e)" : "none";
+  vp.style.height = s.offsetHeight + "px";
+}
+
+function goCard(i, fromSwipe){
+  const ch = CHAPITRES[R.ch-1];
+  i = Math.max(0, Math.min(ch.cartes.length-1, i));
+  if(i === R.card && fromSwipe){ trackTo(i, true); return; }
+  R.card = i;
+  trackTo(i, true);
+  fitHeight(true);
+  refreshCardUI();
+}
+
+/* boutons, points, entête — sans redessiner les cartes */
+function refreshCardUI(){
+  const ch = CHAPITRES[R.ch-1];
+  const last = R.card === ch.cartes.length-1;
+
+  $("w-step").textContent = `Fiche ${R.card+1} / ${ch.cartes.length}`;
+  $("w-fill").style.width = ((R.card+1)/(ch.cartes.length+R.queue.length)*100)+"%";
+
+  const dots = document.querySelectorAll(".dot");
+  dots.forEach((d,i)=> d.classList.toggle("on", i===R.card));
+
+  const prev = $("cprev"), next = $("cnext");
+  if(prev) prev.disabled = R.card === 0;
+  if(next) next.textContent = last ? "Aux exercices" : "Suivant";
+
+  /* téléphone : le bouton n'apparaît qu'à la dernière fiche */
+  const dock = $("dock");
+  if(isTouchDevice()){
+    if(last){
+      $("go").textContent = "Aux exercices";
+      $("go").onclick = ()=>{ R.qi=0; drawQ(); };
+      dock.classList.add("up");
+    } else {
+      dock.classList.remove("up");
+    }
+  }
+}
+
+function bindCarousel(){
+  const vp = $("viewport"), tr = $("track");
+  if(!vp || !tr) return;
   const ch = CHAPITRES[R.ch-1];
   if(!ch.cartes || ch.cartes.length < 2) return;
+  if(!isTouchDevice()) return;
 
-  let x0=0, y0=0, dx=0, t0=0, lastX=0, lastT=0, vel=0;
-  let active=false, decided=false, horiz=false, locked=false;
-
-  const W = () => wrap.offsetWidth || window.innerWidth || 360;
+  let x0=0, y0=0, dx=0, base=0;
+  let lastX=0, lastT=0, vel=0;
+  let active=false, decided=false, horiz=false;
 
   const onStart = e=>{
-    if(locked) return;
     const p = e.touches[0];
-    x0=p.clientX; y0=p.clientY; dx=0;
-    lastX=p.clientX; t0=lastT=performance.now(); vel=0;
+    x0=p.clientX; y0=p.clientY; dx=0; vel=0;
+    lastX=p.clientX; lastT=performance.now();
+    base = -R.card * slideWidth();
     active=true; decided=false; horiz=false;
-    card.style.transition="none";
+    tr.style.transition = "none";
   };
 
   const onMove = e=>{
-    if(!active || locked) return;
+    if(!active) return;
     const p = e.touches[0];
     dx = p.clientX - x0;
     const dy = p.clientY - y0;
@@ -1392,111 +1457,118 @@ function bindSwipe(){
     }
     if(e.cancelable) e.preventDefault();
 
-    /* vitesse instantanée px/ms */
-    const now = performance.now();
-    const dt = now - lastT;
-    if(dt > 0){ vel = (p.clientX - lastX) / dt; lastX = p.clientX; lastT = now; }
+    const now = performance.now(), dt = now - lastT;
+    if(dt > 0){ vel = (p.clientX - lastX)/dt; lastX = p.clientX; lastT = now; }
 
-    /* résistance douce aux extrémités */
+    /* résistance aux extrémités */
+    let move = dx;
     const first = R.card === 0, last = R.card === ch.cartes.length-1;
-    let shift = dx;
     if((first && dx > 0) || (last && dx < 0)){
       const r = Math.abs(dx);
-      shift = Math.sign(dx) * (r / (1 + r/140)) * 0.5;
+      move = Math.sign(dx) * (r / (1 + r/160)) * 0.55;
     }
-
-    card.style.transform = `translate3d(${shift}px,0,0)`;
-    card.style.opacity = String(Math.max(.62, 1 - Math.abs(shift)/(W()*1.9)));
-  };
-
-  const glideOut = (dir)=>{
-    /* la carte finit sa course, puis on redessine */
-    locked = true;
-    const dist = dir * W() * 1.05;
-    card.style.transition = "transform 180ms cubic-bezier(.3,.0,.6,1), opacity 150ms linear";
-    card.style.transform = `translate3d(${dist}px,0,0)`;
-    card.style.opacity = "0";
-    setTimeout(()=>{
-      if(dir < 0){ R.card++; drawCard("next"); }
-      else       { R.card--; drawCard("back"); }
-    }, 165);
-  };
-
-  const settle = ()=>{
-    card.style.transition = "transform 260ms var(--e), opacity 200ms var(--e-soft)";
-    card.style.transform = "translate3d(0,0,0)";
-    card.style.opacity = "1";
+    tr.style.transform = `translate3d(${base + move}px,0,0)`;
   };
 
   const onEnd = ()=>{
-    if(!active || locked) return;
+    if(!active) return;
     active = false;
-    if(!horiz){ return; }
+    if(!horiz) return;
 
-    const first = R.card === 0, last = R.card === ch.cartes.length-1;
-    const fast  = Math.abs(vel) > 0.45;            /* flick rapide */
-    const far   = Math.abs(dx) > W() * 0.28;        /* glissé long */
-    const go    = (fast && Math.abs(dx) > 26) || far;
+    const w = slideWidth();
+    const fast = Math.abs(vel) > 0.4;
+    const far  = Math.abs(dx) > w * 0.25;
+    let target = R.card;
 
-    if(go){
-      if(dx < 0 && !last)  return glideOut(-1);
-      if(dx > 0 && !first) return glideOut(1);
+    if((fast && Math.abs(dx) > 24) || far){
+      target = dx < 0 ? R.card + 1 : R.card - 1;
     }
-    settle();
+    goCard(target, true);
   };
 
-  wrap.addEventListener("touchstart", onStart, {passive:true});
-  wrap.addEventListener("touchmove",  onMove,  {passive:false});
-  wrap.addEventListener("touchend",   onEnd,   {passive:true});
-  wrap.addEventListener("touchcancel",onEnd,   {passive:true});
+  vp.addEventListener("touchstart", onStart, {passive:true});
+  vp.addEventListener("touchmove",  onMove,  {passive:false});
+  vp.addEventListener("touchend",   onEnd,   {passive:true});
+  vp.addEventListener("touchcancel",onEnd,   {passive:true});
 }
 
-function drawCard(dir){
-  R.mode="card";
+function drawCard(){
+  R.mode = "card";
   const ch = CHAPITRES[R.ch-1];
-  const c = ch.cartes[R.card];
-  $("w-step").textContent = `Fiche ${R.card+1} / ${ch.cartes.length}`;
-  $("w-fill").style.width = ((R.card+1)/(ch.cartes.length+R.queue.length)*100)+"%";
+  const touch = isTouchDevice();
+
+  const slides = ch.cartes.map((c,i)=>`
+    <div class="slide">
+      <div class="card">
+        <div class="card-k">${c.k}</div>
+        <h3>${c.t}</h3>
+        ${c.c}
+        ${c.lent ? `
+          <button class="slow-btn" data-slow="${i}">
+            <span>Je n'ai pas compris</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="slow"><div class="slow-in">${c.lent}</div></div>` : ``}
+      </div>
+    </div>`).join("");
 
   $("stage").innerHTML = `
-    <div class="deck-wrap" id="deck">
-    <div class="card${dir==="back"?" back-anim":""}" id="cardEl">
-      <div class="card-k">${c.k}</div>
-      <h3>${c.t}</h3>
-      ${c.c}
-      ${c.lent ? `
-        <button class="slow-btn" id="slow-btn">
-          <span id="slow-txt">Je n'ai pas compris</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-        <div class="slow" id="slow"><div class="slow-in">${c.lent}</div></div>` : ``}
-    </div>
+    <div class="viewport" id="viewport">
+      <div class="track" id="track">${slides}</div>
     </div>
     ${ch.cartes.length>1 ? `<div class="swipe-hint">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       glisse pour changer de fiche
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
     </div>` : ``}
-    <div class="dots">${ch.cartes.map((_,i)=>`<span class="dot ${i===R.card?'on':''}"></span>`).join("")}</div>
-    <div class="nav2">
-      ${R.card>0?`<button class="gh" id="cprev">Précédent</button>`:``}
-      <button class="pri" id="cnext">${R.card===ch.cartes.length-1?"Aux exercices":"Suivant"}</button>
-    </div>`;
+    <div class="dots">${ch.cartes.map((_,i)=>`<span class="dot ${i===R.card?'on':''}" data-go="${i}"></span>`).join("")}</div>
+    ${touch ? `` : `<div class="nav2">
+      <button class="gh" id="cprev">Précédent</button>
+      <button class="pri" id="cnext">Suivant</button>
+    </div>`}`;
+
+  /* position initiale sans animation */
+  trackTo(R.card, false);
+  requestAnimationFrame(()=>{
+    fitHeight(false);
+    requestAnimationFrame(()=> trackTo(R.card, false));
+  });
+
+  /* accordéon « je n'ai pas compris » */
+  document.querySelectorAll("[data-slow]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const box = btn.nextElementSibling;
+      const open = box.classList.toggle("open");
+      btn.classList.toggle("open", open);
+      btn.querySelector("span").textContent = open ? "Masquer" : "Je n'ai pas compris";
+      if(open){ DB.aides=(DB.aides||0)+1; save(); }
+      setTimeout(()=>fitHeight(true), 30);
+    };
+  });
+
+  /* points cliquables */
+  document.querySelectorAll("[data-go]").forEach(d=>{
+    d.onclick = ()=> goCard(parseInt(d.dataset.go));
+  });
+
+  if(!touch){
+    $("cprev").onclick = ()=> goCard(R.card-1);
+    $("cnext").onclick = ()=>{
+      if(R.card === ch.cartes.length-1){ R.qi=0; drawQ(); }
+      else goCard(R.card+1);
+    };
+  }
 
   $("dock").classList.remove("up");
-  const sb=$("slow-btn");
-  if(sb) sb.onclick=()=>{
-    const s=$("slow"), open=s.classList.toggle("open");
-    sb.classList.toggle("open",open);
-    $("slow-txt").textContent = open ? "Masquer" : "Je n'ai pas compris";
-    if(open){ DB.aides=(DB.aides||0)+1; save(); }
-  };
-  const p=$("cprev"); if(p) p.onclick=()=>{ R.card--; drawCard("back"); };
-  bindSwipe();
-  $("cnext").onclick=()=>{
-    if(R.card===ch.cartes.length-1){ R.qi=0; drawQ(); }
-    else { R.card++; drawCard("next"); }
-  };
+  bindCarousel();
+  refreshCardUI();
+
+  if(!drawCard._resize){
+    drawCard._resize = true;
+    window.addEventListener("resize", ()=>{
+      if(R.mode === "card"){ trackTo(R.card, false); fitHeight(false); }
+    });
+  }
 }
 
 /* ═══════════ ВОПРОС ═══════════ */

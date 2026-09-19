@@ -282,6 +282,55 @@ to{opacity:1;transform:translateX(0)}
 .opt.dead{opacity:.45;pointer-events:none}
 .opt.dead.good{opacity:1}
 .num-wrap{margin-top:20px}
+
+/* ── pavé numérique ── */
+.num-in{caret-color:var(--ember)}
+.num-in.pad{cursor:pointer}
+.num-in:empty::before{content:"—";color:var(--fog)}
+
+.pad-sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:var(--canvas);
+  border-top:1px solid var(--mist);
+  border-radius:22px 22px 0 0;
+  padding:10px 10px calc(10px + var(--safe-b));
+  box-shadow:0 -2px 24px rgba(45,47,52,.10);
+  transform:translateY(102%);
+  transition:transform 280ms var(--e);
+  will-change:transform;
+}
+.pad-sheet.up{transform:translateY(0)}
+.pad-grab{
+  width:38px;height:4px;border-radius:99px;
+  background:var(--mist);margin:2px auto 12px;
+}
+.pad-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;max-width:520px;margin:0 auto;
+}
+.key{
+  height:54px;display:grid;place-items:center;
+  background:var(--card);border:1px solid var(--mist);
+  border-radius:14px;
+  font:600 22px/1 "Inter",sans-serif;
+  font-variant-numeric:tabular-nums;
+  color:var(--ink);
+  transition:transform 90ms var(--e),background 120ms var(--e);
+  -webkit-user-select:none;user-select:none;
+}
+.key:active{transform:scale(.94);background:var(--dust)}
+.key.fn{background:var(--dust);font-size:19px;color:var(--charcoal)}
+.key.fn:active{background:var(--silver)}
+.key.ok{
+  grid-column:span 2;background:var(--ember);color:#fff;
+  font-size:16px;letter-spacing:.01em;
+  box-shadow:0 2px 8px rgba(246,119,72,.24);
+}
+.key.ok:active{background:var(--ember-deep);transform:scale(.97)}
+.key.wide{grid-column:span 2}
+@media(min-width:900px),(pointer:fine){ .pad-sheet{display:none} }
+
 .num-in{
   width:100%;padding:17px 19px;background:var(--card);
   border:1.5px solid var(--mist);border-radius:var(--r-mid);
@@ -564,6 +613,28 @@ to{opacity:1;transform:translateX(0)}
     </div>
   </section>
 
+</div>
+
+<div class="pad-sheet" id="pad">
+  <div class="pad-grab"></div>
+  <div class="pad-grid">
+    <button class="key" data-k="1">1</button>
+    <button class="key" data-k="2">2</button>
+    <button class="key" data-k="3">3</button>
+    <button class="key fn" data-k="del" aria-label="Effacer">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6H9l-5 6 5 6h11a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1zM16 10l-4 4M12 10l4 4"/></svg>
+    </button>
+    <button class="key" data-k="4">4</button>
+    <button class="key" data-k="5">5</button>
+    <button class="key" data-k="6">6</button>
+    <button class="key fn" data-k="-">−</button>
+    <button class="key" data-k="7">7</button>
+    <button class="key" data-k="8">8</button>
+    <button class="key" data-k="9">9</button>
+    <button class="key fn" data-k=",">,</button>
+    <button class="key wide" data-k="0">0</button>
+    <button class="key ok" data-k="ok">Vérifier</button>
+  </div>
 </div>
 
 <script>
@@ -2175,6 +2246,7 @@ function bindCarousel(){
 
 function drawCard(){
   R.mode = "card";
+  padHide();
   const ch = CHAPITRES[R.ch-1];
   const touch = isTouchDevice();
 
@@ -2286,10 +2358,72 @@ function drawCard(){
   }
 }
 
+
+/* ═══════════ PAVÉ NUMÉRIQUE ═══════════ */
+
+let PAD = { open:false, val:"" };
+
+function padShow(){
+  if(!isTouchDevice()) return;
+  PAD.open = true;
+  $("pad").classList.add("up");
+  $("dock").classList.remove("up");
+  /* laisser de la place sous le contenu */
+  const h = $("pad").offsetHeight;
+  $("s-work").style.paddingBottom = h + "px";
+  setTimeout(()=>{
+    const inp = $("nin");
+    if(inp) inp.scrollIntoView({block:"center", behavior:"smooth"});
+  }, 120);
+}
+
+function padHide(){
+  PAD.open = false;
+  $("pad").classList.remove("up");
+  $("s-work").style.paddingBottom = "";
+}
+
+function padSet(v){
+  PAD.val = v;
+  const inp = $("nin");
+  if(inp) inp.value = v;
+}
+
+function padKey(k){
+  const inp = $("nin");
+  if(!inp || inp.disabled) return;
+
+  if(k === "ok"){ answerNum(); return; }
+
+  let v = PAD.val;
+  if(k === "del"){
+    v = v.slice(0, -1);
+  } else if(k === "-"){
+    v = v.startsWith("-") ? v.slice(1) : "-" + v;
+  } else if(k === ","){
+    if(v.includes(",") || v.includes(".")) return;
+    v = (v === "" || v === "-") ? v + "0," : v + ",";
+  } else {
+    if(v.replace(/[-,]/g,"").length >= 9) return;
+    v = v + k;
+  }
+  padSet(v);
+
+  /* retour visuel : enlever l'état d'erreur dès qu'on tape */
+  inp.classList.remove("bad");
+}
+
+function bindPad(){
+  document.querySelectorAll("[data-k]").forEach(b=>{
+    b.onclick = e=>{ e.preventDefault(); padKey(b.dataset.k); };
+  });
+}
+
 /* ═══════════ ВОПРОС ═══════════ */
 
 function drawQ(){
   R.mode="q"; R.tried=false;
+  padHide();
   const ch = CHAPITRES[R.ch-1];
   const q = R.queue[R.qi];
   const base = DB.ch[R.ch] && DB.ch[R.ch].done ? 0 : ch.cartes.length;
@@ -2305,8 +2439,11 @@ function drawQ(){
       `<button class="opt" data-i="${i}"><span class="mark">${String.fromCharCode(65+i)}</span><span class="txt">${o.t}</span></button>`
     ).join("")+`</div>`;
   } else {
+    const touch = isTouchDevice();
     inner = `<div class="num-wrap">
-      <input class="num-in" id="nin" type="text" inputmode="decimal" autocomplete="off" placeholder="—">
+      <input class="num-in${touch?" pad":""}" id="nin" type="text"
+             ${touch ? 'readonly inputmode="none"' : 'inputmode="decimal"'}
+             autocomplete="off" placeholder="—">
       <div class="num-hint">${q.ind||""}</div>
     </div>`;
   }
@@ -2332,10 +2469,18 @@ function drawQ(){
     $("keys").innerHTML = q.opts.map((_,i)=>`<span><kbd>${i+1}</kbd></span>`).join("")+`<span><kbd>↵</kbd>suivant</span>`;
   } else {
     const inp=$("nin");
-    setTimeout(()=>{ if(window.innerWidth>=900) inp.focus(); },300);
-    inp.onkeydown=e=>{ if(e.key==="Enter") answerNum(); };
-    $("go").textContent="Vérifier"; $("go").onclick=answerNum;
-    $("dock").classList.add("up");
+    PAD.val = "";
+    if(isTouchDevice()){
+      bindPad();
+      inp.onclick = padShow;
+      setTimeout(padShow, 240);
+      $("dock").classList.remove("up");
+    } else {
+      setTimeout(()=>{ if(window.innerWidth>=900) inp.focus(); },300);
+      inp.onkeydown=e=>{ if(e.key==="Enter") answerNum(); };
+      $("go").textContent="Vérifier"; $("go").onclick=answerNum;
+      $("dock").classList.add("up");
+    }
     $("keys").innerHTML=`<span><kbd>↵</kbd>vérifier</span>`;
   }
 }
@@ -2396,6 +2541,7 @@ function answerNum(){
     inp.classList.remove("bad"); inp.classList.add("good"); inp.disabled=true;
     if(!R.tried) R.first++;
     R.total++;
+    padHide();
     openExp(true,q.ok,q.regle);
     finishQ();
   } else {
@@ -2404,7 +2550,13 @@ function answerNum(){
     R.tried=true;
     if(!R.weak.includes(R.qi)) R.weak.push(R.qi);
     openExp(false,q.no,null);
-    inp.select();
+    if(isTouchDevice()){
+      /* effacer et laisser le pavé ouvert pour réessayer */
+      padSet("");
+      if(!PAD.open) padShow();
+    } else {
+      inp.select();
+    }
   }
 }
 
@@ -2424,6 +2576,7 @@ function openExp(win,text,regle){
 }
 
 function finishQ(){
+  padHide();
   $("dock").classList.add("up");
   const last = R.qi===R.queue.length-1;
   $("go").textContent = last ? "Terminer" : "Suivant";
@@ -2467,7 +2620,7 @@ function nextSerie(){
 }
 
 
-$("back").onclick=()=>{ show("s-home"); drawHome(); };
+$("back").onclick=()=>{ padHide(); show("s-home"); drawHome(); };
 $("home-back").onclick=()=>{ show("s-mods"); drawMods(); };
 $("d-home").onclick=()=>{ show("s-home"); drawHome(); };
 $("d-more").onclick=nextSerie;

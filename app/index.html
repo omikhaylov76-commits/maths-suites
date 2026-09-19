@@ -226,7 +226,9 @@ to{opacity:1;transform:translateX(0)}
 .slide{flex:0 0 100%;min-width:100%}
 @media(min-width:900px),(pointer:fine){
   .viewport{touch-action:auto}
-  .track{user-select:text;-webkit-user-select:text}
+  .track{user-select:text;-webkit-user-select:text;align-items:stretch}
+  .slide{display:flex}
+  .slide > .card{flex:1;display:flex;flex-direction:column}
 }
 .swipe-hint{
   display:flex;align-items:center;justify-content:center;gap:6px;
@@ -1379,13 +1381,26 @@ function trackTo(i, animate){
   tr.style.transform = `translate3d(${-i * slideWidth()}px,0,0)`;
 }
 
+let FLOOR = 0;   /* hauteur de la fiche la plus haute — bureau uniquement */
+
+function measureFloor(){
+  const tr = $("track");
+  if(!tr || isTouchDevice()){ FLOOR = 0; return; }
+  let max = 0;
+  Array.from(tr.children).forEach(s=>{
+    if(s.offsetHeight > max) max = s.offsetHeight;
+  });
+  FLOOR = max;
+}
+
 function fitHeight(animate, ms){
   const vp = $("viewport"), tr = $("track");
   if(!vp || !tr) return;
   const s = tr.children[R.card];
   if(!s) return;
+  const h = Math.max(s.offsetHeight, FLOOR);
   vp.style.transition = animate ? `height ${ms||340}ms var(--e)` : "none";
-  vp.style.height = s.offsetHeight + "px";
+  vp.style.height = h + "px";
 }
 
 function goCard(i, fromSwipe){
@@ -1534,6 +1549,7 @@ function drawCard(){
   /* position initiale sans animation */
   trackTo(R.card, false);
   requestAnimationFrame(()=>{
+    measureFloor();
     fitHeight(false);
     requestAnimationFrame(()=> trackTo(R.card, false));
   });
@@ -1560,8 +1576,8 @@ function drawCard(){
 
         /* la carte grandit exactement de la même quantité, en même temps */
         if(vp && slide){
-          const now = vp.offsetHeight;
-          vp.style.height = (now + h + 16) + "px";
+          const target = slide.offsetHeight + h + 16;
+          vp.style.height = Math.max(target, FLOOR) + "px";
           /* ajustement fin une fois l'ouverture terminée */
           setTimeout(()=>{
             box.style.maxHeight = "none";
@@ -1575,8 +1591,8 @@ function drawCard(){
         box.classList.remove("open");
         box.style.maxHeight = "0px";
         if(vp){
-          const now = vp.offsetHeight;
-          vp.style.height = (now - inner.scrollHeight - 16) + "px";
+          const target = slide.offsetHeight - inner.scrollHeight - 16;
+          vp.style.height = Math.max(target, FLOOR) + "px";
           setTimeout(()=>fitHeight(true, 160), 470);
         }
       }
@@ -1603,7 +1619,7 @@ function drawCard(){
   if(!drawCard._resize){
     drawCard._resize = true;
     window.addEventListener("resize", ()=>{
-      if(R.mode === "card"){ trackTo(R.card, false); fitHeight(false); }
+      if(R.mode === "card"){ trackTo(R.card, false); measureFloor(); fitHeight(false); }
     });
   }
 }

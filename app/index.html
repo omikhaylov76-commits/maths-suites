@@ -1,212 +1,124 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Les suites</title>
+<title>Les suites · 1ʳᵉ spé</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════ ТОКЕНЫ ═══════════════ */
 :root{
-  --ink:#1c2024;
-  --graphite:#60646c;
-  --steel:#80838d;
-  --mist:#d9d9e0;
-  --fog:#f0f0f3;
-  --canvas:#ffffff;
-  --signal:#0090ff;
-  --deep:#0072de;
-
-  --ok:#2d7a4f;
-  --ok-soft:#eef6f0;
-  --ok-line:#b8ddc6;
-  --miss:#b4552b;
-  --miss-soft:#fdf2ec;
-  --miss-line:#eecdb8;
-
-  --r-card:20px;
-  --r-pill:36px;
-  --r-sm:12px;
-
+  --ink:#1c2024; --graphite:#60646c; --steel:#80838d;
+  --mist:#d9d9e0; --fog:#f0f0f3; --canvas:#ffffff;
+  --signal:#0090ff; --deep:#0072de;
+  --ok:#2d7a4f; --ok-soft:#eef6f0; --ok-line:#b8ddc6;
+  --miss:#b4552b; --miss-soft:#fdf2ec; --miss-line:#eecdb8;
+  --r-card:20px; --r-pill:36px; --r-sm:12px;
   --ease:cubic-bezier(0.23,1,0.32,1);
-  --ease-io:cubic-bezier(0.77,0,0.175,1);
-
   --safe-b:env(safe-area-inset-bottom,0px);
   --safe-t:env(safe-area-inset-top,0px);
 }
-
 *{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;height:100%;overflow-x:hidden}
 body{
-  background:var(--canvas);
-  color:var(--ink);
+  background:var(--canvas);color:var(--ink);
   font:400 16px/1.5 "Inter",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  letter-spacing:-0.012em;
-  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.012em;-webkit-font-smoothing:antialiased;
   overscroll-behavior-y:none;
 }
 button{font:inherit;letter-spacing:inherit;color:inherit;border:none;background:none;cursor:pointer;padding:0}
 input{font:inherit;letter-spacing:inherit;color:inherit}
+.v{font-family:"Cambria Math","Georgia",serif;font-style:italic}
+.v sub,.v sup{font-style:normal}
+sub,sup{font-size:.7em;line-height:0}
 
-/* ═══════════════ ЭКРАНЫ ═══════════════ */
+/* экраны */
 .screens{position:relative;width:100%;min-height:100dvh;overflow:hidden}
 .screen{
-  position:absolute;inset:0;
-  overflow-y:auto;overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  opacity:0;pointer-events:none;
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;opacity:0;pointer-events:none;
   transform:translateX(24px);
   transition:opacity .28s var(--ease),transform .3s var(--ease);
 }
 .screen.on{opacity:1;pointer-events:auto;transform:translateX(0)}
 .screen.left{transform:translateX(-24px)}
+.pad{max-width:720px;margin:0 auto;padding:calc(20px + var(--safe-t)) 20px calc(120px + var(--safe-b))}
 
-.pad{
-  max-width:720px;margin:0 auto;
-  padding:calc(20px + var(--safe-t)) 20px calc(120px + var(--safe-b));
-}
-
-/* ═══════════════ ГЛАВНАЯ ═══════════════ */
+/* главная */
 .hero{padding:8px 0 4px}
-.hero h1{
-  font:700 30px/1.15 "Inter",sans-serif;
-  letter-spacing:-0.025em;margin:0 0 6px;
-}
+.hero h1{font:700 30px/1.15 "Inter",sans-serif;letter-spacing:-0.025em;margin:0 0 6px}
 .hero .sub{color:var(--graphite);font-size:15px;margin:0}
-
 .meter{margin:26px 0 8px}
-.meter-top{
-  display:flex;justify-content:space-between;align-items:baseline;
-  margin-bottom:9px;
-}
+.meter-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
 .meter-lbl{font:500 12px/1 "Inter",sans-serif;color:var(--steel);letter-spacing:0.02em}
 .meter-val{font:600 13px/1 "Inter",sans-serif;color:var(--graphite);font-variant-numeric:tabular-nums}
 .meter-bar{height:5px;background:var(--fog);border-radius:99px;overflow:hidden}
-.meter-fill{
-  height:100%;background:var(--ink);border-radius:99px;
-  width:0;transition:width .6s var(--ease);
-}
-
+.meter-fill{height:100%;background:var(--ink);border-radius:99px;width:0;transition:width .6s var(--ease)}
 .streak{
-  display:inline-flex;align-items:center;gap:7px;
-  margin-top:16px;padding:8px 15px;
+  display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:8px 15px;
   background:var(--fog);border-radius:var(--r-pill);
   font:500 13px/1 "Inter",sans-serif;color:var(--graphite);
 }
 .streak b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
-
 .resume{
-  display:block;width:100%;margin:26px 0 30px;
-  padding:19px 22px;
-  background:var(--ink);color:var(--canvas);
-  border-radius:var(--r-card);
-  text-align:left;
-  transition:transform .12s var(--ease),opacity .12s var(--ease);
+  display:block;width:100%;margin:26px 0 30px;padding:19px 22px;
+  background:var(--ink);color:var(--canvas);border-radius:var(--r-card);
+  text-align:left;transition:transform .12s var(--ease);
 }
 .resume:active{transform:scale(.975)}
 .resume .r-lbl{
-  display:block;font:500 11px/1 "Inter",sans-serif;
-  letter-spacing:0.09em;text-transform:uppercase;
-  opacity:.62;margin-bottom:8px;
+  display:block;font:500 11px/1 "Inter",sans-serif;letter-spacing:0.09em;
+  text-transform:uppercase;opacity:.62;margin-bottom:8px;
 }
 .resume .r-name{display:block;font:600 19px/1.25 "Inter",sans-serif;letter-spacing:-0.02em}
 .resume .r-meta{display:block;font:400 13px/1 "Inter",sans-serif;opacity:.6;margin-top:7px}
-
-.list-lbl{
-  font:500 12px/1 "Inter",sans-serif;color:var(--steel);
-  letter-spacing:0.08em;text-transform:uppercase;
-  margin:0 0 12px;
+.list-lbl{font:500 12px/1 "Inter",sans-serif;color:var(--steel);letter-spacing:0.08em;text-transform:uppercase;margin:0 0 12px}
+.chs{display:flex;flex-direction:column;gap:8px}
+.ch{
+  display:flex;align-items:center;gap:14px;padding:15px 17px;
+  background:var(--canvas);border:1px solid var(--mist);border-radius:var(--r-card);
+  text-align:left;width:100%;transition:transform .12s var(--ease),border-color .18s,background .18s;
 }
-
-.sections{display:flex;flex-direction:column;gap:8px}
-.sec{
-  display:flex;align-items:center;gap:14px;
-  padding:15px 17px;
-  background:var(--canvas);
-  border:1px solid var(--mist);
-  border-radius:var(--r-card);
-  text-align:left;width:100%;
-  transition:transform .12s var(--ease),border-color .18s,background .18s;
+.ch:active{transform:scale(.985)}
+.ch.next{border-color:var(--ink);border-width:1.5px}
+.ch.done{background:var(--fog);border-color:transparent}
+.ch.done .ch-name{color:var(--graphite)}
+.ch.lock{opacity:.62}
+.ch-num{
+  flex:0 0 32px;height:32px;display:grid;place-items:center;border-radius:50%;
+  background:var(--fog);font:600 14px/1 "Inter",sans-serif;color:var(--graphite);
+  font-variant-numeric:tabular-nums;transition:background .2s,color .2s;
 }
-.sec:active{transform:scale(.985)}
-.sec.next{border-color:var(--ink);border-width:1.5px}
-.sec.done{background:var(--fog);border-color:transparent}
-.sec.done .sec-name{color:var(--graphite)}
-.sec.lock{opacity:.62}
-.sec.lock .sec-meta{color:var(--steel)}
-.more-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;margin-top:10px;padding:15px;
-  background:var(--fog);border-radius:var(--r-pill);
-  font:600 14px/1 "Inter",sans-serif;color:var(--graphite);
-  transition:transform .12s var(--ease),background .18s;
-  min-height:48px;
-}
-.more-btn:active{transform:scale(.98)}
-.more-btn svg{transition:transform .26s var(--ease)}
-.more-btn.open svg{transform:rotate(180deg)}
-.rest{
-  max-height:0;overflow:hidden;
-  transition:max-height .34s var(--ease);
-}
-.rest.open{max-height:1200px}
-.rest .sec{margin-top:8px}
-
-.sec-num{
-  flex:0 0 32px;height:32px;
-  display:grid;place-items:center;
-  border-radius:50%;
-  background:var(--fog);
-  font:600 14px/1 "Inter",sans-serif;color:var(--graphite);
-  font-variant-numeric:tabular-nums;
-  transition:background .2s,color .2s;
-}
-.sec.next .sec-num{background:var(--ink);color:var(--canvas)}
-.sec.done .sec-num{background:var(--ok-soft);color:var(--ok)}
-
-.sec-body{flex:1;min-width:0}
-.sec-name{font:600 15px/1.3 "Inter",sans-serif;letter-spacing:-0.015em;display:block}
-.sec-meta{font:400 12.5px/1 "Inter",sans-serif;color:var(--steel);margin-top:4px;display:block}
-
+.ch.next .ch-num{background:var(--ink);color:var(--canvas)}
+.ch.done .ch-num{background:var(--ok-soft);color:var(--ok)}
+.ch-body{flex:1;min-width:0}
+.ch-name{font:600 15px/1.3 "Inter",sans-serif;letter-spacing:-0.015em;display:block}
+.ch-meta{font:400 12.5px/1 "Inter",sans-serif;color:var(--steel);margin-top:4px;display:block}
 .stars{display:flex;gap:2.5px;flex:0 0 auto}
 .star{width:13px;height:13px;opacity:.2}
 .star.lit{opacity:1}
-
 .foot-link{
   display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-top:26px;padding:16px;
-  border:1px solid var(--mist);border-radius:var(--r-pill);
-  font:600 14.5px/1 "Inter",sans-serif;color:var(--ink);
-  text-decoration:none;
-  transition:transform .12s var(--ease),background .18s,border-color .18s;
-  min-height:52px;
+  margin-top:26px;padding:16px;border:1px solid var(--mist);border-radius:var(--r-pill);
+  font:600 14.5px/1 "Inter",sans-serif;color:var(--ink);text-decoration:none;
+  transition:transform .12s var(--ease),background .18s;min-height:52px;
 }
 .foot-link:active{transform:scale(.98);background:var(--fog)}
 
-/* ═══════════════ ШАПКА РАЗДЕЛА ═══════════════ */
+/* шапка */
 .top{
-  position:sticky;top:0;z-index:20;
-  background:rgba(255,255,255,.93);
-  backdrop-filter:saturate(180%) blur(16px);
-  -webkit-backdrop-filter:saturate(180%) blur(16px);
-  border-bottom:1px solid var(--mist);
-  padding-top:var(--safe-t);
+  position:sticky;top:0;z-index:20;background:rgba(255,255,255,.93);
+  backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid var(--mist);padding-top:var(--safe-t);
 }
-.top-in{
-  max-width:720px;margin:0 auto;
-  display:flex;align-items:center;gap:12px;
-  padding:11px 20px;
-}
+.top-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:11px 20px}
 .back{
-  flex:0 0 auto;width:38px;height:38px;
-  display:grid;place-items:center;
-  border-radius:50%;margin-left:-8px;
-  transition:background .16s,transform .12s var(--ease);
+  flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;
+  border-radius:50%;margin-left:-8px;transition:background .16s,transform .12s var(--ease);
 }
 .back:active{background:var(--fog);transform:scale(.92)}
 .top-t{flex:1;min-width:0}
@@ -215,102 +127,83 @@ input{font:inherit;letter-spacing:inherit;color:inherit}
 .top-bar{height:2px;background:var(--fog)}
 .top-fill{height:100%;background:var(--ink);width:0;transition:width .4s var(--ease)}
 
-/* ═══════════════ КАРТОЧКИ РАЗБОРА ═══════════════ */
-.deck{position:relative;margin:4px 0 0}
+/* карточки */
 .card{
-  display:none;
-  padding:26px 24px 24px;
-  background:var(--canvas);
-  border:1px solid var(--mist);
-  border-radius:24px;
+  display:block;padding:26px 24px 24px;background:var(--canvas);
+  border:1px solid var(--mist);border-radius:24px;animation:cardIn .26s var(--ease);
 }
-.card.on{display:block;animation:cardIn .26s var(--ease)}
 @keyframes cardIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
-.card.back-anim{animation:cardBack .26s var(--ease)}
-@keyframes cardBack{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
-
-.card-k{
-  font:500 11px/1 "Inter",sans-serif;
-  letter-spacing:0.09em;text-transform:uppercase;
-  color:var(--steel);margin-bottom:13px;
-}
+.card-k{font:500 11px/1 "Inter",sans-serif;letter-spacing:0.09em;text-transform:uppercase;color:var(--steel);margin-bottom:13px}
 .card h3{font:600 20px/1.3 "Inter",sans-serif;letter-spacing:-0.022em;margin:0 0 13px}
 .card p{margin:0 0 13px;color:var(--graphite);font-size:15.5px;line-height:1.6}
 .card p:last-child{margin-bottom:0}
-.card strong{color:var(--ink);font-weight:600}
-
+.card b{color:var(--ink);font-weight:600}
 .show{
-  display:block;text-align:center;
-  padding:17px;margin:17px 0;
+  display:block;text-align:center;padding:17px;margin:17px 0;
   background:var(--fog);border-radius:var(--r-sm);
-  font-family:"Cambria Math","Georgia",serif;
-  font-size:18px;line-height:1.8;
+  font-family:"Cambria Math","Georgia",serif;font-size:18px;line-height:1.8;
 }
-.show .v{font-style:italic}
-.show sub{font-size:.7em;font-style:normal}
-
 .note{
-  margin-top:17px;padding:14px 16px;
-  background:var(--fog);border-radius:var(--r-sm);
+  margin-top:17px;padding:14px 16px;background:var(--fog);border-radius:var(--r-sm);
   font-size:14px;line-height:1.55;color:var(--graphite);
 }
 .note b{color:var(--ink);font-weight:600}
 
+/* «помедленнее» */
+.slow-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;margin-top:16px;padding:13px;
+  background:var(--fog);border-radius:var(--r-pill);
+  font:600 13.5px/1 "Inter",sans-serif;color:var(--graphite);
+  transition:transform .12s var(--ease),background .18s;min-height:46px;
+}
+.slow-btn:active{transform:scale(.98)}
+.slow-btn svg{transition:transform .26s var(--ease)}
+.slow-btn.open svg{transform:rotate(180deg)}
+.slow{max-height:0;overflow:hidden;transition:max-height .34s var(--ease),margin .34s var(--ease)}
+.slow.open{max-height:900px;margin-top:14px}
+.slow-in{
+  padding:18px 20px;background:#fbfbfd;border:1px solid var(--mist);
+  border-radius:var(--r-card);font-size:15px;line-height:1.62;color:var(--graphite);
+}
+.slow-in b{color:var(--ink);font-weight:600}
+.slow-in p{margin:0 0 12px}
+.slow-in p:last-child{margin-bottom:0}
+
 .dots{display:flex;justify-content:center;gap:6px;margin:18px 0 6px}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--mist);transition:background .22s,width .22s}
 .dot.on{background:var(--ink);width:18px;border-radius:99px}
-
 .nav2{display:flex;gap:10px;margin-top:14px}
 .nav2 button{
   flex:1;padding:15px;border-radius:var(--r-pill);
   font:600 15px/1 "Inter",sans-serif;
-  transition:transform .12s var(--ease),background .18s;
-  min-height:48px;
+  transition:transform .12s var(--ease),background .18s;min-height:48px;
 }
-.nav2 .sec-btn{background:var(--fog);color:var(--ink)}
-.nav2 .sec-btn:active{transform:scale(.97);background:var(--mist)}
+.nav2 .gh{background:var(--fog);color:var(--ink)}
 .nav2 .pri{background:var(--ink);color:var(--canvas)}
-.nav2 .pri:active{transform:scale(.97)}
+.nav2 button:active{transform:scale(.97)}
 
-/* ═══════════════ ВОПРОС ═══════════════ */
+/* вопрос */
 .q{animation:qIn .22s var(--ease)}
 @keyframes qIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-.q-kind{
-  font:500 11px/1 "Inter",sans-serif;
-  letter-spacing:0.09em;text-transform:uppercase;
-  color:var(--steel);margin-bottom:13px;
-}
+.q-kind{font:500 11px/1 "Inter",sans-serif;letter-spacing:0.09em;text-transform:uppercase;color:var(--steel);margin-bottom:13px}
 .q-kind .hard{color:var(--signal)}
 .q-text{font:600 19px/1.4 "Inter",sans-serif;letter-spacing:-0.02em;margin:0 0 6px}
-.q-text .v{font-family:"Cambria Math","Georgia",serif;font-style:italic;font-weight:600}
-.q-text sub{font-size:.68em;font-style:normal}
 .q-sub{color:var(--graphite);font-size:15px;margin:10px 0 0;line-height:1.55}
-
 .opts{display:flex;flex-direction:column;gap:9px;margin-top:20px}
 .opt{
-  display:flex;align-items:center;gap:13px;
-  padding:16px 17px;
-  background:var(--canvas);
-  border:1px solid var(--mist);
-  border-radius:var(--r-card);
-  text-align:left;width:100%;
-  font-size:15.5px;line-height:1.4;
-  transition:transform .12s var(--ease),border-color .2s,background .2s;
-  min-height:56px;
+  display:flex;align-items:center;gap:13px;padding:16px 17px;
+  background:var(--canvas);border:1px solid var(--mist);border-radius:var(--r-card);
+  text-align:left;width:100%;font-size:15.5px;line-height:1.4;
+  transition:transform .12s var(--ease),border-color .2s,background .2s;min-height:56px;
 }
 .opt:active:not(.dead){transform:scale(.98)}
 .opt .mark{
-  flex:0 0 26px;height:26px;
-  display:grid;place-items:center;
-  border-radius:50%;background:var(--fog);
-  font:600 12.5px/1 "Inter",sans-serif;color:var(--graphite);
+  flex:0 0 26px;height:26px;display:grid;place-items:center;border-radius:50%;
+  background:var(--fog);font:600 12.5px/1 "Inter",sans-serif;color:var(--graphite);
   transition:background .2s,color .2s;
 }
 .opt .txt{flex:1}
-.opt .txt .v{font-family:"Cambria Math","Georgia",serif;font-style:italic}
-.opt .txt sub{font-size:.7em;font-style:normal}
-
 .opt.good{background:var(--ok-soft);border-color:var(--ok-line)}
 .opt.good .mark{background:var(--ok);color:#fff}
 .opt.bad{background:var(--miss-soft);border-color:var(--miss-line);animation:nope .18s var(--ease)}
@@ -318,79 +211,84 @@ input{font:inherit;letter-spacing:inherit;color:inherit}
 @keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 .opt.dead{opacity:.45;pointer-events:none}
 .opt.dead.good{opacity:1}
-
-/* ввод числа */
 .num-wrap{margin-top:20px}
 .num-in{
-  width:100%;padding:17px 19px;
-  background:var(--canvas);
-  border:1.5px solid var(--mist);
-  border-radius:var(--r-card);
-  font:600 20px/1 "Inter",sans-serif;
-  font-variant-numeric:tabular-nums;
-  text-align:center;
-  transition:border-color .2s,background .2s;
-  min-height:58px;
+  width:100%;padding:17px 19px;background:var(--canvas);
+  border:1.5px solid var(--mist);border-radius:var(--r-card);
+  font:600 20px/1 "Inter",sans-serif;font-variant-numeric:tabular-nums;
+  text-align:center;transition:border-color .2s,background .2s;min-height:58px;
 }
 .num-in:focus{outline:none;border-color:var(--ink)}
 .num-in.good{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
 .num-in.bad{background:var(--miss-soft);border-color:var(--miss);color:var(--miss);animation:nope .18s var(--ease)}
 .num-hint{text-align:center;font-size:12.5px;color:var(--steel);margin-top:9px}
 
-/* ═══════════════ ОБЪЯСНЕНИЕ ═══════════════ */
-.exp{
-  max-height:0;overflow:hidden;
-  transition:max-height .28s var(--ease),margin .28s var(--ease);
-  margin-top:0;
+/* подсказки */
+.aid{margin-top:16px}
+.aid-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:13px;
+  border:1px solid var(--mist);border-radius:var(--r-pill);
+  font:600 13.5px/1 "Inter",sans-serif;color:var(--graphite);
+  transition:transform .12s var(--ease),background .18s,border-color .18s;min-height:46px;
 }
-.exp.open{max-height:680px;margin-top:18px}
-.exp-in{
-  padding:18px 19px;
-  border-radius:var(--r-card);
-  font-size:14.8px;line-height:1.62;
+.aid-btn:active{transform:scale(.98);background:var(--fog)}
+.aid-btn.sol{border-color:var(--steel);color:var(--ink)}
+.aid-box{
+  margin-top:10px;padding:16px 18px;background:#fbfbfd;
+  border:1px solid var(--mist);border-radius:var(--r-card);
+  font-size:14.8px;line-height:1.62;color:var(--graphite);
+  animation:qIn .2s var(--ease);
 }
+.aid-box b{color:var(--ink);font-weight:600}
+.aid-box .lbl{
+  font:600 11px/1 "Inter",sans-serif;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--steel);display:block;margin-bottom:9px;
+}
+.aid-box p{margin:0 0 10px}
+.aid-box p:last-child{margin-bottom:0}
+.aid-box.sol{background:var(--fog);border-color:var(--mist)}
+.aid-box .step{
+  display:flex;gap:11px;margin-bottom:11px;
+}
+.aid-box .step:last-child{margin-bottom:0}
+.aid-box .step .no{
+  flex:0 0 21px;height:21px;display:grid;place-items:center;border-radius:50%;
+  background:var(--ink);color:var(--canvas);
+  font:600 11px/1 "Inter",sans-serif;margin-top:1px;
+}
+
+/* объяснение */
+.exp{max-height:0;overflow:hidden;transition:max-height .28s var(--ease),margin .28s var(--ease);margin-top:0}
+.exp.open{max-height:700px;margin-top:18px}
+.exp-in{padding:18px 19px;border-radius:var(--r-card);font-size:14.8px;line-height:1.62}
 .exp-in.win{background:var(--ok-soft);border:1px solid var(--ok-line)}
 .exp-in.lose{background:var(--miss-soft);border:1px solid var(--miss-line)}
-.exp-h{
-  font:600 13px/1 "Inter",sans-serif;
-  margin-bottom:11px;display:flex;align-items:center;gap:7px;
-}
+.exp-h{font:600 13px/1 "Inter",sans-serif;margin-bottom:11px;display:flex;align-items:center;gap:7px}
 .exp-in.win .exp-h{color:var(--ok)}
 .exp-in.lose .exp-h{color:var(--miss)}
 .exp p{margin:0 0 10px;color:var(--ink)}
 .exp p:last-child{margin-bottom:0}
-.exp .rule{
-  margin-top:13px;padding-top:13px;
-  border-top:1px solid rgba(0,0,0,.09);
-  font-size:14px;color:var(--graphite);
-}
+.exp .rule{margin-top:13px;padding-top:13px;border-top:1px solid rgba(0,0,0,.09);font-size:14px;color:var(--graphite)}
 .exp .rule b{color:var(--ink);font-weight:600}
-.exp .v{font-family:"Cambria Math","Georgia",serif;font-style:italic}
-.exp sub{font-size:.7em;font-style:normal}
 
-/* ═══════════════ НИЖНЯЯ КНОПКА ═══════════════ */
+/* нижняя кнопка */
 .dock{
   position:fixed;left:0;right:0;bottom:0;z-index:30;
   padding:14px 20px calc(14px + var(--safe-b));
   background:linear-gradient(to top,var(--canvas) 62%,rgba(255,255,255,0));
-  pointer-events:none;
-  opacity:0;transform:translateY(10px);
+  pointer-events:none;opacity:0;transform:translateY(10px);
   transition:opacity .24s var(--ease),transform .24s var(--ease);
 }
 .dock.up{opacity:1;transform:translateY(0);pointer-events:auto}
 .dock-in{max-width:720px;margin:0 auto}
 .go{
-  width:100%;padding:18px;
-  background:var(--ink);color:var(--canvas);
-  border-radius:var(--r-pill);
-  font:600 16px/1 "Inter",sans-serif;
-  transition:transform .12s var(--ease);
-  min-height:56px;
+  width:100%;padding:18px;background:var(--ink);color:var(--canvas);
+  border-radius:var(--r-pill);font:600 16px/1 "Inter",sans-serif;
+  transition:transform .12s var(--ease);min-height:56px;
 }
 .go:active{transform:scale(.975)}
-.go.ghost{background:var(--fog);color:var(--ink)}
 
-/* ═══════════════ ИТОГ ═══════════════ */
+/* итог */
 .done-wrap{text-align:center;padding:44px 0 0}
 .big-stars{display:flex;justify-content:center;gap:11px;margin-bottom:26px}
 .bstar{width:38px;height:38px;opacity:0;transform:scale(.88)}
@@ -399,66 +297,47 @@ input{font:inherit;letter-spacing:inherit;color:inherit}
 .done-h{font:700 25px/1.2 "Inter",sans-serif;letter-spacing:-0.025em;margin:0 0 9px}
 .done-s{color:var(--graphite);font-size:15.5px;margin:0 0 30px}
 .tip{
-  text-align:left;padding:17px 19px;
-  background:var(--fog);border-radius:var(--r-card);
+  text-align:left;padding:17px 19px;background:var(--fog);border-radius:var(--r-card);
   margin-bottom:26px;font-size:14.5px;line-height:1.6;color:var(--graphite);
 }
 .tip b{color:var(--ink);font-weight:600;display:block;margin-bottom:6px;font-size:13px}
 .done-btns{display:flex;flex-direction:column;gap:10px}
 .done-btns button{
-  padding:17px;border-radius:var(--r-pill);
-  font:600 15.5px/1 "Inter",sans-serif;
-  transition:transform .12s var(--ease);
-  min-height:54px;
+  padding:17px;border-radius:var(--r-pill);font:600 15.5px/1 "Inter",sans-serif;
+  transition:transform .12s var(--ease);min-height:54px;
 }
 .done-btns .pri{background:var(--ink);color:var(--canvas)}
-.done-btns .sub{background:var(--fog);color:var(--ink)}
+.done-btns .gh{background:var(--fog);color:var(--ink)}
 .done-btns button:active{transform:scale(.975)}
 
-/* ═══════════════ ДЕСКТОП ═══════════════ */
+/* десктоп */
 @media (min-width:900px){
   .screens{min-height:100vh}
   .pad{max-width:1080px;padding:38px 40px 60px}
-
   .home-grid{display:grid;grid-template-columns:1fr 380px;gap:52px;align-items:start}
-  .home-left{min-width:0}
   .home-right{position:sticky;top:38px}
   .hero h1{font-size:38px}
   .resume{margin-top:0}
-
-  .sec{padding:16px 18px}
-  .sec:hover{border-color:var(--steel);background:var(--fog)}
-  .sec.next:hover{border-color:var(--ink)}
-
+  .ch:hover{border-color:var(--steel);background:var(--fog)}
+  .ch.next:hover{border-color:var(--ink)}
   .work{max-width:720px;margin:0 auto}
   .card{padding:34px 32px}
   .card h3{font-size:22px}
   .opt:hover:not(.dead){border-color:var(--steel);background:var(--fog)}
   .back:hover{background:var(--fog)}
-  .go:hover{opacity:.9}
-
+  .aid-btn:hover{background:var(--fog);border-color:var(--steel)}
+  .slow-btn:hover{background:var(--mist)}
   .dock{position:static;opacity:1;transform:none;pointer-events:auto;
         background:none;padding:22px 0 0;max-width:720px;margin:0 auto}
-  .keys{
-    display:flex;justify-content:center;gap:16px;
-    margin-top:18px;font-size:12px;color:var(--steel);
-  }
+  .keys{display:flex;justify-content:center;gap:16px;margin-top:18px;font-size:12px;color:var(--steel)}
   .keys kbd{
-    display:inline-block;padding:2px 7px;margin-right:5px;
-    background:var(--fog);border:1px solid var(--mist);
-    border-radius:5px;font:500 11px/1.5 "Inter",sans-serif;
+    display:inline-block;padding:2px 7px;margin-right:5px;background:var(--fog);
+    border:1px solid var(--mist);border-radius:5px;font:500 11px/1.5 "Inter",sans-serif;
   }
 }
-@media (max-width:899px){
-  .keys{display:none}
-  .home-grid{display:block}
-}
-
+@media (max-width:899px){.keys{display:none}.home-grid{display:block}}
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.01ms!important;
-    transition-duration:.01ms!important;
-  }
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
 </style>
 </head>
@@ -466,95 +345,76 @@ input{font:inherit;letter-spacing:inherit;color:inherit}
 
 <div class="screens">
 
-  <!-- ══════ ГЛАВНАЯ ══════ -->
   <section class="screen on" id="s-home">
     <div class="pad">
       <div class="home-grid">
         <div class="home-left">
           <div class="hero">
             <h1>Les suites</h1>
-            <p class="sub">Последовательности · 1<sup>re</sup> spé</p>
+            <p class="sub">Première spécialité · programme 2026</p>
           </div>
-
           <div class="meter">
             <div class="meter-top">
-              <span class="meter-lbl">ПРОЙДЕНО</span>
-              <span class="meter-val" id="m-val">0 из 14</span>
+              <span class="meter-lbl">PROGRESSION</span>
+              <span class="meter-val" id="m-val">0 / 6</span>
             </div>
             <div class="meter-bar"><div class="meter-fill" id="m-fill"></div></div>
           </div>
-
           <div class="streak" id="streak" style="display:none">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5.5-2.5S6 10 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z"/></svg>
-            <span><b id="streak-n">0</b> дня подряд</span>
+            <span><b id="streak-n">0</b> <span id="streak-w">jours d'affilée</span></span>
           </div>
         </div>
-
         <div class="home-right">
           <button class="resume" id="resume">
-            <span class="r-lbl" id="r-lbl">НАЧАТЬ</span>
-            <span class="r-name" id="r-name">Что такое suite</span>
-            <span class="r-meta" id="r-meta">3 карточки · 4 вопроса · ~10 мин</span>
+            <span class="r-lbl" id="r-lbl">COMMENCER</span>
+            <span class="r-name" id="r-name">Généralités</span>
+            <span class="r-meta" id="r-meta">4 fiches · 5 exercices · ~12 min</span>
           </button>
         </div>
       </div>
-
-      <p class="list-lbl" style="margin-top:34px">РАЗДЕЛЫ</p>
-      <div class="sections" id="secs"></div>
-      <button class="more-btn" id="more-btn">
-        <span id="more-txt">Ещё 11 разделов</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="rest" id="rest"></div>
-
-      <a class="foot-link" href="../" id="lnk">
-        Открыть конспект
+      <p class="list-lbl" style="margin-top:34px">CHAPITRES</p>
+      <div class="chs" id="chs"></div>
+      <a class="foot-link" href="../">
+        Ouvrir le cours
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
       </a>
     </div>
   </section>
 
-  <!-- ══════ РАЗДЕЛ ══════ -->
   <section class="screen" id="s-work">
     <div class="top">
       <div class="top-in">
-        <button class="back" id="back" aria-label="Назад">
+        <button class="back" id="back" aria-label="Retour">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <div class="top-t">
-          <span class="top-name" id="w-name">Что такое suite</span>
-          <span class="top-step" id="w-step">Разбор · 1 из 3</span>
+          <span class="top-name" id="w-name">Généralités</span>
+          <span class="top-step" id="w-step">Fiche 1 / 4</span>
         </div>
       </div>
       <div class="top-bar"><div class="top-fill" id="w-fill"></div></div>
     </div>
-
-    <div class="pad">
-      <div class="work">
-        <div id="stage"></div>
-      </div>
-    </div>
-
+    <div class="pad"><div class="work"><div id="stage"></div></div></div>
     <div class="dock" id="dock">
       <div class="dock-in">
-        <button class="go" id="go">Дальше</button>
+        <button class="go" id="go">Suivant</button>
         <div class="keys" id="keys"></div>
       </div>
     </div>
   </section>
 
-  <!-- ══════ ИТОГ ══════ -->
   <section class="screen" id="s-done">
     <div class="pad">
       <div class="work">
         <div class="done-wrap">
           <div class="big-stars" id="bstars"></div>
-          <h2 class="done-h" id="d-h">Раздел пройден</h2>
+          <h2 class="done-h" id="d-h">Chapitre terminé</h2>
           <p class="done-s" id="d-s"></p>
           <div class="tip" id="d-tip" style="display:none"></div>
           <div class="done-btns">
-            <button class="pri" id="d-more">Ещё вопросы</button>
-            <button class="sub" id="d-home">К разделам</button>
+            <button class="pri" id="d-more">Encore des exercices</button>
+            <button class="gh" id="d-home">Retour aux chapitres</button>
           </div>
         </div>
       </div>
@@ -564,507 +424,581 @@ input{font:inherit;letter-spacing:inherit;color:inherit}
 </div>
 
 <script>
-/* ═══════════════════════════════════════════
-   ДАННЫЕ
-   ═══════════════════════════════════════════ */
+/* ═══════════ ДАННЫЕ ═══════════ */
 
-const SECTIONS = [
-  {n:1, name:"Что такое suite", ready:true},
-  {n:2, name:"Два способа задать", ready:false},
-  {n:3, name:"Как считать члены", ready:false},
-  {n:4, name:"График", ready:false},
-  {n:5, name:"Монотонность", ready:false},
-  {n:6, name:"Suites arithmétiques", ready:false},
-  {n:7, name:"Suites géométriques", ready:false},
-  {n:8, name:"Сравнение двух типов", ready:false},
-  {n:9, name:"Суммы", ready:false},
-  {n:10, name:"Récurrence", ready:false},
-  {n:11, name:"Пределы", ready:false},
-  {n:12, name:"Арифметико-геометрические", ready:false},
-  {n:13, name:"Типичные ошибки", ready:false},
-  {n:14, name:"Задачи с решениями", ready:false}
+const CHAPITRES = [
+{
+  n:1, nom:"Généralités", sous:"Notation, explicite, récurrence", pret:true,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"Une liste de nombres numérotés",
+      c:`<p>Une <b>suite</b> est une liste de nombres rangés dans un ordre précis. Chaque nombre porte un numéro.</p>
+        <div class="show">2,&nbsp; 5,&nbsp; 8,&nbsp; 11,&nbsp; 14,&nbsp; …</div>
+        <p>Ce numéro s'appelle le <b>rang</b> (ou l'<b>indice</b>). On l'écrit en petit, en bas.</p>
+        <div class="show"><span class="v">u<sub>0</sub></span> = 2 &nbsp;&nbsp;&nbsp; <span class="v">u<sub>1</sub></span> = 5 &nbsp;&nbsp;&nbsp; <span class="v">u<sub>2</sub></span> = 8 &nbsp;&nbsp;&nbsp; <span class="v">u<sub>3</sub></span> = 11</div>
+        <div class="note"><b>Définition.</b> Une suite est une fonction définie sur <span class="v">ℕ</span> : à chaque entier <span class="v">n</span> elle associe un réel <span class="v">u<sub>n</sub></span>.</div>`,
+      lent:`<p><b>Imagine la liste des élèves de ta classe.</b></p>
+        <p>Chaque élève a une place : 1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>… Si je dis « l'élève n°3 », tu sais exactement de qui je parle. Une seule personne.</p>
+        <p>Une suite, c'est pareil — sauf que ce sont des nombres, et que la liste ne s'arrête jamais.</p>
+        <p><b>Pourquoi écrire <span class="v">u<sub>3</sub></span> et pas juste « le 3<sup>e</sup> nombre » ?</b></p>
+        <p>Parce que c'est plus court, et surtout parce qu'on peut écrire <span class="v">u<sub>n</sub></span> : « le nombre à la place <span class="v">n</span> », sans préciser laquelle. Ça permet de parler de <b>n'importe quelle</b> place d'un seul coup.</p>
+        <p>La lettre <span class="v">u</span> est juste un nom. On aurait pu l'appeler <span class="v">v</span>, <span class="v">w</span> ou <span class="v">a</span> — ça ne change rien.</p>`
+    },
+    {
+      k:"DISTINCTION CLÉ", t:"Un nombre ou toute la suite",
+      c:`<p>C'est l'erreur la plus fréquente du chapitre. Deux écritures proches, deux sens très différents.</p>
+        <div class="show" style="text-align:left;padding:19px 21px">
+          <div style="margin-bottom:13px"><span class="v">u<sub>n</sub></span> &nbsp;— <b>un nombre</b> : le terme de rang <span class="v">n</span></div>
+          <div><span class="v">(u<sub>n</sub>)</span> &nbsp;— <b>toute la suite</b> : la liste entière</div>
+        </div>
+        <p>Les parenthèses ne sont pas décoratives. Elles disent : on parle de la suite entière.</p>
+        <div class="note"><b>Dans un énoncé.</b> « Calculer <span class="v">u<sub>5</sub></span> » → un nombre à trouver. « Montrer que <span class="v">(u<sub>n</sub>)</span> est croissante » → une propriété de toute la suite.</div>`,
+      lent:`<p><b>Reprenons la classe.</b></p>
+        <p><span class="v">u<sub>3</sub></span>, c'est <b>un élève</b> — celui de la place 3. Une personne, tu peux la désigner du doigt.</p>
+        <p><span class="v">(u<sub>n</sub>)</span>, c'est <b>la classe entière</b>. Tu ne peux pas la désigner du doigt : c'est un groupe.</p>
+        <p><b>Pourquoi ça compte ?</b></p>
+        <p>Parce que les questions ne sont pas les mêmes. On peut demander « quel âge a l'élève n°3 ? » — c'est une question sur une personne. Ou « la classe est-elle nombreuse ? » — c'est une question sur le groupe.</p>
+        <p>En maths : « calculer <span class="v">u<sub>3</sub></span> » = question sur un nombre. « <span class="v">(u<sub>n</sub>)</span> est-elle croissante ? » = question sur tout le groupe.</p>
+        <p><b>Le réflexe.</b> Tu vois des parenthèses → on parle du groupe entier. Pas de parenthèses → on parle d'un seul nombre.</p>`
+    },
+    {
+      k:"DEUX FAÇONS DE DÉFINIR", t:"Explicite ou par récurrence",
+      c:`<p><b>Forme explicite</b> — la formule donne directement le terme :</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2</div>
+        <p>On remplace <span class="v">n</span> par le rang voulu. On peut sauter directement à <span class="v">u<sub>100</sub></span>.</p>
+        <p><b>Forme récurrente</b> — la formule relie chaque terme au suivant :</p>
+        <div class="show"><span class="v">u<sub>0</sub></span> = 2 &nbsp;&nbsp;et&nbsp;&nbsp; <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 3</div>
+        <p>Il faut calculer de proche en proche. Impossible de sauter.</p>
+        <div class="note"><b>Pourquoi le premier terme ?</b> La relation dit comment avancer, pas d'où partir. Sans <span class="v">u<sub>0</sub></span>, la suite n'est pas définie.</div>`,
+      lent:`<p><b>Deux façons d'expliquer où habite quelqu'un.</b></p>
+        <p><b>1. L'adresse directe</b> — « 12 rue Victor Hugo ». Tu y vas tout de suite, sans passer ailleurs. C'est la <b>forme explicite</b> : tu donnes le rang, tu obtiens le nombre.</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2 &nbsp;→&nbsp; <span class="v">u<sub>50</sub></span> = 3×50 + 2 = 152</div>
+        <p>Un seul calcul, même pour le rang 50.</p>
+        <p><b>2. L'itinéraire</b> — « pars de la mairie, puis tourne à droite, puis encore à droite… ». Tu es obligé de suivre les étapes une par une. C'est la <b>forme récurrente</b>.</p>
+        <div class="show"><span class="v">u<sub>0</sub></span> = 2 &nbsp;→&nbsp; <span class="v">u<sub>1</sub></span> = 5 &nbsp;→&nbsp; <span class="v">u<sub>2</sub></span> = 8 &nbsp;→&nbsp; …</div>
+        <p>Pour arriver à <span class="v">u<sub>50</sub></span>, il faut faire les 50 pas.</p>
+        <p><b>Et le point de départ ?</b> Un itinéraire sans point de départ ne sert à rien. « Tourne à droite » — mais depuis où ? C'est pour ça qu'une définition par récurrence donne <b>toujours</b> le premier terme.</p>`
+    },
+    {
+      k:"PIÈGE", t:"Le rang peut partir de 0 ou de 1",
+      c:`<p>Selon l'énoncé, le premier terme est <span class="v">u<sub>0</sub></span> ou <span class="v">u<sub>1</sub></span>. C'est l'auteur qui décide.</p>
+        <p>Donc <span class="v">u<sub>5</sub></span> est le <b>sixième</b> terme si on compte à partir de 0. Et le cinquième si on part de 1.</p>
+        <div class="note"><b>Comptage.</b> De <span class="v">u<sub>p</sub></span> à <span class="v">u<sub>n</sub></span>, il y a <span class="v">(n − p + 1)</span> termes. Les deux bornes sont incluses.</div>`,
+      lent:`<p><b>Le piège des poteaux.</b></p>
+        <p>Une clôture de 10 mètres, un poteau tous les mètres. Combien de poteaux ?</p>
+        <p>On répond 10 spontanément. Mais il en faut <b>11</b> : un à chaque bout, plus les 9 du milieu. On oublie toujours celui du départ.</p>
+        <p><b>C'est exactement le même piège avec les rangs.</b></p>
+        <p>De <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>10</sub></span> : on pense « 10 termes », mais <span class="v">u<sub>0</sub></span> compte aussi. Donc <b>11</b>.</p>
+        <div class="show"><span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>, <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>, <span class="v">u<sub>6</sub></span>, <span class="v">u<sub>7</sub></span>, <span class="v">u<sub>8</sub></span>, <span class="v">u<sub>9</sub></span>, <span class="v">u<sub>10</sub></span></div>
+        <p>Compte-les : onze.</p>
+        <p><b>La formule.</b> <span class="v">(n − p + 1)</span>. Le « +1 », c'est le poteau du départ qu'on oublie toujours.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"AUTOMATISME", type:"num",
+        q:`<span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
+        rep:13, ind:"un entier",
+        ok:`<span class="v">u<sub>3</sub></span> = 4×3 + 1 = 12 + 1 = <b>13</b>`,
+        no:`On remplace <span class="v">n</span> par 3 partout.`,
+        regle:`Dans une formule explicite, on remplace <span class="v">n</span> par le rang.`,
+        aides:[`Le rang cherché est 3. Où faut-il le mettre dans la formule ?`,
+               `Remplace <span class="v">n</span> par 3 : ça donne 4×3 + 1. Attention à l'ordre des opérations.`],
+        sol:[`On remplace <span class="v">n</span> par 3 : <span class="v">u<sub>3</sub></span> = 4×3 + 1`,
+             `D'abord la multiplication : 4×3 = 12`,
+             `Puis l'addition : 12 + 1 = <b>13</b>`] },
+      { k:"QCM", type:"qcm",
+        q:`Que désigne l'écriture <span class="v">(u<sub>n</sub>)</span> avec les parenthèses ?`,
+        opts:[{t:`La suite entière`,ok:true,why:`Exact. Les parenthèses désignent toute la liste.`},
+              {t:`Le terme de rang <span class="v">n</span>`,ok:false,why:`Cela, c'est <span class="v">u<sub>n</sub></span> — sans parenthèses. Un seul nombre.`},
+              {t:`Le produit des termes`,ok:false,why:`Les parenthèses n'indiquent pas une multiplication ici.`}],
+        regle:`Sans parenthèses : un nombre. Avec : la suite.`,
+        aides:[`Repense à l'image de la classe : un élève ou tout le groupe ?`,
+               `Les parenthèses marquent le groupe entier, pas un élément isolé.`],
+        sol:[`<span class="v">u<sub>n</sub></span> sans parenthèses = un terme précis, un nombre`,
+             `<span class="v">(u<sub>n</sub>)</span> avec parenthèses = la suite complète`,
+             `Réponse : <b>la suite entière</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm",
+        q:`« Si <span class="v">u<sub>0</sub></span> = 5, alors <span class="v">u<sub>5</sub></span> est le cinquième terme. »`,
+        opts:[{t:"Faux",ok:true,why:`Bien vu. En partant de 0, <span class="v">u<sub>5</sub></span> est le <b>sixième</b> terme.`},
+              {t:"Vrai",ok:false,why:`Attention : puisque <span class="v">u<sub>0</sub></span> existe, le rang part de 0 — et 0 compte.`}],
+        regle:`Le rang 0 est un rang comme un autre.`,
+        aides:[`L'énoncé donne <span class="v">u<sub>0</sub></span>. À partir de quel rang compte-t-on ?`,
+               `Écris la liste : <span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>… et compte les places jusqu'à <span class="v">u<sub>5</sub></span>.`],
+        sol:[`On écrit tous les termes : <span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>, <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>`,
+             `On compte : 1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>, 4<sup>e</sup>, 5<sup>e</sup>, 6<sup>e</sup>`,
+             `<span class="v">u<sub>5</sub></span> occupe la <b>sixième</b> place. L'affirmation est <b>fausse</b>.`] },
+      { k:"AUTOMATISME", type:"num",
+        q:`Combien de termes y a-t-il de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>10</sub></span> ?`,
+        rep:11, ind:"un entier",
+        ok:`De 0 à 10 inclus : <b>11</b> termes.`,
+        no:`Les deux bornes sont incluses — il faut ajouter 1.`,
+        regle:`De <span class="v">u<sub>p</sub></span> à <span class="v">u<sub>n</sub></span> : <span class="v">(n − p + 1)</span> termes.`,
+        aides:[`Pense aux poteaux de la clôture : celui du départ compte aussi.`,
+               `Applique <span class="v">(n − p + 1)</span> avec <span class="v">p</span> = 0 et <span class="v">n</span> = 10.`],
+        sol:[`Ici <span class="v">p</span> = 0 et <span class="v">n</span> = 10`,
+             `Formule : <span class="v">n − p + 1</span> = 10 − 0 + 1`,
+             `Résultat : <b>11</b> termes`] },
+      { k:"QCM", type:"qcm",
+        q:`<span class="v">u<sub>0</sub></span> = 3 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> − 1.<br>Que vaut <span class="v">u<sub>2</sub></span> ?`,
+        opts:[{t:"9",ok:true,why:`Exact. <span class="v">u<sub>1</sub></span> = 2×3 − 1 = 5, puis <span class="v">u<sub>2</sub></span> = 2×5 − 1 = 9.`},
+              {t:"5",ok:false,why:`C'est <span class="v">u<sub>1</sub></span>. Il faut faire un pas de plus.`},
+              {t:"11",ok:false,why:`Vérifie : 2×5 = 10, puis 10 − 1 = 9.`}],
+        regle:`En récurrence, on avance pas à pas.`,
+        aides:[`Tu ne peux pas aller directement à <span class="v">u<sub>2</sub></span>. Calcule d'abord <span class="v">u<sub>1</sub></span>.`,
+               `<span class="v">u<sub>1</sub></span> = 2×3 − 1 = 5. Applique maintenant la même formule à 5.`],
+        sol:[`Étape 1 : <span class="v">u<sub>1</sub></span> = 2×<span class="v">u<sub>0</sub></span> − 1 = 2×3 − 1 = 5`,
+             `Étape 2 : <span class="v">u<sub>2</sub></span> = 2×<span class="v">u<sub>1</sub></span> − 1 = 2×5 − 1`,
+             `Résultat : <b>9</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME", type:"num",
+        q:`<span class="v">u<sub>n</sub></span> = 5<span class="v">n</span> − 3.<br>Calculer <span class="v">u<sub>4</sub></span>.`,
+        rep:17, ind:"un entier",
+        ok:`<span class="v">u<sub>4</sub></span> = 5×4 − 3 = 20 − 3 = <b>17</b>`,
+        no:`Remplace <span class="v">n</span> par 4 : 5×4 − 3.`,
+        regle:`Multiplication avant soustraction.`,
+        aides:[`Le rang est 4. Remplace <span class="v">n</span> par 4.`,
+               `5×4 − 3 : commence par la multiplication.`],
+        sol:[`On remplace : <span class="v">u<sub>4</sub></span> = 5×4 − 3`,
+             `Multiplication : 5×4 = 20`,
+             `Soustraction : 20 − 3 = <b>17</b>`] },
+      { k:"QCM", type:"qcm",
+        q:`Une suite est définie par <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 7.<br>Que manque-t-il pour qu'elle soit entièrement définie ?`,
+        opts:[{t:`Le premier terme`,ok:true,why:`Exact. La relation dit comment avancer, pas d'où partir.`},
+              {t:`Le dernier terme`,ok:false,why:`Une suite n'a pas de dernier terme — elle est infinie.`},
+              {t:`Rien, elle est définie`,ok:false,why:`Sans point de départ, aucun terme n'est calculable.`}],
+        regle:`Récurrence = relation <b>+</b> premier terme.`,
+        aides:[`Essaie de calculer <span class="v">u<sub>1</sub></span> avec cette seule information. Tu y arrives ?`,
+               `Pour appliquer « +7 », il faut savoir à quoi l'ajouter.`],
+        sol:[`La relation dit : chaque terme = le précédent + 7`,
+             `Mais pour calculer <span class="v">u<sub>1</sub></span>, il faut connaître <span class="v">u<sub>0</sub></span>`,
+             `Il manque donc <b>le premier terme</b>`] },
+      { k:"AUTOMATISME", type:"num",
+        q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 2<span class="v">n</span>.<br>Calculer <span class="v">u<sub>5</sub></span>.`,
+        rep:15, ind:"un entier",
+        ok:`<span class="v">u<sub>5</sub></span> = 25 − 10 = <b>15</b>`,
+        no:`D'abord 5² = 25, puis 2×5 = 10.`,
+        regle:`Puissance, puis multiplication, puis soustraction.`,
+        aides:[`Remplace <span class="v">n</span> par 5 dans les deux termes de la formule.`,
+               `5² − 2×5 : calcule chaque morceau séparément avant de soustraire.`],
+        sol:[`On remplace : <span class="v">u<sub>5</sub></span> = 5² − 2×5`,
+             `Puissance : 5² = 25. Multiplication : 2×5 = 10`,
+             `Soustraction : 25 − 10 = <b>15</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm",
+        q:`« Avec une forme explicite, on peut calculer <span class="v">u<sub>100</sub></span> sans calculer les termes précédents. »`,
+        opts:[{t:"Vrai",ok:true,why:`Exact. C'est tout l'intérêt de la forme explicite.`},
+              {t:"Faux",ok:false,why:`C'est vrai pour la forme <b>récurrente</b>. L'explicite permet de sauter.`}],
+        regle:`Explicite = accès direct. Récurrence = de proche en proche.`,
+        aides:[`Repense à l'image : adresse directe ou itinéraire ?`,
+               `Avec <span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2, peux-tu trouver <span class="v">u<sub>100</sub></span> d'un coup ?`],
+        sol:[`Forme explicite : on remplace directement <span class="v">n</span> par 100`,
+             `Exemple : <span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2 donne <span class="v">u<sub>100</sub></span> = 302 en un calcul`,
+             `L'affirmation est <b>vraie</b>`] },
+      { k:"AUTOMATISME", type:"num",
+        q:`Combien de termes de <span class="v">u<sub>3</sub></span> à <span class="v">u<sub>12</sub></span> ?`,
+        rep:10, ind:"un entier",
+        ok:`12 − 3 + 1 = <b>10</b> termes.`,
+        no:`Applique <span class="v">(n − p + 1)</span> : ici 12 − 3 + 1.`,
+        regle:`La formule marche quel que soit le départ.`,
+        aides:[`Ici on ne part pas de 0, mais la formule reste la même.`,
+               `<span class="v">p</span> = 3 et <span class="v">n</span> = 12. Applique <span class="v">(n − p + 1)</span>.`],
+        sol:[`Ici <span class="v">p</span> = 3 et <span class="v">n</span> = 12`,
+             `Formule : 12 − 3 + 1`,
+             `Résultat : <b>10</b> termes`] }
+    ],
+    [
+      { k:"QCM", type:"qcm",
+        q:`Quelle écriture correspond à « le terme suivant » ?`,
+        opts:[{t:`<span class="v">u<sub>n+1</sub></span>`,ok:true,why:`Exact. Le rang augmente de 1.`},
+              {t:`<span class="v">u<sub>n</sub></span> + 1`,ok:false,why:`Ici on ajoute 1 à la <b>valeur</b>, pas au rang. Ce n'est pas la même chose.`},
+              {t:`2<span class="v">u<sub>n</sub></span>`,ok:false,why:`Cela double la valeur — rien à voir avec le rang suivant.`}],
+        regle:`<span class="v">u<sub>n+1</sub></span> ≠ <span class="v">u<sub>n</sub></span> + 1. L'indice bouge, pas la valeur.`,
+        aides:[`« Suivant » parle de la position dans la liste, pas de la valeur.`,
+               `Où faut-il ajouter le 1 : en haut ou en bas, dans l'indice ?`],
+        sol:[`Le terme suivant = celui dont le <b>rang</b> est augmenté de 1`,
+             `Le rang s'écrit en indice, donc : <span class="v">u<sub>n+1</sub></span>`,
+             `<span class="v">u<sub>n</sub></span> + 1 modifierait la valeur, pas la position`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num",
+        q:`<span class="v">u<sub>n</sub></span> = 2<span class="v">n</span> + 3.<br>Calculer <span class="v">u<sub>n+1</sub></span> pour <span class="v">n</span> = 4.`,
+        sub:`Remplace <span class="v">n</span> par <span class="v">(n+1)</span>, puis prends <span class="v">n</span> = 4.`,
+        rep:13, ind:"un entier",
+        ok:`<span class="v">u<sub>n+1</sub></span> = 2(<span class="v">n</span>+1) + 3 = 2<span class="v">n</span> + 5. Pour <span class="v">n</span> = 4 : <b>13</b>`,
+        no:`Il faut substituer <span class="v">(n+1)</span> <b>entre parenthèses</b>.`,
+        regle:`Toujours mettre <span class="v">(n+1)</span> entre parenthèses.`,
+        aides:[`Deux chemins : soit tu développes <span class="v">u<sub>n+1</sub></span>, soit tu calcules directement <span class="v">u<sub>5</sub></span>.`,
+               `Si <span class="v">n</span> = 4, alors <span class="v">n</span>+1 = 5. Tu cherches donc <span class="v">u<sub>5</sub></span>.`],
+        sol:[`Méthode rapide : <span class="v">n</span> = 4 donc <span class="v">n</span>+1 = 5`,
+             `On cherche <span class="v">u<sub>5</sub></span> = 2×5 + 3`,
+             `Résultat : <b>13</b>`] },
+      { k:"QCM", type:"qcm",
+        q:`<span class="v">u<sub>1</sub></span> = 4 et <span class="v">u<sub>n+1</sub></span> = 3<span class="v">u<sub>n</sub></span>.<br>Que vaut <span class="v">u<sub>3</sub></span> ?`,
+        opts:[{t:"36",ok:true,why:`Exact. <span class="v">u<sub>2</sub></span> = 12, puis <span class="v">u<sub>3</sub></span> = 36.`},
+              {t:"12",ok:false,why:`C'est <span class="v">u<sub>2</sub></span>. Encore un pas.`},
+              {t:"108",ok:false,why:`Un pas de trop. Ici le rang part de 1, pas de 0.`}],
+        regle:`Vérifie toujours le rang de départ.`,
+        aides:[`Attention : la suite commence à <span class="v">u<sub>1</sub></span>, pas <span class="v">u<sub>0</sub></span>.`,
+               `De <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>3</sub></span>, combien de pas faut-il faire ?`],
+        sol:[`Départ : <span class="v">u<sub>1</sub></span> = 4`,
+             `Pas 1 : <span class="v">u<sub>2</sub></span> = 3×4 = 12`,
+             `Pas 2 : <span class="v">u<sub>3</sub></span> = 3×12 = <b>36</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm",
+        q:`« Une suite est une fonction définie sur <span class="v">ℕ</span>. »`,
+        opts:[{t:"Vrai",ok:true,why:`Exact. À chaque entier naturel <span class="v">n</span> elle associe un réel <span class="v">u<sub>n</sub></span>.`},
+              {t:"Faux",ok:false,why:`C'est bien la définition du programme : une fonction de <span class="v">ℕ</span> dans <span class="v">ℝ</span>.`}],
+        regle:`Définition à connaître pour l'épreuve.`,
+        aides:[`Une fonction associe un nombre à un autre. Ici, qu'associe-t-on à quoi ?`,
+               `À chaque rang <span class="v">n</span> (entier) correspond une valeur <span class="v">u<sub>n</sub></span> (réel).`],
+        sol:[`Une fonction associe à chaque entrée une sortie unique`,
+             `Ici : entrée = le rang <span class="v">n</span> (dans <span class="v">ℕ</span>), sortie = <span class="v">u<sub>n</sub></span> (dans <span class="v">ℝ</span>)`,
+             `C'est donc bien une fonction. <b>Vrai</b>`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num",
+        q:`<span class="v">u<sub>0</sub></span> = 1 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> + 3.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
+        rep:29, ind:"un entier",
+        ok:`<span class="v">u<sub>1</sub></span> = 5, <span class="v">u<sub>2</sub></span> = 13, <span class="v">u<sub>3</sub></span> = <b>29</b>`,
+        no:`Trois pas à faire, un par un.`,
+        regle:`Pose chaque étape, ne saute pas de ligne.`,
+        aides:[`Il faut trois étapes. Commence par <span class="v">u<sub>1</sub></span>.`,
+               `<span class="v">u<sub>1</sub></span> = 2×1 + 3 = 5. Continue avec 5.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 2×1 + 3 = 5`,
+             `<span class="v">u<sub>2</sub></span> = 2×5 + 3 = 13`,
+             `<span class="v">u<sub>3</sub></span> = 2×13 + 3 = <b>29</b>`] }
+    ]
+  ]
+},
+{ n:2, nom:"Sens de variation", sous:"Croissante, décroissante", pret:false },
+{ n:3, nom:"Suites arithmétiques", sous:"Raison, terme général", pret:false },
+{ n:4, nom:"Suites géométriques", sous:"Raison, terme général", pret:false },
+{ n:5, nom:"Majoration, minoration", sous:"Suites bornées", pret:false },
+{ n:6, nom:"Problèmes", sous:"Exercices type épreuve", pret:false }
 ];
 
-const CARDS = [
-  {
-    kicker:"ИДЕЯ",
-    title:"Список чисел с номерами",
-    body:`<p><b>Suite</b> — это просто пронумерованный список чисел. Первое, второе, третье — и так до бесконечности.</p>
-      <div class="show">2,&nbsp; 5,&nbsp; 8,&nbsp; 11,&nbsp; 14,&nbsp; …</div>
-      <p>Номер каждого числа записывают маленькой цифрой внизу. По-французски номер — это <b>rang</b> или <b>indice</b>.</p>
-      <div class="show">
-        <span class="v">u<sub>0</sub></span> = 2 &nbsp;&nbsp;&nbsp;
-        <span class="v">u<sub>1</sub></span> = 5 &nbsp;&nbsp;&nbsp;
-        <span class="v">u<sub>2</sub></span> = 8 &nbsp;&nbsp;&nbsp;
-        <span class="v">u<sub>3</sub></span> = 11
-      </div>`
-  },
-  {
-    kicker:"ГЛАВНОЕ РАЗЛИЧЕНИЕ",
-    title:"Одно число или весь список",
-    body:`<p>Здесь путаются чаще всего. Две похожие записи означают совершенно разное.</p>
-      <div class="show" style="text-align:left;padding:19px 21px">
-        <div style="margin-bottom:13px"><span class="v">u<sub>n</sub></span> &nbsp;— одно число, член с номером <span class="v">n</span></div>
-        <div><span class="v">(u<sub>n</sub>)</span> &nbsp;— весь бесконечный список целиком</div>
-      </div>
-      <p>Скобки — не украшение. Они говорят: речь про всю последовательность.</p>
-      <div class="note"><b>Как отличить в задании.</b> «Calculer <span style="font-family:Georgia,serif;font-style:italic">u</span><sub style="font-size:.7em">5</sub>» — посчитать одно число. «Montrer que <span style="font-family:Georgia,serif;font-style:italic">(u<sub style="font-size:.7em">n</sub>)</span> est croissante» — доказать свойство всего списка.</div>`
-  },
-  {
-    kicker:"ЛОВУШКА",
-    title:"Счёт может начинаться с нуля",
-    body:`<p>В одних задачах первый член — это <span class="v">u<sub>0</sub></span>, в других — <span class="v">u<sub>1</sub></span>. Автор задачи решает сам.</p>
-      <p>Поэтому <span class="v">u<sub>5</sub></span> — это <b>шестой</b> член, если счёт с нуля. И пятый, если с единицы.</p>
-      <div class="note"><b>Правило.</b> Всегда смотри на условие. Если написано «<span style="font-family:Georgia,serif;font-style:italic">u</span><sub style="font-size:.7em">0</sub> = 3» — значит, отсчёт с нуля, и ноль тоже считается членом.</div>`
-  }
-];
+/* ═══════════ СОСТОЯНИЕ ═══════════ */
 
-const WARMUP = [
-  {
-    kind:"РАЗМИНКА",
-    type:"pick",
-    q:`Вот suite: 3, 7, 11, 15, 19.<br>Чему равен <span class="v">u<sub>2</sub></span>, если счёт с нуля?`,
-    opts:[
-      {t:"11", ok:true,  why:`Верно. Считаем с нуля: <span class="v">u<sub>0</sub></span>=3, <span class="v">u<sub>1</sub></span>=7, <span class="v">u<sub>2</sub></span>=11.`},
-      {t:"7",  ok:false, why:`Это <span class="v">u<sub>1</sub></span>. Когда счёт с нуля, третье по порядку число имеет номер 2.`},
-      {t:"15", ok:false, why:`Это <span class="v">u<sub>3</sub></span>. Ты посчитал, будто первый член — это <span class="v">u<sub>1</sub></span>.`}
-    ],
-    rule:`При счёте с нуля номер всегда на единицу меньше, чем «место по порядку».`
-  }
-];
-
-const MAIN = [
-  {
-    kind:"ВЫБОР",
-    type:"pick",
-    q:`Что означает запись <span class="v">(u<sub>n</sub>)</span> со скобками?`,
-    opts:[
-      {t:`Всю последовательность целиком`, ok:true,
-       why:`Верно. Скобки означают весь бесконечный список, а не отдельное число.`},
-      {t:`Член с номером <span class="v">n</span>`, ok:false,
-       why:`Это <span class="v">u<sub>n</sub></span> — без скобок. Одно конкретное число.`},
-      {t:`Произведение членов`, ok:false,
-       why:`Скобки здесь не про умножение. Это обозначение всей последовательности.`}
-    ],
-    rule:`Без скобок — число. Со скобками — весь список.`
-  },
-  {
-    kind:"ЧИСЛО",
-    type:"num",
-    q:`Suite задана: <span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1.<br>Чему равен <span class="v">u<sub>3</sub></span>?`,
-    sub:`Подставь вместо <span class="v">n</span> число 3.`,
-    answer:13,
-    hint:"целое число",
-    why:`<span class="v">u<sub>3</sub></span> = 4·3 + 1 = 12 + 1 = <b>13</b>`,
-    miss:`Подставляем 3 вместо <span class="v">n</span>: получается 4·3 + 1. Сначала умножение, потом сложение.`,
-    rule:`В явной формуле просто подставляешь номер вместо <span class="v">n</span>.`
-  },
-  {
-    kind:"ВЕРНО ИЛИ НЕТ",
-    type:"pick",
-    q:`«Если <span class="v">u<sub>0</sub></span> = 5, то <span class="v">u<sub>5</sub></span> — это пятый член списка.»`,
-    opts:[
-      {t:"Неверно", ok:true,
-       why:`Верно подмечено. При счёте с нуля <span class="v">u<sub>5</sub></span> — это <b>шестой</b> член: <span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>, <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>.`},
-      {t:"Верно", ok:false,
-       why:`Здесь ловушка. Раз <span class="v">u<sub>0</sub></span> существует, счёт идёт с нуля — и ноль тоже член. Значит <span class="v">u<sub>5</sub></span> шестой по порядку.`}
-    ],
-    rule:`Ноль — полноценный номер. Он не «нулевой, значит не считается».`
-  },
-  {
-    kind:"ВЫБОР",
-    type:"pick",
-    q:`Сколько членов в списке от <span class="v">u<sub>0</sub></span> до <span class="v">u<sub>10</sub></span>?`,
-    opts:[
-      {t:"11", ok:true,
-       why:`Верно. Считаем: от 0 до 10 включительно — это 11 номеров.`},
-      {t:"10", ok:false,
-       why:`Самая частая ошибка в теме. Ты посчитал от 1 до 10, но нумерация начинается с нуля — <span class="v">u<sub>0</sub></span> тоже член.`},
-      {t:"9", ok:false,
-       why:`Похоже, посчитал промежутки между членами, а не сами члены. Между 11 столбами 10 промежутков — но столбов всё равно 11.`}
-    ],
-    rule:`От <span class="v">u<sub>p</sub></span> до <span class="v">u<sub>n</sub></span> членов ровно <span class="v">(n − p + 1)</span>.`
-  }
-];
-
-const EXTRA = [
-  {
-    kind:"ВЫБОР",
-    type:"pick",
-    q:`В задании написано: «Étudier le sens de variation de <span class="v">(u<sub>n</sub>)</span>».<br>Что просят сделать?`,
-    opts:[
-      {t:`Выяснить, растёт список или убывает`, ok:true,
-       why:`Верно. <b>Sens de variation</b> — направление изменения. И скобки подсказывают: речь про всю последовательность.`},
-      {t:`Вычислить несколько членов`, ok:false,
-       why:`Это было бы «calculer». А «étudier le sens de variation» — изучить поведение всего списка.`},
-      {t:`Найти предел`, ok:false,
-       why:`Предел — это «limite». А здесь про направление: возрастает или убывает.`}
-    ],
-    rule:`Скобки <span class="v">(u<sub>n</sub>)</span> в задании = вопрос про всю последовательность.`
-  },
-  {
-    kind:"ЧИСЛО",
-    type:"num",
-    q:`Suite: <span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 2<span class="v">n</span>.<br>Чему равен <span class="v">u<sub>4</sub></span>?`,
-    sub:`Подставь 4 вместо <span class="v">n</span>.`,
-    answer:8,
-    hint:"целое число",
-    why:`<span class="v">u<sub>4</sub></span> = 4² − 2·4 = 16 − 8 = <b>8</b>`,
-    miss:`Считаем по шагам: 4² = 16, потом 2·4 = 8, и вычитаем: 16 − 8.`,
-    rule:`Сначала степень, потом умножение, потом вычитание.`
-  },
-  {
-    kind:"ВЫБОР ⭑ посложнее",
-    hard:true,
-    type:"pick",
-    q:`Suite начинается с <span class="v">u<sub>1</sub></span>. Сколько членов от <span class="v">u<sub>3</sub></span> до <span class="v">u<sub>9</sub></span>?`,
-    opts:[
-      {t:"7", ok:true,
-       why:`Верно. По формуле: 9 − 3 + 1 = 7. Проверим: <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>, <span class="v">u<sub>6</sub></span>, <span class="v">u<sub>7</sub></span>, <span class="v">u<sub>8</sub></span>, <span class="v">u<sub>9</sub></span> — семь.`},
-      {t:"6", ok:false,
-       why:`Ты посчитал 9 − 3 = 6, но забыл прибавить единицу. Оба конца входят в счёт.`},
-      {t:"9", ok:false,
-       why:`Это номер последнего члена, а не их количество. Начинаем-то не с первого.`}
-    ],
-    rule:`Формула работает при любом старте: <span class="v">(n − p + 1)</span>.`
-  }
-];
-
-/* ═══════════════════════════════════════════
-   СОСТОЯНИЕ
-   ═══════════════════════════════════════════ */
-
-const KEY = "suites.v1";
+const KEY = "suites.fr.v1";
 let DB = load();
 
 function load(){
-  try{
-    const r = localStorage.getItem(KEY);
-    if(r) return JSON.parse(r);
-  }catch(e){}
-  return {secs:{}, streak:0, last:null};
+  try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){}
+  return { ch:{}, streak:0, last:null, aides:0 };
 }
-function save(){
-  try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
-}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} }
 function today(){
-  const d = new Date();
+  const d=new Date();
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
 function bumpStreak(){
-  const t = today();
-  if(DB.last === t) return;
-  const y = new Date(Date.now()-864e5);
-  const yk = y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
-  DB.streak = (DB.last === yk) ? (DB.streak||0)+1 : 1;
-  DB.last = t;
-  save();
+  const t=today(); if(DB.last===t) return;
+  const y=new Date(Date.now()-864e5);
+  const yk=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+  DB.streak=(DB.last===yk)?(DB.streak||0)+1:1; DB.last=t; save();
 }
 
-/* ═══════════════════════════════════════════
-   ХОД РАБОТЫ
-   ═══════════════════════════════════════════ */
-
-let R = { card:0, qi:0, queue:[], first:0, total:0, tried:false, mode:"card", weak:[] };
+let R = { ch:1, card:0, qi:0, queue:[], first:0, total:0, tried:false, mode:"card", weak:[], serie:0, aides:0 };
 
 const $ = id => document.getElementById(id);
-const starSVG = lit =>
-  `<svg class="star ${lit?'lit':''}" viewBox="0 0 24 24" fill="${lit?'#1c2024':'#80838d'}"><path d="M12 2l2.9 6.3 6.6.7-4.9 4.5 1.4 6.5L12 16.8 6 20l1.4-6.5L2.5 9l6.6-.7z"/></svg>`;
+const starSVG = lit => `<svg class="star ${lit?'lit':''}" viewBox="0 0 24 24" fill="${lit?'#1c2024':'#80838d'}"><path d="M12 2l2.9 6.3 6.6.7-4.9 4.5 1.4 6.5L12 16.8 6 20l1.4-6.5L2.5 9l6.6-.7z"/></svg>`;
 
 function show(id){
   document.querySelectorAll(".screen").forEach(s=>{
-    s.classList.remove("on");
-    s.classList.toggle("left", s.id !== id);
+    s.classList.remove("on"); s.classList.toggle("left", s.id!==id);
   });
-  const el = $(id);
-  el.classList.remove("left");
-  el.classList.add("on");
-  el.scrollTop = 0;
+  const el=$(id); el.classList.remove("left"); el.classList.add("on"); el.scrollTop=0;
 }
 
-/* ── главная ── */
+/* ═══════════ ГЛАВНАЯ ═══════════ */
+
 function drawHome(){
-  const done = Object.values(DB.secs).filter(s=>s.done).length;
-  $("m-val").textContent = done + " из 14";
-  if(done>0) $("m-val").textContent += "  ·  " + Math.round(done/14*100) + "%";
-  setTimeout(()=>{ $("m-fill").style.width = (done/14*100) + "%"; }, 60);
+  const done = Object.values(DB.ch).filter(c=>c.done).length;
+  $("m-val").textContent = done + " / 6" + (done>0 ? "  ·  " + Math.round(done/6*100) + "%" : "");
+  setTimeout(()=>{ $("m-fill").style.width = (done/6*100)+"%"; }, 60);
 
-  if(DB.streak > 0){
-    $("streak").style.display = "inline-flex";
+  if(DB.streak>0){
+    $("streak").style.display="inline-flex";
     $("streak-n").textContent = DB.streak;
+    $("streak-w").textContent = DB.streak===1 ? "jour d'affilée" : "jours d'affilée";
   }
 
-  const st = DB.secs[1];
+  const st = DB.ch[1];
   if(st && st.done){
-    $("r-lbl").textContent = "ПОВТОРИТЬ";
-    $("r-meta").textContent = "Раздел 1 · " + st.stars + " из 3 звёзд";
+    const s = (st.serie||0) % 3;
+    $("r-lbl").textContent = "SÉRIE " + (s+1);
+    $("r-name").textContent = "Généralités";
+    $("r-meta").textContent = "5 nouveaux exercices";
   }
 
-  const box = $("secs");
-  const rest = $("rest");
-  box.innerHTML = ""; rest.innerHTML = "";
-  SECTIONS.forEach((s,idx)=>{
-    const d = DB.secs[s.n];
-    const b = document.createElement("button");
-    b.className = "sec" + (d&&d.done ? " done" : "") + (s.n===1&&!(d&&d.done) ? " next" : "") + (!s.ready ? " lock" : "");
-    b.innerHTML = `
-      <span class="sec-num">${s.n}</span>
-      <span class="sec-body">
-        <span class="sec-name">${s.name}</span>
-        <span class="sec-meta">${s.ready ? (d&&d.done ? "пройден" : "готов") : "скоро"}</span>
+  const box=$("chs"); box.innerHTML="";
+  CHAPITRES.forEach(c=>{
+    const d = DB.ch[c.n];
+    const b=document.createElement("button");
+    b.className="ch"+(d&&d.done?" done":"")+(c.n===1&&!(d&&d.done)?" next":"")+(!c.pret?" lock":"");
+    const meta = c.pret
+      ? (d&&d.done ? "série "+(((d.serie||0)%3)+1)+" disponible" : c.sous)
+      : "bientôt";
+    b.innerHTML=`
+      <span class="ch-num">${c.n}</span>
+      <span class="ch-body">
+        <span class="ch-name">${c.nom}</span>
+        <span class="ch-meta">${meta}</span>
       </span>
       <span class="stars">${[1,2,3].map(i=>starSVG(d&&d.stars>=i)).join("")}</span>`;
-    if(s.ready) b.onclick = ()=> startSection(s.n);
-    (idx < 3 ? box : rest).appendChild(b);
+    if(c.pret) b.onclick=()=>startCh(c.n);
+    box.appendChild(b);
   });
 }
 
-/* ── старт раздела ── */
-function startSection(n){
-  R = { card:0, qi:0, queue:[...WARMUP, ...MAIN], first:0, total:0, tried:false, mode:"card", weak:[] };
-  $("w-name").textContent = SECTIONS[n-1].name;
+/* ═══════════ РАЗДЕЛ ═══════════ */
+
+function startCh(n){
+  const ch = CHAPITRES[n-1];
+  const st = DB.ch[n] || {};
+  const serie = (st.serie||0) % ch.series.length;
+  R = { ch:n, card:0, qi:0, queue:[...ch.series[serie]], first:0, total:0,
+        tried:false, mode:"card", weak:[], serie, aides:0 };
+  $("w-name").textContent = ch.nom;
   show("s-work");
-  drawCard();
+  if(st.done) { R.mode="q"; drawQ(); } else drawCard();
 }
 
-/* ── карточки ── */
 function drawCard(){
-  R.mode = "card";
-  const c = CARDS[R.card];
-  $("w-step").textContent = `Разбор · ${R.card+1} из ${CARDS.length}`;
-  $("w-fill").style.width = ((R.card+1)/(CARDS.length + R.queue.length) * 100) + "%";
+  R.mode="card";
+  const ch = CHAPITRES[R.ch-1];
+  const c = ch.cartes[R.card];
+  $("w-step").textContent = `Fiche ${R.card+1} / ${ch.cartes.length}`;
+  $("w-fill").style.width = ((R.card+1)/(ch.cartes.length+R.queue.length)*100)+"%";
 
   $("stage").innerHTML = `
-    <div class="deck">
-      <div class="card on">
-        <div class="card-k">${c.kicker}</div>
-        <h3>${c.title}</h3>
-        ${c.body}
-      </div>
+    <div class="card">
+      <div class="card-k">${c.k}</div>
+      <h3>${c.t}</h3>
+      ${c.c}
+      ${c.lent ? `
+        <button class="slow-btn" id="slow-btn">
+          <span id="slow-txt">Je n'ai pas compris</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="slow" id="slow"><div class="slow-in">${c.lent}</div></div>` : ``}
     </div>
-    <div class="dots">${CARDS.map((_,i)=>`<span class="dot ${i===R.card?'on':''}"></span>`).join("")}</div>
+    <div class="dots">${ch.cartes.map((_,i)=>`<span class="dot ${i===R.card?'on':''}"></span>`).join("")}</div>
     <div class="nav2">
-      ${R.card>0 ? `<button class="sec-btn" id="cprev">Назад</button>` : ``}
-      <button class="pri" id="cnext">${R.card===CARDS.length-1 ? "К вопросам" : "Дальше"}</button>
+      ${R.card>0?`<button class="gh" id="cprev">Précédent</button>`:``}
+      <button class="pri" id="cnext">${R.card===ch.cartes.length-1?"Aux exercices":"Suivant"}</button>
     </div>`;
 
   $("dock").classList.remove("up");
-  const p = $("cprev");
-  if(p) p.onclick = ()=>{ R.card--; drawCard(); };
-  $("cnext").onclick = ()=>{
-    if(R.card === CARDS.length-1){ R.qi = 0; drawQ(); }
+  const sb=$("slow-btn");
+  if(sb) sb.onclick=()=>{
+    const s=$("slow"), open=s.classList.toggle("open");
+    sb.classList.toggle("open",open);
+    $("slow-txt").textContent = open ? "Masquer" : "Je n'ai pas compris";
+    if(open){ DB.aides=(DB.aides||0)+1; save(); }
+  };
+  const p=$("cprev"); if(p) p.onclick=()=>{ R.card--; drawCard(); };
+  $("cnext").onclick=()=>{
+    if(R.card===ch.cartes.length-1){ R.qi=0; drawQ(); }
     else { R.card++; drawCard(); }
   };
 }
 
-/* ── вопрос ── */
+/* ═══════════ ВОПРОС ═══════════ */
+
 function drawQ(){
-  R.mode = "q";
-  R.tried = false;
+  R.mode="q"; R.tried=false;
+  const ch = CHAPITRES[R.ch-1];
   const q = R.queue[R.qi];
-  const step = CARDS.length + R.qi + 1;
-  const all  = CARDS.length + R.queue.length;
+  const base = DB.ch[R.ch] && DB.ch[R.ch].done ? 0 : ch.cartes.length;
+  const step = base + R.qi + 1;
+  const all  = base + R.queue.length;
 
-  $("w-step").textContent = `Вопрос ${R.qi+1} из ${R.queue.length}`;
-  $("w-fill").style.width = (step/all*100) + "%";
+  $("w-step").textContent = `Exercice ${R.qi+1} / ${R.queue.length}`;
+  $("w-fill").style.width = (step/all*100)+"%";
 
-  let inner = "";
-  if(q.type === "pick"){
-    inner = `<div class="opts">` + q.opts.map((o,i)=>
-      `<button class="opt" data-i="${i}">
-        <span class="mark">${String.fromCharCode(65+i)}</span>
-        <span class="txt">${o.t}</span>
-      </button>`).join("") + `</div>`;
+  let inner="";
+  if(q.type==="qcm"){
+    inner = `<div class="opts">`+q.opts.map((o,i)=>
+      `<button class="opt" data-i="${i}"><span class="mark">${String.fromCharCode(65+i)}</span><span class="txt">${o.t}</span></button>`
+    ).join("")+`</div>`;
   } else {
     inner = `<div class="num-wrap">
       <input class="num-in" id="nin" type="text" inputmode="decimal" autocomplete="off" placeholder="—">
-      <div class="num-hint">${q.hint || ""}</div>
+      <div class="num-hint">${q.ind||""}</div>
     </div>`;
   }
 
-  const kindHtml = q.hard
-    ? q.kind.replace("⭑ посложнее", `<span class="hard">⭑ посложнее</span>`)
-    : q.kind;
+  const kindHtml = q.hard ? q.k.replace("⭑",`<span class="hard">⭑</span>`) : q.k;
 
   $("stage").innerHTML = `
     <div class="q">
       <div class="q-kind">${kindHtml}</div>
       <p class="q-text">${q.q}</p>
-      ${q.sub ? `<p class="q-sub">${q.sub}</p>` : ``}
+      ${q.sub?`<p class="q-sub">${q.sub}</p>`:``}
       ${inner}
+      <div class="aid" id="aid"></div>
       <div class="exp" id="exp"><div class="exp-in" id="expin"></div></div>
     </div>`;
 
+  drawAid(0);
   $("dock").classList.remove("up");
-  $("go").className = "go";
-  $("go").textContent = "Дальше";
+  $("go").textContent="Suivant";
 
-  if(q.type === "pick"){
-    document.querySelectorAll(".opt").forEach(b=>{
-      b.onclick = ()=> answerPick(parseInt(b.dataset.i));
-    });
-    $("keys").innerHTML = q.opts.map((_,i)=>`<span><kbd>${i+1}</kbd></span>`).join("") + `<span><kbd>↵</kbd>дальше</span>`;
+  if(q.type==="qcm"){
+    document.querySelectorAll(".opt").forEach(b=>{ b.onclick=()=>answerQcm(parseInt(b.dataset.i)); });
+    $("keys").innerHTML = q.opts.map((_,i)=>`<span><kbd>${i+1}</kbd></span>`).join("")+`<span><kbd>↵</kbd>suivant</span>`;
   } else {
-    const inp = $("nin");
-    setTimeout(()=>{ if(window.innerWidth>=900) inp.focus(); }, 300);
-    inp.onkeydown = e=>{ if(e.key === "Enter") answerNum(); };
-    $("go").textContent = "Проверить";
-    $("go").onclick = answerNum;
+    const inp=$("nin");
+    setTimeout(()=>{ if(window.innerWidth>=900) inp.focus(); },300);
+    inp.onkeydown=e=>{ if(e.key==="Enter") answerNum(); };
+    $("go").textContent="Vérifier"; $("go").onclick=answerNum;
     $("dock").classList.add("up");
-    $("keys").innerHTML = `<span><kbd>↵</kbd>проверить</span>`;
+    $("keys").innerHTML=`<span><kbd>↵</kbd>vérifier</span>`;
   }
 }
 
-/* ── ответ: выбор ── */
-function answerPick(i){
+/* ступенчатые подсказки */
+function drawAid(level){
   const q = R.queue[R.qi];
-  const btns = document.querySelectorAll(".opt");
-  const good = q.opts[i].ok;
+  const box = $("aid");
+  if(!q.aides || !q.sol){ box.innerHTML=""; return; }
 
-  if(good){
-    btns.forEach((b,j)=>{
-      b.classList.add("dead");
-      if(j===i) b.classList.add("good");
-    });
+  let html = "";
+  for(let i=0;i<level && i<q.aides.length;i++){
+    html += `<div class="aid-box"><span class="lbl">Indice ${i+1}</span><p>${q.aides[i]}</p></div>`;
+  }
+  if(level > q.aides.length){
+    html += `<div class="aid-box sol"><span class="lbl">Solution</span>` +
+      q.sol.map((s,i)=>`<div class="step"><span class="no">${i+1}</span><div>${s}</div></div>`).join("") +
+      `</div>`;
+  }
+  if(level <= q.aides.length){
+    const isLast = level === q.aides.length;
+    html += `<button class="aid-btn ${isLast?'sol':''}" id="aid-btn">
+      ${level===0 ? "Un indice" : isLast ? "Voir la solution" : "Encore un indice"}
+    </button>`;
+  }
+  box.innerHTML = html;
+  const b=$("aid-btn");
+  if(b) b.onclick=()=>{
+    DB.aides=(DB.aides||0)+1; R.aides++; save();
+    drawAid(level+1);
+  };
+}
+
+function answerQcm(i){
+  const q=R.queue[R.qi];
+  const btns=document.querySelectorAll(".opt");
+  if(q.opts[i].ok){
+    btns.forEach((b,j)=>{ b.classList.add("dead"); if(j===i) b.classList.add("good"); });
     if(!R.tried) R.first++;
     R.total++;
-    openExp(true, q.opts[i].why, q.rule);
+    openExp(true,q.opts[i].why,q.regle);
     finishQ();
   } else {
     btns[i].classList.add("bad","dead");
-    R.tried = true;
+    R.tried=true;
     if(!R.weak.includes(R.qi)) R.weak.push(R.qi);
-    openExp(false, q.opts[i].why, null);
+    openExp(false,q.opts[i].why,null);
     $("dock").classList.remove("up");
   }
 }
 
-/* ── ответ: число ── */
 function answerNum(){
-  const q = R.queue[R.qi];
-  const inp = $("nin");
-  const raw = (inp.value||"").trim().replace(",",".").replace("−","-").replace(/\s/g,"");
-  if(raw === "") return;
-  const val = parseFloat(raw);
-  const good = Math.abs(val - q.answer) < 1e-9;
-
-  if(good){
-    inp.classList.remove("bad");
-    inp.classList.add("good");
-    inp.disabled = true;
+  const q=R.queue[R.qi], inp=$("nin");
+  const raw=(inp.value||"").trim().replace(",",".").replace("−","-").replace(/\s/g,"");
+  if(raw==="") return;
+  const val=parseFloat(raw);
+  if(Math.abs(val-q.rep)<1e-9){
+    inp.classList.remove("bad"); inp.classList.add("good"); inp.disabled=true;
     if(!R.tried) R.first++;
     R.total++;
-    openExp(true, q.why, q.rule);
+    openExp(true,q.ok,q.regle);
     finishQ();
   } else {
     inp.classList.add("bad");
-    setTimeout(()=>inp.classList.remove("bad"), 400);
-    R.tried = true;
+    setTimeout(()=>inp.classList.remove("bad"),400);
+    R.tried=true;
     if(!R.weak.includes(R.qi)) R.weak.push(R.qi);
-    openExp(false, q.miss, null);
+    openExp(false,q.no,null);
     inp.select();
   }
 }
 
-/* ── объяснение ── */
-function openExp(win, text, rule){
-  const box = $("exp"), inner = $("expin");
-  inner.className = "exp-in " + (win ? "win" : "lose");
-  inner.innerHTML = `
+function openExp(win,text,regle){
+  const box=$("exp"), inner=$("expin");
+  inner.className="exp-in "+(win?"win":"lose");
+  inner.innerHTML=`
     <div class="exp-h">
       ${win
-        ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Верно`
-        : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16.5v.01"/><circle cx="12" cy="12" r="9"/></svg> Не совсем`}
+        ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Correct`
+        : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16.5v.01"/><circle cx="12" cy="12" r="9"/></svg> Pas tout à fait`}
     </div>
     <p>${text}</p>
-    ${rule ? `<div class="rule"><b>Правило.</b> ${rule}</div>` : ``}
-    ${!win ? `<div class="rule" style="color:var(--miss)">Попробуй ещё раз.</div>` : ``}`;
+    ${regle?`<div class="rule"><b>À retenir.</b> ${regle}</div>`:``}
+    ${!win?`<div class="rule" style="color:var(--miss)">Réessaie.</div>`:``}`;
   box.classList.add("open");
 }
 
 function finishQ(){
-  const d = $("dock");
-  d.classList.add("up");
-  const last = R.qi === R.queue.length - 1;
-  $("go").textContent = last ? "Завершить" : "Дальше";
-  $("go").onclick = ()=>{
-    if(last) finishSection();
-    else { R.qi++; drawQ(); }
-  };
+  $("dock").classList.add("up");
+  const last = R.qi===R.queue.length-1;
+  $("go").textContent = last ? "Terminer" : "Suivant";
+  $("go").onclick = ()=>{ if(last) finishCh(); else { R.qi++; drawQ(); } };
 }
 
-/* ── итог ── */
-function finishSection(){
-  const rate = R.total ? R.first / R.total : 0;
-  const stars = rate === 1 ? 3 : rate >= 0.5 ? 2 : 1;
+function finishCh(){
+  const rate = R.total ? R.first/R.total : 0;
+  const stars = rate===1 ? 3 : rate>=0.5 ? 2 : 1;
+  const prev = DB.ch[R.ch] || {stars:0, serie:0};
+  DB.ch[R.ch] = { done:true, stars:Math.max(stars,prev.stars||0), serie:(prev.serie||0)+1 };
+  bumpStreak(); save();
 
-  const prev = DB.secs[1] || {stars:0};
-  DB.secs[1] = { done:true, stars: Math.max(stars, prev.stars||0) };
-  bumpStreak();
-  save();
+  $("d-s").textContent = `${R.first} / ${R.total} du premier coup`;
+  $("d-h").textContent = stars===3 ? "Parfait" : stars===2 ? "Bien" : "Chapitre terminé";
 
-  $("d-s").textContent = `${R.first} из ${R.total} с первой попытки`;
-  $("d-h").textContent = stars === 3 ? "Отлично" : stars === 2 ? "Хорошо" : "Раздел пройден";
-
-  const box = $("bstars");
-  box.innerHTML = [1,2,3].map(i=>
+  const box=$("bstars");
+  box.innerHTML=[1,2,3].map(i=>
     `<svg class="bstar" viewBox="0 0 24 24" fill="${i<=stars?'#1c2024':'#d9d9e0'}"><path d="M12 2l2.9 6.3 6.6.7-4.9 4.5 1.4 6.5L12 16.8 6 20l1.4-6.5L2.5 9l6.6-.7z"/></svg>`
   ).join("");
-  box.querySelectorAll(".bstar").forEach((s,i)=>{
-    setTimeout(()=> s.classList.add("pop"), 140 + i*80);
-  });
+  box.querySelectorAll(".bstar").forEach((s,i)=> setTimeout(()=>s.classList.add("pop"),140+i*80));
 
-  const tip = $("d-tip");
+  const tip=$("d-tip");
+  const ch=CHAPITRES[R.ch-1];
+  const nextSerie = ((DB.ch[R.ch].serie)%ch.series.length)+1;
   if(R.weak.length){
-    const names = R.weak.map(i=>R.queue[i].kind.replace(" ⭑ посложнее","").toLowerCase());
-    tip.style.display = "block";
-    tip.innerHTML = `<b>СТОИТ ВЕРНУТЬСЯ</b>Споткнулись на вопросах: ${[...new Set(names)].join(", ")}. Перечитай карточки — там это разбирается.`;
-  } else {
-    tip.style.display = "none";
-  }
+    tip.style.display="block";
+    tip.innerHTML=`<b>À REVOIR</b>Tu as hésité sur ${R.weak.length} exercice${R.weak.length>1?"s":""}. Relis les fiches, puis refais la série.`;
+  } else if(R.aides>2){
+    tip.style.display="block";
+    tip.innerHTML=`<b>BON RÉFLEXE</b>Tu as utilisé les indices — c'est fait pour ça. Refais la série demain sans les ouvrir.`;
+  } else { tip.style.display="none"; }
 
+  $("d-more").textContent = "Série " + nextSerie;
   show("s-done");
 }
 
-/* ── ещё вопросы ── */
-function moreQuestions(){
-  R.queue = [...EXTRA];
-  R.qi = 0; R.first = 0; R.total = 0; R.weak = [];
+function nextSerie(){
+  startCh(R.ch);
   show("s-work");
-  drawQ();
 }
 
-/* ═══════════════════════════════════════════
-   СОБЫТИЯ
-   ═══════════════════════════════════════════ */
+$("resume").onclick=()=>startCh(1);
+$("back").onclick=()=>{ show("s-home"); drawHome(); };
+$("d-home").onclick=()=>{ show("s-home"); drawHome(); };
+$("d-more").onclick=nextSerie;
 
-$("more-btn").onclick = ()=>{
-  const r = $("rest"), b = $("more-btn");
-  const open = r.classList.toggle("open");
-  b.classList.toggle("open", open);
-  $("more-txt").textContent = open ? "Свернуть" : "Ещё 11 разделов";
-};
-
-$("resume").onclick = ()=> startSection(1);
-$("back").onclick = ()=>{ show("s-home"); drawHome(); };
-$("d-home").onclick = ()=>{ show("s-home"); drawHome(); };
-$("d-more").onclick = moreQuestions;
-
-document.addEventListener("keydown", e=>{
-  if(!$("s-work").classList.contains("on")) {
-    if(e.key === "Escape" && $("s-done").classList.contains("on")){ show("s-home"); drawHome(); }
+document.addEventListener("keydown",e=>{
+  if(!$("s-work").classList.contains("on")){
+    if(e.key==="Escape"&&$("s-done").classList.contains("on")){ show("s-home"); drawHome(); }
     return;
   }
-  if(R.mode === "q"){
-    const q = R.queue[R.qi];
-    if(q.type === "pick" && /^[1-9]$/.test(e.key)){
-      const i = parseInt(e.key) - 1;
-      const b = document.querySelectorAll(".opt")[i];
-      if(b && !b.classList.contains("dead")) b.click();
+  if(R.mode==="q"){
+    const q=R.queue[R.qi];
+    if(q.type==="qcm"&&/^[1-9]$/.test(e.key)){
+      const b=document.querySelectorAll(".opt")[parseInt(e.key)-1];
+      if(b&&!b.classList.contains("dead")) b.click();
     }
-    if(e.key === "Enter" && $("dock").classList.contains("up")) $("go").click();
+    if(e.key==="Enter"&&$("dock").classList.contains("up")) $("go").click();
   }
-  if(e.key === "Escape"){ show("s-home"); drawHome(); }
+  if(e.key==="Escape"){ show("s-home"); drawHome(); }
 });
 
 drawHome();

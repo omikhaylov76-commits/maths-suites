@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les suites — полный разбор (1ère spé → Terminale)</title>
+<style>
+:root{
+  --paper:#faf8f4;
+  --ink:#1c1b19;
+  --muted:#6b6862;
+  --line:#ddd8cf;
+  --accent:#1c4e80;
+  --accent-soft:#eef3f8;
+  --warn:#8a4b12;
+  --warn-soft:#fdf3e7;
+  --ok:#2d5f3f;
+  --ok-soft:#eef5ef;
+  --fr:#5a3e85;
+  --fr-soft:#f3eff8;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:400 17px/1.65 "Charter","Georgia","Iowan Old Style",serif;
+  text-wrap:pretty;
+}
+.wrap{max-width:780px;margin:0 auto;padding:0 24px 120px}
+
+/* ---------- заголовок ---------- */
+header.top{
+  border-bottom:2px solid var(--ink);
+  padding:56px 0 28px;
+  margin-bottom:40px;
+}
+.kicker{
+  font:600 12px/1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:14px;
+}
+h1{
+  font:700 clamp(32px,6vw,46px)/1.1 "Charter","Georgia",serif;
+  margin:0 0 14px;
+  letter-spacing:-.02em;
+}
+.sub{color:var(--muted);font-size:18px;margin:0}
+
+/* ---------- оглавление ---------- */
+nav.toc{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:26px 30px;
+  margin-bottom:52px;
+}
+nav.toc h2{
+  font:600 12px/1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 16px;
+}
+nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:36px}
+nav.toc li{margin:0 0 7px;break-inside:avoid;font-size:15.5px}
+nav.toc a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+nav.toc a:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:600px){nav.toc ol{columns:1}}
+
+/* ---------- секции ---------- */
+section{margin-bottom:64px;scroll-margin-top:20px}
+h2.sec{
+  font:700 27px/1.25 "Charter","Georgia",serif;
+  margin:0 0 6px;letter-spacing:-.01em;
+  padding-top:14px;border-top:1px solid var(--line);
+}
+h2.sec .num{
+  color:var(--accent);font-variant-numeric:tabular-nums;
+  margin-right:12px;font-weight:700;
+}
+.lead{color:var(--muted);font-size:16px;margin:0 0 26px}
+h3{font:700 19px/1.3 "Charter","Georgia",serif;margin:34px 0 10px}
+h4{font:600 15px/1.3 ui-sans-serif,system-ui,sans-serif;margin:24px 0 8px;color:var(--muted);letter-spacing:.02em}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:24px}
+li{margin-bottom:7px}
+strong{font-weight:700}
+em{font-style:italic}
+
+/* ---------- математика ---------- */
+.m{font-family:"Cambria Math","Latin Modern Math","Georgia",serif;font-style:italic;white-space:nowrap;font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+.m sub,.m sup{font-style:normal}
+sub,sup{font-size:max(.72em,11px);line-height:0;font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+.eq{
+  display:block;text-align:center;
+  font-family:"Cambria Math","Latin Modern Math","Georgia",serif;
+  font-size:19px;margin:20px 0;line-height:1.9;
+  font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1;
+  overflow-x:auto;
+}
+.eq.big{font-size:22px}
+.frac{display:inline-block;vertical-align:middle;text-align:center;margin:0 4px;line-height:1.35}
+.frac>span{display:block;padding:0 6px}
+.frac .den{border-top:1.4px solid currentColor;padding-top:2px}
+.frac .num{padding-bottom:2px}
+
+/* ---------- блоки ---------- */
+.box{border-radius:4px;padding:20px 24px;margin:24px 0;border:1px solid}
+.box .lbl{
+  font:700 11px/1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.12em;text-transform:uppercase;
+  display:block;margin-bottom:12px;
+}
+.box p:last-child,.box ul:last-child,.box ol:last-child{margin-bottom:0}
+
+.def{background:var(--accent-soft);border-color:#c3d4e6}
+.def .lbl{color:var(--accent)}
+.trap{background:var(--warn-soft);border-color:#eccfa8}
+.trap .lbl{color:var(--warn)}
+.method{background:var(--ok-soft);border-color:#b9d4c1}
+.method .lbl{color:var(--ok)}
+.redac{background:var(--fr-soft);border-color:#cfc0e0}
+.redac .lbl{color:var(--fr)}
+
+/* французская рамка */
+.redac pre{
+  font:400 14.5px/1.75 "SF Mono",Menlo,Consolas,monospace;
+  white-space:pre-wrap;margin:0;color:var(--ink);
+}
+
+/* ---------- таблицы ---------- */
+table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15.5px}
+caption{
+  caption-side:top;text-align:left;
+  font:600 12px/1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);padding-bottom:10px;
+}
+th{
+  text-align:left;font:600 13px/1.4 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.03em;color:var(--muted);
+  border-bottom:1.5px solid var(--ink);padding:8px 12px 8px 0;
+  vertical-align:bottom;
+}
+td{border-bottom:1px solid var(--line);padding:11px 12px 11px 0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td:last-child,th:last-child{padding-right:0}
+
+/* французский термин */
+.fr{
+  font-family:ui-sans-serif,system-ui,sans-serif;
+  font-size:.92em;color:var(--fr);font-weight:600;
+}
+
+/* пример */
+.ex{border-left:3px solid var(--line);padding-left:20px;margin:22px 0}
+.ex .tag{
+  font:700 11px/1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:10px;
+}
+
+/* шаги */
+ol.steps{counter-reset:s;list-style:none;padding-left:0}
+ol.steps>li{
+  counter-increment:s;position:relative;
+  padding-left:44px;margin-bottom:18px;
+}
+ol.steps>li::before{
+  content:counter(s);position:absolute;left:0;top:1px;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--ink);color:var(--paper);
+  font:700 14px/28px ui-sans-serif,system-ui,sans-serif;
+  text-align:center;
+}
+
+footer{
+  border-top:1px solid var(--line);
+  padding-top:22px;margin-top:70px;
+  color:var(--muted);font-size:14px;
+}
+
+@media print{
+  body{background:#fff;font-size:11.5pt}
+  .wrap{max-width:100%;padding:0}
+  nav.toc{break-after:page}
+  section{break-inside:auto}
+  .box,.ex,table{break-inside:avoid}
+  h2.sec{break-after:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="kicker">Mathématiques · 1<sup>re</sup> spé → Terminale</div>
+  <h1>Les suites numériques</h1>
+  <p class="sub">Полный разбор с нуля: от определения до пределов. Объяснения по-русски, вся терминология и оформление решений — по-французски, как в лицее.</p>
+</header>
+
+<nav class="toc">
+  <h2>Содержание</h2>
+  <ol>
+    <li><a href="#s1">Что такое suite</a></li>
+    <li><a href="#s2">Два способа задать suite</a></li>
+    <li><a href="#s3">Как считать члены</a></li>
+    <li><a href="#s4">График</a></li>
+    <li><a href="#s5">Монотонность</a></li>
+    <li><a href="#s6">Suites arithmétiques</a></li>
+    <li><a href="#s7">Suites géométriques</a></li>
+    <li><a href="#s8">Сравнение двух типов</a></li>
+    <li><a href="#s9">Суммы</a></li>
+    <li><a href="#s10">Récurrence <span class="fr">(Term.)</span></a></li>
+    <li><a href="#s11">Пределы <span class="fr">(Term.)</span></a></li>
+    <li><a href="#s12">Арифметико-геометрические</a></li>
+    <li><a href="#s13">Типичные ошибки</a></li>
+    <li><a href="#s14">Задачи с решениями</a></li>
+  </ol>
+</nav>
+
+<!-- ============ 1 ============ -->
+<section id="s1">
+<h2 class="sec"><span class="num">1</span>Что такое suite</h2>
+<p class="lead">Начнём с самого простого, потому что дальше всё строится на этом.</p>
+
+<p><strong>Suite numérique</strong> — это просто <em>пронумерованный список чисел</em>. Первое число, второе, третье и так до бесконечности.</p>
+
+<p>Например: 2, 5, 8, 11, 14, …</p>
+
+<p>Каждое число в списке имеет свой номер. Этот номер называется <span class="fr">rang</span> (ранг) или <span class="fr">indice</span> (индекс), и его пишут маленькой цифрой внизу:</p>
+
+<div class="eq">
+<span class="m">u<sub>0</sub></span> = 2 &nbsp;&nbsp;&nbsp;&nbsp;
+<span class="m">u<sub>1</sub></span> = 5 &nbsp;&nbsp;&nbsp;&nbsp;
+<span class="m">u<sub>2</sub></span> = 8 &nbsp;&nbsp;&nbsp;&nbsp;
+<span class="m">u<sub>3</sub></span> = 11
+</div>
+
+<div class="box def">
+<span class="lbl">Définition</span>
+<p>Une <strong>suite numérique</strong> est une fonction définie sur <span class="m">ℕ</span> (ou sur une partie de <span class="m">ℕ</span>) à valeurs dans <span class="m">ℝ</span>.</p>
+<p style="margin-top:12px">По-русски: это функция, у которой на входе может быть только целое неотрицательное число (номер), а на выходе — обычное число.</p>
+</div>
+
+<h3>Обозначения — здесь путаются чаще всего</h3>
+
+<table>
+<caption>Notations</caption>
+<tr><th style="width:26%">Запись</th><th>Что это</th></tr>
+<tr>
+  <td><span class="m">u<sub>n</sub></span></td>
+  <td><strong>Одно число</strong> — член с номером <span class="m">n</span>. Называется <span class="fr">terme de rang n</span>. Например <span class="m">u<sub>3</sub></span> = 11 — это просто число 11.</td>
+</tr>
+<tr>
+  <td><span class="m">(u<sub>n</sub>)</span></td>
+  <td><strong>Вся последовательность целиком</strong> — весь бесконечный список. Скобки обязательны. Часто пишут <span class="m">(u<sub>n</sub>)<sub>n∈ℕ</sub></span>.</td>
+</tr>
+<tr>
+  <td><span class="m">u(n)</span></td>
+  <td>То же, что <span class="m">u<sub>n</sub></span>, просто в «функциональной» записи. Встречается реже, но ты её увидишь, когда учитель захочет подчеркнуть, что suite — это функция.</td>
+</tr>
+</table>
+
+<div class="box trap">
+<span class="lbl">Piège classique</span>
+<p>«Вычислите <span class="m">(u<sub>n</sub>)</span>» — так не говорят. Вычисляют <strong>член</strong> <span class="m">u<sub>n</sub></span>. А <span class="m">(u<sub>n</sub>)</span> изучают: она возрастает, убывает, сходится.</p>
+<p style="margin-top:10px">Если в задании написано «Montrer que <span class="m">(u<sub>n</sub>)</span> est croissante» — речь про всю последовательность. Если «Calculer <span class="m">u<sub>5</sub></span>» — про одно число.</p>
+</div>
+
+<h3>Словарь</h3>
+<table>
+<tr><th style="width:38%">Français</th><th>Русский</th></tr>
+<tr><td><span class="fr">terme</span></td><td>член последовательности (одно число)</td></tr>
+<tr><td><span class="fr">rang / indice</span></td><td>номер члена</td></tr>
+<tr><td><span class="fr">premier terme</span></td><td>первый член (<span class="m">u<sub>0</sub></span> или <span class="m">u<sub>1</sub></span>)</td></tr>
+<tr><td><span class="fr">terme général</span></td><td>формула общего члена</td></tr>
+<tr><td><span class="fr">terme de rang n</span></td><td>член с номером <span class="m">n</span></td></tr>
+<tr><td><span class="fr">terme suivant</span></td><td>следующий член (<span class="m">u<sub>n+1</sub></span>)</td></tr>
+</table>
+
+<div class="box trap">
+<span class="lbl">Внимание</span>
+<p>Нумерация может начинаться с <strong>0</strong> или с <strong>1</strong> — это решает автор задачи. Всегда смотри на условие. Если написано «<span class="m">u<sub>0</sub></span> = 3», значит отсчёт с нуля, и <span class="m">u<sub>5</sub></span> — это <em>шестой</em> член, а не пятый.</p>
+</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="s2">
+<h2 class="sec"><span class="num">2</span>Два способа задать suite</h2>
+<p class="lead">Это ключевой момент всей темы. Если понять разницу — половина трудностей исчезает.</p>
+
+<p>Чтобы описать бесконечный список чисел, нужно правило. Правил бывает два типа.</p>
+
+<h3>Способ A — Forme explicite</h3>
+
+<p>Формула напрямую связывает номер и значение: <span class="m">u<sub>n</sub></span> = <span class="m">f(n)</span>.</p>
+
+<div class="eq big"><span class="m">u<sub>n</sub></span> = 3<span class="m">n</span> + 2</div>
+
+<p>Подставляешь номер — получаешь член. Сразу, без разгона:</p>
+
+<div class="eq">
+<span class="m">u<sub>0</sub></span> = 3·0 + 2 = 2 &nbsp;&nbsp;&nbsp;&nbsp;
+<span class="m">u<sub>1</sub></span> = 3·1 + 2 = 5 &nbsp;&nbsp;&nbsp;&nbsp;
+<span class="m">u<sub>100</sub></span> = 3·100 + 2 = 302
+</div>
+
+<p><strong>Главное преимущество:</strong> можно прыгнуть сразу к <span class="m">u<sub>1000</sub></span>, не считая предыдущие.</p>
+
+<h3>Способ B — Relation de récurrence</h3>
+
+<p>Формула связывает <em>соседние</em> члены: каждый следующий выражается через предыдущий.</p>
+
+<div class="eq big">
+<span class="m">u<sub>0</sub></span> = 2 &nbsp;&nbsp;и&nbsp;&nbsp;
+<span class="m">u<sub>n+1</sub></span> = <span class="m">u<sub>n</sub></span> + 3
+</div>
+
+<p>Считать можно только по цепочке, шаг за шагом:</p>
+
+<div class="eq">
+<span class="m">u<sub>1</sub></span> = 2 + 3 = 5 &nbsp;→&nbsp;
+<span class="m">u<sub>2</sub></span> = 5 + 3 = 8 &nbsp;→&nbsp;
+<span class="m">u<sub>3</sub></span> = 8 + 3 = 11
+</div>
+
+<div class="box trap">
+<span class="lbl">Почему нужен первый член</span>
+<p>Правило «<span class="m">u<sub>n+1</sub></span> = <span class="m">u<sub>n</sub></span> + 3» само по себе бесполезно — оно говорит, <em>как шагать</em>, но не говорит, <em>откуда стартовать</em>. Поэтому задание по рекуррентности <strong>всегда</strong> включает первый член. Если его нет — условие неполное.</p>
+</div>
+
+<h3>Сравнение</h3>
+
+<table>
+<tr><th style="width:34%"></th><th>Explicite</th><th>Récurrence</th></tr>
+<tr>
+  <td>Вид</td>
+  <td><span class="m">u<sub>n</sub></span> = <span class="m">f(n)</span></td>
+  <td><span class="m">u<sub>n+1</sub></span> = <span class="m">f(u<sub>n</sub>)</span></td>
+</tr>
+<tr>
+  <td>Считаем <span class="m">u<sub>50</sub></span></td>
+  <td>сразу, одной подстановкой</td>
+  <td>только пройдя все 50 шагов</td>
+</tr>
+<tr>
+  <td>Нужен <span class="m">u<sub>0</sub></span>?</td>
+  <td>нет</td>
+  <td><strong>обязательно</strong></td>
+</tr>
+<tr>
+  <td>График</td>
+  <td>точки по формуле функции</td>
+  <td>«лесенка» между кривой и биссектрисой</td>
+</tr>
+<tr>
+  <td>Монотонность</td>
+  <td>можно через <span class="m">f</span>′</td>
+  <td>через знак <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span></td>
+</tr>
+</table>
+
+<div class="box def">
+<span class="lbl">Ключевая идея</span>
+<p>Одну и ту же suite можно задать обоими способами. Те же числа 2, 5, 8, 11 выше описаны и явной формулой, и рекуррентной.</p>
+<p style="margin-top:10px">Огромная часть задач Terminale — это <strong>перевод</strong> из рекуррентной формы в явную. Потому что с явной легко найти предел, а с рекуррентной — нет.</p>
+</div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="s3">
+<h2 class="sec"><span class="num">3</span>Как считать члены</h2>
+<p class="lead">Механика, которую нужно довести до автоматизма.</p>
+
+<h3>Если форма явная</h3>
+<div class="ex">
+<span class="tag">Exemple</span>
+<p><span class="m">u<sub>n</sub></span> = <span class="m">n</span>² − 4<span class="m">n</span> + 1. Найти <span class="m">u<sub>3</sub></span>.</p>
+<p>Везде вместо <span class="m">n</span> пишем 3:</p>
+<div class="eq"><span class="m">u<sub>3</sub></span> = 3² − 4·3 + 1 = 9 − 12 + 1 = −2</div>
+</div>
+
+<div class="box trap">
+<span class="lbl">Piège</span>
+<p>Если просят <span class="m">u<sub>n+1</sub></span>, подставляй <span class="m">(n+1)</span> <strong>в скобках</strong>, всюду:</p>
+<div class="eq"><span class="m">u<sub>n+1</sub></span> = <span class="m">(n+1)</span>² − 4<span class="m">(n+1)</span> + 1 = <span class="m">n</span>² + 2<span class="m">n</span> + 1 − 4<span class="m">n</span> − 4 + 1 = <span class="m">n</span>² − 2<span class="m">n</span> − 2</div>
+<p>Классическая ошибка — написать <span class="m">u<sub>n+1</sub></span> = <span class="m">u<sub>n</sub></span> + 1. Это неверно: индекс сдвигается, а не значение.</p>
+</div>
+
+<h3>Если форма рекуррентная</h3>
+<div class="ex">
+<span class="tag">Exemple</span>
+<p><span class="m">u<sub>0</sub></span> = 1, <span class="m">u<sub>n+1</sub></span> = 2<span class="m">u<sub>n</sub></span> + 3. Найти <span class="m">u<sub>3</sub></span>.</p>
+<p>Идём по цепочке — перепрыгнуть нельзя:</p>
+<div class="eq">
+<span class="m">u<sub>1</sub></span> = 2·1 + 3 = 5<br>
+<span class="m">u<sub>2</sub></span> = 2·5 + 3 = 13<br>
+<span class="m">u<sub>3</sub></span> = 2·13 + 3 = 29
+</div>
+</div>
+
+<div class="box method">
+<span class="lbl">Как не запутаться</span>
+<p>В формуле <span class="m">u<sub>n+1</sub></span> = 2<span class="m">u<sub>n</sub></span> + 3 читай так: «<em>новый</em> = 2 × <em>старый</em> + 3». Индексы — это просто «кто новый, кто старый».</p>
+</div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="s4">
+<h2 class="sec"><span class="num">4</span>График</h2>
+<p class="lead">Suite — не кривая. Это набор отдельных точек.</p>
+
+<p>Поскольку <span class="m">n</span> принимает только целые значения, график — это <strong>отдельные точки</strong>, а не линия. По-французски: <span class="fr">nuage de points</span> (облако точек).</p>
+
+<p>Точки имеют координаты <span class="m">(n ; u<sub>n</sub>)</span>: номер по горизонтали, значение по вертикали.</p>
+
+<div class="box trap">
+<span class="lbl">Erreur fréquente</span>
+<p>Соединять точки линией. Между <span class="m">u<sub>2</sub></span> и <span class="m">u<sub>3</sub></span> ничего нет — <span class="m">u<sub>2{,}5</sub></span> не существует. На экзамене за соединённые точки снимают баллы.</p>
+</div>
+
+<h3>Построение «лесенкой» <span class="fr">(construction en escalier)</span></h3>
+
+<p>Для рекуррентной suite <span class="m">u<sub>n+1</sub></span> = <span class="m">f(u<sub>n</sub>)</span> есть особый приём, который часто просят на экзамене.</p>
+
+<ol class="steps">
+<li>Чертим кривую <span class="m">y = f(x)</span> и прямую <span class="m">y = x</span> (биссектрису).</li>
+<li>Отмечаем <span class="m">u<sub>0</sub></span> на оси абсцисс.</li>
+<li>Идём <strong>вертикально</strong> до кривой — получаем высоту <span class="m">u<sub>1</sub></span>.</li>
+<li>Идём <strong>горизонтально</strong> до биссектрисы — переносим <span class="m">u<sub>1</sub></span> на ось абсцисс.</li>
+<li>Повторяем: вертикаль до кривой, горизонталь до биссектрисы.</li>
+</ol>
+
+<p>Получается ступенчатая ломаная. По ней сразу видно, растёт suite или убывает, и к чему она стремится — точка пересечения кривой с биссектрисой и есть предел.</p>
+
+<div class="box method">
+<span class="lbl">Зачем биссектриса</span>
+<p>Она «перекладывает» значение с вертикальной оси на горизонтальную. Мы получили <span class="m">u<sub>1</sub></span> как высоту, а нам нужно вставить его в функцию — то есть положить на горизонтальную ось. Прямая <span class="m">y = x</span> делает ровно это.</p>
+</div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="s5">
+<h2 class="sec"><span class="num">5</span>Монотонность <span class="fr" style="font-size:.6em">— sens de variation</span></h2>
+<p class="lead">Вопрос «растёт или убывает» — один из самых частых на экзамене.</p>
+
+<div class="box def">
+<span class="lbl">Définitions</span>
+<p><span class="m">(u<sub>n</sub>)</span> est <strong>croissante</strong> si pour tout <span class="m">n</span>, <span class="m">u<sub>n+1</sub></span> ⩾ <span class="m">u<sub>n</sub></span>.</p>
+<p><span class="m">(u<sub>n</sub>)</span> est <strong>décroissante</strong> si pour tout <span class="m">n</span>, <span class="m">u<sub>n+1</sub></span> ⩽ <span class="m">u<sub>n</sub></span>.</p>
+<p><span class="m">(u<sub>n</sub>)</span> est <strong>monotone</strong> si elle est croissante ou décroissante.</p>
+<p style="margin-top:12px"><em>Strictement</em> croissante — если неравенство строгое (&gt; вместо ⩾).</p>
+</div>
+
+<h3>Метод 1 — знак разности <span class="fr">(le plus sûr)</span></h3>
+
+<p>Считаем <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> и смотрим на знак.</p>
+
+<table>
+<tr><th style="width:44%">Если для всех <span class="m">n</span></th><th>То suite</th></tr>
+<tr><td><span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> &gt; 0</td><td>строго возрастает</td></tr>
+<tr><td><span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> &lt; 0</td><td>строго убывает</td></tr>
+<tr><td><span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> = 0</td><td>постоянна</td></tr>
+</table>
+
+<div class="ex">
+<span class="tag">Exemple</span>
+<p><span class="m">u<sub>n</sub></span> = <span class="m">n</span>² + 2<span class="m">n</span></p>
+<div class="eq">
+<span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> = [<span class="m">(n+1)</span>² + 2<span class="m">(n+1)</span>] − [<span class="m">n</span>² + 2<span class="m">n</span>]<br>
+= <span class="m">n</span>² + 2<span class="m">n</span> + 1 + 2<span class="m">n</span> + 2 − <span class="m">n</span>² − 2<span class="m">n</span><br>
+= 2<span class="m">n</span> + 3
+</div>
+<p>Для любого <span class="m">n</span> ⩾ 0 получаем 2<span class="m">n</span> + 3 &gt; 0, значит suite строго возрастает.</p>
+</div>
+
+<h3>Метод 2 — частное <span class="fr">(si tous les termes sont &gt; 0)</span></h3>
+
+<p>Работает <strong>только</strong> если все члены строго положительны. Сравниваем <span class="m">u<sub>n+1</sub></span> / <span class="m">u<sub>n</sub></span> с единицей.</p>
+
+<table>
+<tr><th style="width:44%">Если для всех <span class="m">n</span></th><th>То suite</th></tr>
+<tr><td><span class="m">u<sub>n+1</sub></span>/<span class="m">u<sub>n</sub></span> &gt; 1</td><td>возрастает</td></tr>
+<tr><td><span class="m">u<sub>n+1</sub></span>/<span class="m">u<sub>n</sub></span> &lt; 1</td><td>убывает</td></tr>
+</table>
+
+<div class="box trap">
+<span class="lbl">Обязательное условие</span>
+<p>Перед этим методом <strong>напиши в решении</strong>, что все члены положительны. Без этой фразы метод недействителен: при делении на отрицательное число знак неравенства переворачивается.</p>
+<p style="margin-top:10px">Формулировка для экзамена: «<em>Tous les termes de la suite sont strictement positifs, on peut donc comparer le quotient à 1.</em>»</p>
+</div>
+
+<h3>Метод 3 — через функцию <span class="fr">(forme explicite uniquement)</span></h3>
+
+<p>Если <span class="m">u<sub>n</sub></span> = <span class="m">f(n)</span>, изучаем функцию <span class="m">f</span> на промежутке [0 ; +∞[. Если <span class="m">f</span> возрастает там — то и suite возрастает.</p>
+
+<div class="box trap">
+<span class="lbl">Не работает для рекуррентных</span>
+<p>Если suite задана как <span class="m">u<sub>n+1</sub></span> = <span class="m">f(u<sub>n</sub>)</span>, этот метод <strong>неприменим</strong>. Тут <span class="m">f</span> действует на <em>значение</em>, а не на <em>номер</em>. Очень распространённая ошибка.</p>
+</div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="s6">
+<h2 class="sec"><span class="num">6</span>Suites arithmétiques</h2>
+<p class="lead">Первый из двух «именных» типов. Прибавляем одно и то же.</p>
+
+<div class="box def">
+<span class="lbl">Définition</span>
+<p>Une suite <span class="m">(u<sub>n</sub>)</span> est <strong>arithmétique</strong> s'il existe un réel <span class="m">r</span> tel que pour tout <span class="m">n</span> :</p>
+<div class="eq big"><span class="m">u<sub>n+1</sub></span> = <span class="m">u<sub>n</sub></span> + <span class="m">r</span></div>
+<p><span class="m">r</span> s'appelle la <strong>raison</strong> de la suite.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">Ложный друг переводчика</span>
+<p><span class="fr">raison</span> — это <strong>разность</strong>, а не «причина» и не «разум». В русских учебниках это <em>d</em> (différence), во французских — <em>r</em>.</p>
+</div>
+
+<h3>Как узнать арифметическую suite</h3>
+
+<p>Считаем разность соседних членов. Если она <strong>всегда одинаковая</strong> — suite арифметическая.</p>
+
+<div class="ex">
+<span class="tag">Exemple</span>
+<p>7, 11, 15, 19, 23, …</p>
+<p>11 − 7 = 4&nbsp;;&nbsp; 15 − 11 = 4&nbsp;;&nbsp; 19 − 15 = 4&nbsp;;&nbsp; 23 − 19 = 4</p>
+<p>Разность постоянна, значит suite арифметическая с <span class="m">r</span> = 4.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">Внимание на доказательство</span>
+<p>Проверить пару членов — <strong>недостаточно</strong> для доказательства. Нужно посчитать <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> в общем виде и показать, что результат не зависит от <span class="m">n</span>.</p>
+</div>
+
+<h3>Формула общего члена</h3>
+
+<p>Чтобы дойти от <span class="m">u<sub>0</sub></span> до <span class="m">u<sub>n</sub></span>, нужно прибавить <span class="m">r</span> ровно <span class="m">n</span> раз:</p>
+
+<div class="eq big"><span class="m">u<sub>n</sub></span> = <span class="m">u<sub>0</sub></span> + <span class="m">n</span> × <span class="m">r</span></div>
+
+<p>Более общая формула — от любого члена к любому:</p>
+
+<div class="eq big"><span class="m">u<sub>n</sub></span> = <span class="m">u<sub>p</sub></span> + <span class="m">(n − p)</span> × <span class="m">r</span></div>
+
+<div class="box method">
+<span class="lbl">Как запомнить</span>
+<p>«Сколько шагов между <span class="m">p</span> и <span class="m">n</span>? Ровно <span class="m">(n − p)</span>. Каждый шаг добавляет <span class="m">r</span>.»</p>
+<p style="margin-top:10px">Если нумерация с единицы, формула становится <span class="m">u<sub>n</sub></span> = <span class="m">u<sub>1</sub></span> + <span class="m">(n − 1)r</span>. Не заучивай два варианта — выводи из общей.</p>
+</div>
+
+<h3>Монотонность</h3>
+<p>Здесь всё просто: <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> = <span class="m">r</span>, поэтому знак разности — это знак <span class="m">r</span>.</p>
+
+<table>
+<tr><th style="width:30%">Raison</th><th>Suite</th></tr>
+<tr><td><span class="m">r</span> &gt; 0</td><td>строго возрастает</td></tr>
+<tr><td><span class="m">r</span> &lt; 0</td><td>строго убывает</td></tr>
+<tr><td><span class="m">r</span> = 0</td><td>постоянна</td></tr>
+</table>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="s7">
+<h2 class="sec"><span class="num">7</span>Suites géométriques</h2>
+<p class="lead">Второй тип. Умножаем на одно и то же.</p>
+
+<div class="box def">
+<span class="lbl">Définition</span>
+<p>Une suite <span class="m">(u<sub>n</sub>)</span> est <strong>géométrique</strong> s'il existe un réel <span class="m">q</span> non nul tel que pour tout <span class="m">n</span> :</p>
+<div class="eq big"><span class="m">u<sub>n+1</sub></span> = <span class="m">q</span> × <span class="m">u<sub>n</sub></span></div>
+<p><span class="m">q</span> s'appelle la <strong>raison</strong> de la suite.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">Слово то же, смысл другой</span>
+<p>У арифметической <span class="fr">raison</span> — это то, что <em>прибавляют</em>. У геометрической — то, на что <em>умножают</em>. Одно слово, две роли. Смотри на тип suite.</p>
+</div>
+
+<h3>Как узнать геометрическую suite</h3>
+
+<p>Делим соседние члены. Если частное всегда одинаковое — suite геометрическая.</p>
+
+<div class="ex">
+<span class="tag">Exemple</span>
+<p>3, 6, 12, 24, 48, …</p>
+<p>6/3 = 2&nbsp;;&nbsp; 12/6 = 2&nbsp;;&nbsp; 24/12 = 2&nbsp;;&nbsp; 48/24 = 2</p>
+<p>Частное постоянно, значит suite геометрическая с <span class="m">q</span> = 2.</p>
+</div>
+
+<h3>Формула общего члена</h3>
+
+<p>Чтобы дойти от <span class="m">u<sub>0</sub></span> до <span class="m">u<sub>n</sub></span>, умножаем на <span class="m">q</span> ровно <span class="m">n</span> раз:</p>
+
+<div class="eq big"><span class="m">u<sub>n</sub></span> = <span class="m">u<sub>0</sub></span> × <span class="m">q</span><sup><span class="m">n</span></sup></div>
+
+<p>Общая форма:</p>
+
+<div class="eq big"><span class="m">u<sub>n</sub></span> = <span class="m">u<sub>p</sub></span> × <span class="m">q</span><sup><span class="m">n − p</span></sup></div>
+
+<h3>Монотонность</h3>
+
+<p>Здесь сложнее, чем у арифметической — результат зависит и от <span class="m">q</span>, и от знака первого члена.</p>
+
+<table>
+<caption>При <span class="m">u<sub>0</sub></span> &gt; 0</caption>
+<tr><th style="width:30%">Raison</th><th>Suite</th></tr>
+<tr><td><span class="m">q</span> &gt; 1</td><td>строго возрастает (взрыв в бесконечность)</td></tr>
+<tr><td><span class="m">q</span> = 1</td><td>постоянна</td></tr>
+<tr><td>0 &lt; <span class="m">q</span> &lt; 1</td><td>строго убывает (затухает к нулю)</td></tr>
+<tr><td><span class="m">q</span> &lt; 0</td><td>не монотонна — знак чередуется</td></tr>
+</table>
+
+<div class="box trap">
+<span class="lbl">Отрицательное q</span>
+<p>Если <span class="m">q</span> &lt; 0, члены прыгают: плюс, минус, плюс, минус. Такая suite <strong>не возрастает и не убывает</strong>. По-французски: <em>la suite n'est ni croissante ni décroissante, elle est alternée</em>.</p>
+<p style="margin-top:10px">Если <span class="m">u<sub>0</sub></span> &lt; 0, вся таблица переворачивается. Поэтому в решении всегда указывай знак первого члена.</p>
+</div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="s8">
+<h2 class="sec"><span class="num">8</span>Сравнение двух типов</h2>
+<p class="lead">Эту таблицу имеет смысл выучить наизусть.</p>
+
+<table>
+<tr><th style="width:26%"></th><th>Arithmétique</th><th>Géométrique</th></tr>
+<tr>
+  <td>Переход</td>
+  <td><span class="m">u<sub>n+1</sub></span> = <span class="m">u<sub>n</sub></span> + <span class="m">r</span></td>
+  <td><span class="m">u<sub>n+1</sub></span> = <span class="m">q</span> × <span class="m">u<sub>n</sub></span></td>
+</tr>
+<tr>
+  <td>Узнаём по</td>
+  <td>разности <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span></td>
+  <td>частному <span class="m">u<sub>n+1</sub></span>/<span class="m">u<sub>n</sub></span></td>
+</tr>
+<tr>
+  <td>Общий член</td>
+  <td><span class="m">u<sub>0</sub></span> + <span class="m">nr</span></td>
+  <td><span class="m">u<sub>0</sub></span> × <span class="m">q</span><sup><span class="m">n</span></sup></td>
+</tr>
+<tr>
+  <td>Общая форма</td>
+  <td><span class="m">u<sub>p</sub></span> + <span class="m">(n−p)r</span></td>
+  <td><span class="m">u<sub>p</sub></span> × <span class="m">q</span><sup><span class="m">n−p</span></sup></td>
+</tr>
+<tr>
+  <td>Рост</td>
+  <td>линейный</td>
+  <td>экспоненциальный</td>
+</tr>
+<tr>
+  <td>В жизни</td>
+  <td>простой процент, фиксированная прибавка к зарплате</td>
+  <td>сложный процент, инфляция, рост популяции</td>
+</tr>
+</table>
+
+<div class="box method">
+<span class="lbl">Как различать в задаче</span>
+<p>Ищи ключевые слова в условии:</p>
+<ul>
+<li><strong>«augmente de 50 € par mois»</strong> → прибавляем → arithmétique</li>
+<li><strong>«augmente de 5 % par an»</strong> → умножаем на 1,05 → géométrique</li>
+<li><strong>«diminue de 20 %»</strong> → умножаем на 0,8 → géométrique</li>
+<li><strong>«perd 3 unités»</strong> → вычитаем → arithmétique</li>
+</ul>
+<p style="margin-top:12px">Проценты почти всегда означают geométrique. Фиксированная сумма — arithmétique.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">Коэффициент для процентов</span>
+<p>Рост на <span class="m">t</span> % → умножение на <span class="m">(1 + t/100)</span>. Падение на <span class="m">t</span> % → умножение на <span class="m">(1 − t/100)</span>.</p>
+<p style="margin-top:10px">+5 % → ×1,05 &nbsp;&nbsp;&nbsp;&nbsp; −20 % → ×0,8 &nbsp;&nbsp;&nbsp;&nbsp; +100 % → ×2</p>
+</div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section id="s9">
+<h2 class="sec"><span class="num">9</span>Суммы <span class="fr" style="font-size:.6em">— sommes de termes</span></h2>
+<p class="lead">Складываем много членов сразу, не считая каждый.</p>
+
+<h3>Легендарная сумма Гаусса</h3>
+
+<div class="eq big">
+1 + 2 + 3 + … + <span class="m">n</span> =
+<span class="frac"><span class="num"><span class="m">n(n + 1)</span></span><span class="den">2</span></span>
+</div>
+
+<div class="box method">
+<span class="lbl">Откуда она берётся</span>
+<p>Запишем сумму дважды — вперёд и назад:</p>
+<div class="eq" style="font-size:16px">
+1 &nbsp;+&nbsp; 2 &nbsp;+&nbsp; … &nbsp;+&nbsp; <span class="m">(n−1)</span> &nbsp;+&nbsp; <span class="m">n</span><br>
+<span class="m">n</span> &nbsp;+&nbsp; <span class="m">(n−1)</span> &nbsp;+&nbsp; … &nbsp;+&nbsp; 2 &nbsp;+&nbsp; 1
+</div>
+<p>Складываем по столбцам: каждая пара даёт <span class="m">(n + 1)</span>, и таких пар ровно <span class="m">n</span>. Значит удвоенная сумма равна <span class="m">n(n+1)</span>, а сама сумма — половина этого.</p>
+</div>
+
+<h3>Сумма арифметической suite</h3>
+
+<div class="eq big">
+<span class="m">S</span> = (nombre de termes) ×
+<span class="frac"><span class="num">premier + dernier</span><span class="den">2</span></span>
+</div>
+
+<p>В формальном виде, для <span class="m">u<sub>0</sub> + u<sub>1</sub> + … + u<sub>n</sub></span>:</p>
+
+<div class="eq">
+<span class="m">S</span> = <span class="m">(n + 1)</span> ×
+<span class="frac"><span class="num"><span class="m">u<sub>0</sub> + u<sub>n</sub></span></span><span class="den">2</span></span>
+</div>
+
+<div class="box trap">
+<span class="lbl">Число членов</span>
+<p>От <span class="m">u<sub>0</sub></span> до <span class="m">u<sub>n</sub></span> членов <strong><span class="m">n + 1</span></strong>, а не <span class="m">n</span>. Ноль тоже считается! Это ошибка номер один в этой теме.</p>
+<p style="margin-top:10px">Общее правило: от <span class="m">u<sub>p</sub></span> до <span class="m">u<sub>n</sub></span> членов <span class="m">(n − p + 1)</span>.</p>
+</div>
+
+<h3>Сумма геометрической suite</h3>
+
+<div class="eq big">
+1 + <span class="m">q</span> + <span class="m">q</span>² + … + <span class="m">q</span><sup><span class="m">n</span></sup> =
+<span class="frac"><span class="num">1 − <span class="m">q</span><sup><span class="m">n+1</span></sup></span><span class="den">1 − <span class="m">q</span></span></span>
+<span style="font-size:15px;margin-left:12px">(si <span class="m">q</span> ≠ 1)</span>
+</div>
+
+<p>Для произвольной геометрической suite:</p>
+
+<div class="eq">
+<span class="m">S</span> = <span class="m">u<sub>0</sub></span> ×
+<span class="frac"><span class="num">1 − <span class="m">q</span><sup><span class="m">n+1</span></sup></span><span class="den">1 − <span class="m">q</span></span></span>
+</div>
+
+<div class="box method">
+<span class="lbl">Мнемоника</span>
+<p>«Первый член × <span class="frac" style="font-size:.9em"><span class="num">1 − raison<sup>число членов</sup></span><span class="den">1 − raison</span></span>»</p>
+<p style="margin-top:12px">Показатель в числителе — это <strong>количество слагаемых</strong>, а не последний индекс. От <span class="m">u<sub>0</sub></span> до <span class="m">u<sub>n</sub></span> их <span class="m">n+1</span> — отсюда <span class="m">q</span><sup><span class="m">n+1</span></sup>.</p>
+</div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section id="s10">
+<h2 class="sec"><span class="num">10</span>Raisonnement par récurrence <span class="fr" style="font-size:.6em">Terminale</span></h2>
+<p class="lead">Метод доказательства, который пугает всех, а устроен проще некуда.</p>
+
+<h3>Идея домино</h3>
+
+<p>Представь бесконечный ряд костяшек домино. Чтобы упали все, нужны две вещи:</p>
+
+<ol class="steps">
+<li><strong>Толкнуть первую.</strong> Если её не толкнуть, ничего не начнётся.</li>
+<li><strong>Гарантия, что каждая падающая роняет следующую.</strong> Если между какими-то костяшками разрыв — цепочка оборвётся.</li>
+</ol>
+
+<p>Если оба условия выполнены — упадут все. Это и есть récurrence.</p>
+
+<div class="box def">
+<span class="lbl">Principe de récurrence</span>
+<p>Soit <span class="m">P(n)</span> une propriété dépendant de <span class="m">n</span>. Si :</p>
+<ul style="margin-top:10px">
+<li><span class="m">P(0)</span> est vraie <span class="fr">(initialisation)</span></li>
+<li>pour tout <span class="m">n</span>, <span class="m">P(n)</span> vraie ⟹ <span class="m">P(n+1)</span> vraie <span class="fr">(hérédité)</span></li>
+</ul>
+<p style="margin-top:10px">alors <span class="m">P(n)</span> est vraie pour tout <span class="m">n</span> ∈ <span class="m">ℕ</span>.</p>
+</div>
+
+<h3>Шаблон оформления</h3>
+
+<p>Это нужно писать <strong>дословно</strong>. Во Франции за структуру решения дают отдельные баллы — даже если вычисления не доведены до конца.</p>
+
+<div class="box redac">
+<span class="lbl">Rédaction type — выучить наизусть</span>
+<pre>Montrons par récurrence que pour tout n ∈ ℕ,
+la propriété P(n) : « ... » est vraie.
+
+▸ Initialisation
+
+Pour n = 0 :
+   [подставляем 0 и проверяем]
+Donc P(0) est vraie.
+
+▸ Hérédité
+
+Supposons que pour un entier n ⩾ 0 fixé, P(n) soit vraie,
+c'est-à-dire : [пишем гипотезу]
+Montrons alors que P(n+1) est vraie,
+c'est-à-dire : [пишем, что хотим получить]
+
+   [вычисления — обязательно используем гипотезу]
+
+Donc P(n+1) est vraie.
+
+▸ Conclusion
+
+P(0) est vraie et P est héréditaire.
+D'après le principe de récurrence,
+P(n) est vraie pour tout n ∈ ℕ.</pre>
+</div>
+
+<h3>Разобранный пример</h3>
+
+<div class="ex">
+<span class="tag">Exercice type</span>
+<p>Soit <span class="m">(u<sub>n</sub>)</span> définie par <span class="m">u<sub>0</sub></span> = 1 et <span class="m">u<sub>n+1</sub></span> = 2<span class="m">u<sub>n</sub></span> + 1.<br>
+Montrer que pour tout <span class="m">n</span>, <span class="m">u<sub>n</sub></span> = 2<sup><span class="m">n+1</span></sup> − 1.</p>
+
+<h4>Initialisation</h4>
+<p>Pour <span class="m">n</span> = 0 : <span class="m">u<sub>0</sub></span> = 1 (условие) и 2<sup>0+1</sup> − 1 = 2 − 1 = 1. Совпало, значит <span class="m">P(0)</span> вроде.</p>
+
+<h4>Hérédité</h4>
+<p>Предположим, что для некоторого <span class="m">n</span> верно <span class="m">u<sub>n</sub></span> = 2<sup><span class="m">n+1</span></sup> − 1.<br>
+Покажем, что <span class="m">u<sub>n+1</sub></span> = 2<sup><span class="m">n+2</span></sup> − 1.</p>
+<div class="eq" style="font-size:17px">
+<span class="m">u<sub>n+1</sub></span> = 2<span class="m">u<sub>n</sub></span> + 1 &nbsp;&nbsp;<span style="font-size:14px;color:var(--muted)">(рекуррентная формула)</span><br>
+= 2(2<sup><span class="m">n+1</span></sup> − 1) + 1 &nbsp;&nbsp;<span style="font-size:14px;color:var(--muted)">(подставили гипотезу)</span><br>
+= 2<sup><span class="m">n+2</span></sup> − 2 + 1<br>
+= 2<sup><span class="m">n+2</span></sup> − 1 ✓
+</div>
+
+<h4>Conclusion</h4>
+<p><span class="m">P(0)</span> верно, свойство наследуется — значит по принципу рекуррентности формула верна для всех <span class="m">n</span>.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">Три ошибки, которые стоят баллов</span>
+<ol>
+<li><strong>Забыть initialisation.</strong> Без неё доказательства нет вообще. Домино не толкнули.</li>
+<li><strong>Написать «supposons que pour tout n».</strong> Нет! Пишем «pour un entier n fixé». Если предположить «для всех», ты предполагаешь то, что доказываешь.</li>
+<li><strong>Не использовать гипотезу в hérédité.</strong> Если в вычислениях ты ни разу не подставил <span class="m">P(n)</span> — почти наверняка что-то не так. Отметь момент подстановки явно.</li>
+</ol>
+</div>
+</section>
+
+<!-- ============ 11 ============ -->
+<section id="s11">
+<h2 class="sec"><span class="num">11</span>Пределы <span class="fr" style="font-size:.6em">— limites · Terminale</span></h2>
+<p class="lead">Куда suite приходит, если идти по ней бесконечно долго.</p>
+
+<h3>Интуиция</h3>
+
+<p>Вопрос простой: к чему приближаются члены, когда <span class="m">n</span> растёт?</p>
+
+<table>
+<tr><th style="width:36%">Suite</th><th>Поведение</th><th>Предел</th></tr>
+<tr><td><span class="m">u<sub>n</sub></span> = 1/<span class="m">n</span></td><td>1&nbsp;;&nbsp; 0,5&nbsp;;&nbsp; 0,33&nbsp;;&nbsp; 0,25&nbsp;;&nbsp; …</td><td>0</td></tr>
+<tr><td><span class="m">u<sub>n</sub></span> = <span class="m">n</span>²</td><td>0&nbsp;;&nbsp; 1&nbsp;;&nbsp; 4&nbsp;;&nbsp; 9&nbsp;;&nbsp; 16&nbsp;;&nbsp; …</td><td>+∞</td></tr>
+<tr><td><span class="m">u<sub>n</sub></span> = (−1)<sup><span class="m">n</span></sup></td><td>1&nbsp;;&nbsp; −1&nbsp;;&nbsp; 1&nbsp;;&nbsp; −1&nbsp;;&nbsp; …</td><td>нет</td></tr>
+<tr><td><span class="m">u<sub>n</sub></span> = 3</td><td>3&nbsp;;&nbsp; 3&nbsp;;&nbsp; 3&nbsp;;&nbsp; …</td><td>3</td></tr>
+</table>
+
+<div class="box def">
+<span class="lbl">Vocabulaire</span>
+<p><strong>Suite convergente</strong> — у неё есть конечный предел <span class="m">L</span>. Пишут: <span class="m">lim u<sub>n</sub></span> = <span class="m">L</span> или <span class="m">u<sub>n</sub></span> → <span class="m">L</span>.</p>
+<p style="margin-top:10px"><strong>Suite divergente</strong> — конечного предела нет. Два случая: либо уходит в ±∞, либо болтается без предела, как (−1)<sup><span class="m">n</span></sup>.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">Важно</span>
+<p>«Divergente» ≠ «уходит в бесконечность». Suite (−1)<sup><span class="m">n</span></sup> ограничена числами −1 и 1, но всё равно divergente — у неё просто нет предела.</p>
+</div>
+
+<h3>Базовые пределы <span class="fr">(à connaître par cœur)</span></h3>
+
+<table>
+<tr><th style="width:50%">Уходят в бесконечность</th><th>Стремятся к нулю</th></tr>
+<tr>
+  <td><span class="m">lim n</span> = +∞</td>
+  <td><span class="m">lim</span> 1/<span class="m">n</span> = 0</td>
+</tr>
+<tr>
+  <td><span class="m">lim n</span>² = +∞</td>
+  <td><span class="m">lim</span> 1/<span class="m">n</span>² = 0</td>
+</tr>
+<tr>
+  <td><span class="m">lim</span> √<span class="m">n</span> = +∞</td>
+  <td><span class="m">lim</span> 1/√<span class="m">n</span> = 0</td>
+</tr>
+</table>
+
+<h3>Предел <span class="m">q</span><sup><span class="m">n</span></sup> — центральная теорема</h3>
+
+<p>Эта таблица встречается почти в каждой задаче про геометрические suites.</p>
+
+<table>
+<tr><th style="width:34%">Условие</th><th><span class="m">lim q</span><sup><span class="m">n</span></sup></th><th>Пример</th></tr>
+<tr><td><span class="m">q</span> &gt; 1</td><td>+∞</td><td>2<sup><span class="m">n</span></sup> → +∞</td></tr>
+<tr><td><span class="m">q</span> = 1</td><td>1</td><td>1<sup><span class="m">n</span></sup> = 1</td></tr>
+<tr><td>−1 &lt; <span class="m">q</span> &lt; 1</td><td>0</td><td>(0,5)<sup><span class="m">n</span></sup> → 0</td></tr>
+<tr><td><span class="m">q</span> ⩽ −1</td><td>нет предела</td><td>(−2)<sup><span class="m">n</span></sup> прыгает</td></tr>
+</table>
+
+<div class="box method">
+<span class="lbl">Как запомнить</span>
+<p>Число по модулю <strong>меньше</strong> единицы при возведении в степень тает: 0,5 → 0,25 → 0,125 → 0. Число <strong>больше</strong> единицы разгоняется: 2 → 4 → 8 → ∞.</p>
+<p style="margin-top:10px">Если <span class="m">q</span> отрицательное и по модулю больше 1 — знак прыгает, и предела быть не может.</p>
+</div>
+
+<h3>Неопределённости <span class="fr">(formes indéterminées)</span></h3>
+
+<p>Четыре ситуации, где «арифметика бесконечностей» не работает и нужно преобразовывать выражение:</p>
+
+<div class="eq big">
+«∞ − ∞» &nbsp;&nbsp;&nbsp;&nbsp; «0 × ∞» &nbsp;&nbsp;&nbsp;&nbsp;
+«<span class="frac"><span class="num">∞</span><span class="den">∞</span></span>» &nbsp;&nbsp;&nbsp;&nbsp;
+«<span class="frac"><span class="num">0</span><span class="den">0</span></span>»
+</div>
+
+<div class="box method">
+<span class="lbl">Стандартный приём</span>
+<p>Вынести за скобку <strong>член наибольшего порядка</strong> — в числителе и в знаменателе отдельно, потом сократить.</p>
+<div class="eq" style="font-size:16px">
+<span class="frac"><span class="num">3<span class="m">n</span>² + 2<span class="m">n</span></span><span class="den"><span class="m">n</span>² − 5</span></span>
+=
+<span class="frac"><span class="num"><span class="m">n</span>²(3 + 2/<span class="m">n</span>)</span><span class="den"><span class="m">n</span>²(1 − 5/<span class="m">n</span>²)</span></span>
+=
+<span class="frac"><span class="num">3 + 2/<span class="m">n</span></span><span class="den">1 − 5/<span class="m">n</span>²</span></span>
+→
+<span class="frac"><span class="num">3</span><span class="den">1</span></span> = 3
+</div>
+</div>
+
+<h3>Теоремы сравнения</h3>
+
+<div class="box def">
+<span class="lbl">Théorème de comparaison</span>
+<p>Si <span class="m">u<sub>n</sub></span> ⩾ <span class="m">v<sub>n</sub></span> à partir d'un certain rang et <span class="m">lim v<sub>n</sub></span> = +∞, alors <span class="m">lim u<sub>n</sub></span> = +∞.</p>
+<p style="margin-top:10px">Логика: если тот, кто <em>ниже</em> тебя, улетел в бесконечность, то ты и подавно.</p>
+</div>
+
+<div class="box def">
+<span class="lbl">Théorème des gendarmes <span style="font-weight:400;text-transform:none;letter-spacing:0">(теорема о двух милиционерах)</span></span>
+<p>Si <span class="m">v<sub>n</sub></span> ⩽ <span class="m">u<sub>n</sub></span> ⩽ <span class="m">w<sub>n</sub></span> et <span class="m">lim v<sub>n</sub></span> = <span class="m">lim w<sub>n</sub></span> = <span class="m">L</span>, alors <span class="m">lim u<sub>n</sub></span> = <span class="m">L</span>.</p>
+<p style="margin-top:10px">Название буквальное: два жандарма ведут задержанного. Куда идут они — туда и он, деваться некуда.</p>
+</div>
+
+<div class="box def">
+<span class="lbl">Théorème de convergence monotone</span>
+<p>Toute suite <strong>croissante et majorée</strong> converge.<br>
+Toute suite <strong>décroissante et minorée</strong> converge.</p>
+<p style="margin-top:10px">Растёт, но упирается в потолок — обязана к чему-то прийти. Теорема гарантирует существование предела, но <strong>не даёт его значение</strong>.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">Тонкость</span>
+<p><span class="fr">majorée</span> (ограничена сверху) — существует <span class="m">M</span> такое, что все члены ⩽ <span class="m">M</span>.<br>
+<span class="fr">minorée</span> (ограничена снизу) — существует <span class="m">m</span> такое, что все члены ⩾ <span class="m">m</span>.<br>
+<span class="fr">bornée</span> — и то, и другое сразу.</p>
+</div>
+</section>
+
+<!-- ============ 12 ============ -->
+<section id="s12">
+<h2 class="sec"><span class="num">12</span>Арифметико-геометрические</h2>
+<p class="lead">Самый частый тип задачи на экзамене. Метод всегда один и тот же.</p>
+
+<p>Suite вида <span class="m">u<sub>n+1</sub></span> = <span class="m">a·u<sub>n</sub></span> + <span class="m">b</span> называется <span class="fr">arithmético-géométrique</span>. Она не арифметическая и не геометрическая — но сводится к геометрической одним приёмом.</p>
+
+<div class="box method">
+<span class="lbl">Алгоритм — три шага</span>
+<ol class="steps" style="margin-top:6px">
+<li><strong>Находим неподвижную точку.</strong> Решаем <span class="m">c</span> = <span class="m">a·c</span> + <span class="m">b</span>. Отсюда <span class="m">c</span> = <span class="m">b</span>/(1 − <span class="m">a</span>).</li>
+<li><strong>Вводим новую suite</strong> <span class="m">v<sub>n</sub></span> = <span class="m">u<sub>n</sub></span> − <span class="m">c</span> и доказываем, что она геометрическая с raison <span class="m">a</span>.</li>
+<li><strong>Возвращаемся.</strong> Находим <span class="m">v<sub>n</sub></span> по формуле геометрической, потом <span class="m">u<sub>n</sub></span> = <span class="m">v<sub>n</sub></span> + <span class="m">c</span>.</li>
+</ol>
+</div>
+
+<div class="ex">
+<span class="tag">Exercice type</span>
+<p><span class="m">u<sub>0</sub></span> = 5, <span class="m">u<sub>n+1</sub></span> = 0,5<span class="m">u<sub>n</sub></span> + 3</p>
+
+<h4>Шаг 1 — неподвижная точка</h4>
+<div class="eq" style="font-size:17px">
+<span class="m">c</span> = 0,5<span class="m">c</span> + 3 &nbsp;⟹&nbsp; 0,5<span class="m">c</span> = 3 &nbsp;⟹&nbsp; <span class="m">c</span> = 6
+</div>
+
+<h4>Шаг 2 — новая suite</h4>
+<p>Положим <span class="m">v<sub>n</sub></span> = <span class="m">u<sub>n</sub></span> − 6. Тогда:</p>
+<div class="eq" style="font-size:17px">
+<span class="m">v<sub>n+1</sub></span> = <span class="m">u<sub>n+1</sub></span> − 6 = (0,5<span class="m">u<sub>n</sub></span> + 3) − 6<br>
+= 0,5<span class="m">u<sub>n</sub></span> − 3 = 0,5(<span class="m">u<sub>n</sub></span> − 6) = 0,5<span class="m">v<sub>n</sub></span>
+</div>
+<p>Значит <span class="m">(v<sub>n</sub>)</span> геометрическая с raison 0,5 и первым членом <span class="m">v<sub>0</sub></span> = 5 − 6 = −1.</p>
+
+<h4>Шаг 3 — возвращаемся</h4>
+<div class="eq" style="font-size:17px">
+<span class="m">v<sub>n</sub></span> = −1 × 0,5<sup><span class="m">n</span></sup><br>
+<span class="m">u<sub>n</sub></span> = <span class="m">v<sub>n</sub></span> + 6 = 6 − 0,5<sup><span class="m">n</span></sup>
+</div>
+
+<h4>Бонус — предел</h4>
+<p>Так как 0 &lt; 0,5 &lt; 1, имеем 0,5<sup><span class="m">n</span></sup> → 0, значит <span class="m">lim u<sub>n</sub></span> = 6.</p>
+<p style="color:var(--muted);font-size:15px">Обрати внимание: предел равен неподвижной точке. Это не совпадение — suite стремится именно к ней.</p>
+</div>
+
+<div class="box trap">
+<span class="lbl">На экзамене</span>
+<p>Обычно suite <span class="m">(v<sub>n</sub>)</span> <strong>дают в условии</strong>: «On pose <span class="m">v<sub>n</sub></span> = <span class="m">u<sub>n</sub></span> − 6. Montrer que <span class="m">(v<sub>n</sub>)</span> est géométrique.» Искать неподвижную точку самому не придётся — но понимать, откуда взялась шестёрка, полезно.</p>
+</div>
+</section>
+
+<!-- ============ 13 ============ -->
+<section id="s13">
+<h2 class="sec"><span class="num">13</span>Типичные ошибки</h2>
+<p class="lead">Собрано по тому, за что реально снимают баллы.</p>
+
+<table>
+<tr><th style="width:48%">Ошибка</th><th>Как правильно</th></tr>
+<tr>
+  <td>Соединять точки на графике линией</td>
+  <td>Только отдельные точки — <span class="fr">nuage de points</span></td>
+</tr>
+<tr>
+  <td>Считать, что от <span class="m">u<sub>0</sub></span> до <span class="m">u<sub>n</sub></span> ровно <span class="m">n</span> членов</td>
+  <td>Их <span class="m">n+1</span> — ноль тоже считается</td>
+</tr>
+<tr>
+  <td><span class="m">u<sub>n+1</sub></span> = <span class="m">u<sub>n</sub></span> + 1 при подстановке</td>
+  <td>Подставлять <span class="m">(n+1)</span> в скобках всюду, где стоит <span class="m">n</span></td>
+</tr>
+<tr>
+  <td>Проверить 2–3 члена и объявить suite арифметической</td>
+  <td>Считать <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> в общем виде</td>
+</tr>
+<tr>
+  <td>Метод частного без проверки знака</td>
+  <td>Сначала написать, что все члены &gt; 0</td>
+</tr>
+<tr>
+  <td>Изучать <span class="m">f</span> для рекуррентной suite</td>
+  <td>Так можно только для явной формы</td>
+</tr>
+<tr>
+  <td>Забыть <span class="fr">initialisation</span> в récurrence</td>
+  <td>Без неё доказательства не существует</td>
+</tr>
+<tr>
+  <td>«Supposons que pour tout <span class="m">n</span>…»</td>
+  <td>«Supposons que pour un entier <span class="m">n</span> fixé…»</td>
+</tr>
+<tr>
+  <td>Считать «divergente» синонимом «→ ∞»</td>
+  <td>(−1)<sup><span class="m">n</span></sup> тоже divergente, хоть и ограничена</td>
+</tr>
+<tr>
+  <td>Писать «∞ − ∞ = 0»</td>
+  <td>Это <span class="fr">forme indéterminée</span> — нужно преобразовать</td>
+</tr>
+<tr>
+  <td>Путать <span class="m">u<sub>n</sub></span> и <span class="m">(u<sub>n</sub>)</span></td>
+  <td>Первое — число, второе — вся suite</td>
+</tr>
+</table>
+</section>
+
+<!-- ============ 14 ============ -->
+<section id="s14">
+<h2 class="sec"><span class="num">14</span>Задачи с решениями</h2>
+<p class="lead">Разбирай с закрытым решением, потом сверяйся.</p>
+
+<div class="ex">
+<span class="tag">Exercice 1 · arithmétique</span>
+<p><span class="m">(u<sub>n</sub>)</span> arithmétique, <span class="m">u<sub>0</sub></span> = 7, <span class="m">r</span> = −3.<br>
+a) Calculer <span class="m">u<sub>10</sub></span>. &nbsp; b) Calculer <span class="m">S</span> = <span class="m">u<sub>0</sub> + u<sub>1</sub> + … + u<sub>10</sub></span>.</p>
+
+<h4>Решение</h4>
+<p><strong>a)</strong> <span class="m">u<sub>10</sub></span> = <span class="m">u<sub>0</sub></span> + 10<span class="m">r</span> = 7 + 10×(−3) = 7 − 30 = <strong>−23</strong></p>
+<p><strong>b)</strong> Членов от 0 до 10 ровно <strong>11</strong>:</p>
+<div class="eq" style="font-size:17px">
+<span class="m">S</span> = 11 × <span class="frac"><span class="num">7 + (−23)</span><span class="den">2</span></span>
+= 11 × <span class="frac"><span class="num">−16</span><span class="den">2</span></span>
+= 11 × (−8) = <strong>−88</strong>
+</div>
+</div>
+
+<div class="ex">
+<span class="tag">Exercice 2 · géométrique</span>
+<p><span class="m">(v<sub>n</sub>)</span> géométrique, <span class="m">v<sub>0</sub></span> = 2, <span class="m">q</span> = 3.<br>
+a) Exprimer <span class="m">v<sub>n</sub></span>. &nbsp; b) Calculer <span class="m">v<sub>0</sub> + v<sub>1</sub> + … + v<sub>5</sub></span>.</p>
+
+<h4>Решение</h4>
+<p><strong>a)</strong> <span class="m">v<sub>n</sub></span> = 2 × 3<sup><span class="m">n</span></sup></p>
+<p><strong>b)</strong> Слагаемых 6, значит показатель в формуле — 6:</p>
+<div class="eq" style="font-size:17px">
+<span class="m">S</span> = 2 × <span class="frac"><span class="num">1 − 3<sup>6</sup></span><span class="den">1 − 3</span></span>
+= 2 × <span class="frac"><span class="num">1 − 729</span><span class="den">−2</span></span>
+= 2 × 364 = <strong>728</strong>
+</div>
+</div>
+
+<div class="ex">
+<span class="tag">Exercice 3 · sens de variation</span>
+<p>Étudier le sens de variation de <span class="m">u<sub>n</sub></span> = <span class="frac" style="font-size:.9em"><span class="num"><span class="m">n</span></span><span class="den"><span class="m">n</span> + 1</span></span> pour <span class="m">n</span> ⩾ 0.</p>
+
+<h4>Решение</h4>
+<div class="eq" style="font-size:16px">
+<span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> =
+<span class="frac"><span class="num"><span class="m">n</span> + 1</span><span class="den"><span class="m">n</span> + 2</span></span> −
+<span class="frac"><span class="num"><span class="m">n</span></span><span class="den"><span class="m">n</span> + 1</span></span>
+=
+<span class="frac"><span class="num">(<span class="m">n</span>+1)² − <span class="m">n</span>(<span class="m">n</span>+2)</span><span class="den">(<span class="m">n</span>+2)(<span class="m">n</span>+1)</span></span>
+</div>
+<p>В числителе: <span class="m">n</span>² + 2<span class="m">n</span> + 1 − <span class="m">n</span>² − 2<span class="m">n</span> = 1</p>
+<div class="eq" style="font-size:16px">
+<span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> =
+<span class="frac"><span class="num">1</span><span class="den">(<span class="m">n</span>+2)(<span class="m">n</span>+1)</span></span> &gt; 0
+</div>
+<p>Знаменатель положителен при <span class="m">n</span> ⩾ 0, значит разность положительна и suite <strong>строго возрастает</strong>.</p>
+</div>
+
+<div class="ex">
+<span class="tag">Exercice 4 · récurrence</span>
+<p><span class="m">u<sub>0</sub></span> = 2, <span class="m">u<sub>n+1</sub></span> = 3<span class="m">u<sub>n</sub></span> − 2.<br>
+Montrer que pour tout <span class="m">n</span>, <span class="m">u<sub>n</sub></span> = 3<sup><span class="m">n</span></sup> + 1.</p>
+
+<h4>Решение</h4>
+<p><strong>Initialisation.</strong> Pour <span class="m">n</span> = 0 : 3<sup>0</sup> + 1 = 1 + 1 = 2 = <span class="m">u<sub>0</sub></span>. ✓</p>
+<p><strong>Hérédité.</strong> Supposons que pour un entier <span class="m">n</span> fixé, <span class="m">u<sub>n</sub></span> = 3<sup><span class="m">n</span></sup> + 1.</p>
+<div class="eq" style="font-size:17px">
+<span class="m">u<sub>n+1</sub></span> = 3<span class="m">u<sub>n</sub></span> − 2
+= 3(3<sup><span class="m">n</span></sup> + 1) − 2<br>
+= 3<sup><span class="m">n+1</span></sup> + 3 − 2 = 3<sup><span class="m">n+1</span></sup> + 1 ✓
+</div>
+<p><strong>Conclusion.</strong> Формула верна для всех <span class="m">n</span> ∈ <span class="m">ℕ</span>.</p>
+</div>
+
+<div class="ex">
+<span class="tag">Exercice 5 · limite</span>
+<p>Déterminer <span class="m">lim u<sub>n</sub></span> pour <span class="m">u<sub>n</sub></span> = <span class="frac" style="font-size:.9em"><span class="num">2<span class="m">n</span>² + 3<span class="m">n</span> − 1</span><span class="den">5<span class="m">n</span>² + 4</span></span></p>
+
+<h4>Решение</h4>
+<p>При <span class="m">n</span> → +∞ числитель и знаменатель оба → +∞. Это неопределённость «∞/∞» — выносим <span class="m">n</span>²:</p>
+<div class="eq" style="font-size:16px">
+<span class="m">u<sub>n</sub></span> =
+<span class="frac"><span class="num"><span class="m">n</span>²(2 + 3/<span class="m">n</span> − 1/<span class="m">n</span>²)</span><span class="den"><span class="m">n</span>²(5 + 4/<span class="m">n</span>²)</span></span>
+=
+<span class="frac"><span class="num">2 + 3/<span class="m">n</span> − 1/<span class="m">n</span>²</span><span class="den">5 + 4/<span class="m">n</span>²</span></span>
+</div>
+<p>Все дроби вида 1/<span class="m">n</span> и 1/<span class="m">n</span>² стремятся к нулю, значит:</p>
+<div class="eq" style="font-size:17px">
+<span class="m">lim u<sub>n</sub></span> = <span class="frac"><span class="num">2</span><span class="den">5</span></span>
+</div>
+</div>
+
+<div class="ex">
+<span class="tag">Exercice 6 · arithmético-géométrique</span>
+<p><span class="m">u<sub>0</sub></span> = 1, <span class="m">u<sub>n+1</sub></span> = 0,8<span class="m">u<sub>n</sub></span> + 2. On pose <span class="m">v<sub>n</sub></span> = <span class="m">u<sub>n</sub></span> − 10.<br>
+a) Montrer que <span class="m">(v<sub>n</sub>)</span> est géométrique. &nbsp; b) En déduire <span class="m">u<sub>n</sub></span> et sa limite.</p>
+
+<h4>Решение</h4>
+<p><strong>a)</strong></p>
+<div class="eq" style="font-size:17px">
+<span class="m">v<sub>n+1</sub></span> = <span class="m">u<sub>n+1</sub></span> − 10 = 0,8<span class="m">u<sub>n</sub></span> + 2 − 10<br>
+= 0,8<span class="m">u<sub>n</sub></span> − 8 = 0,8(<span class="m">u<sub>n</sub></span> − 10) = 0,8<span class="m">v<sub>n</sub></span>
+</div>
+<p>Значит <span class="m">(v<sub>n</sub>)</span> геометрическая с <span class="m">q</span> = 0,8 и <span class="m">v<sub>0</sub></span> = 1 − 10 = −9.</p>
+<p><strong>b)</strong> <span class="m">v<sub>n</sub></span> = −9 × 0,8<sup><span class="m">n</span></sup>, следовательно:</p>
+<div class="eq" style="font-size:17px">
+<span class="m">u<sub>n</sub></span> = 10 − 9 × 0,8<sup><span class="m">n</span></sup>
+</div>
+<p>Так как 0 &lt; 0,8 &lt; 1, то 0,8<sup><span class="m">n</span></sup> → 0, значит <span class="m">lim u<sub>n</sub></span> = <strong>10</strong>.</p>
+</div>
+</section>
+
+<footer>
+<p><strong>Порядок работы с документом.</strong> Разделы 1–9 — программа 1<sup>re</sup> spé, это фундамент. Разделы 10–12 — Terminale. Если что-то в первой части шатается, вторая не встанет: récurrence и пределы опираются на формулы общего члена.</p>
+<p style="margin-top:14px">Шаблон оформления в разделе 10 стоит выучить дословно — во Франции баллы дают за структуру решения отдельно от вычислений.</p>
+</footer>
+
+</div>
+</body>
+</html>

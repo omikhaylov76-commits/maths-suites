@@ -8,7 +8,7 @@
 :root{
   --paper:#faf8f4;
   --ink:#1c1b19;
-  --muted:#6b6862;
+  --muted:#5c5852;
   --line:#ddd8cf;
   --accent:#1c4e80;
   --accent-soft:#eef3f8;
@@ -19,16 +19,19 @@
   --fr:#5a3e85;
   --fr-soft:#f3eff8;
 }
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+*{box-sizing:border-box;min-width:0}
+html{-webkit-text-size-adjust:100%;max-width:100%;overflow-x:hidden}
 body{
   margin:0;
+  max-width:100%;
+  overflow-x:hidden;
   background:var(--paper);
   color:var(--ink);
   font:400 17px/1.65 "Charter","Georgia","Iowan Old Style",serif;
   text-wrap:pretty;
+  overflow-wrap:break-word;
 }
-.wrap{max-width:780px;margin:0 auto;padding:0 24px 120px}
+.wrap{max-width:780px;width:100%;margin:0 auto;padding:0 clamp(16px,4vw,24px) 120px}
 
 /* ---------- заголовок ---------- */
 header.top{
@@ -182,12 +185,37 @@ footer{
   color:var(--muted);font-size:14px;
 }
 
+
+/* ---------- мобильная адаптация ---------- */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:22px 0}
+.tw table{margin:0;min-width:420px}
+.eq{overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
+.box pre{overflow-x:auto}
+
+@media(max-width:560px){
+  body{font-size:16px}
+  h1{font-size:30px}
+  h2.sec{font-size:23px}
+  h3{font-size:18px}
+  .eq{font-size:17px}
+  .eq.big{font-size:19px}
+  .tw table{min-width:380px;font-size:14.5px}
+  nav.toc{padding:20px 18px}
+  nav.toc a{display:inline-block;padding:3px 0}
+  .box{padding:16px 18px}
+  .ex{padding-left:14px}
+  ol.steps>li{padding-left:38px}
+  .redac pre{font-size:13px}
+}
+
 @media print{
   body{background:#fff;font-size:11.5pt}
   .wrap{max-width:100%;padding:0}
   nav.toc{break-after:page}
   section{break-inside:auto}
   .box,.ex,table{break-inside:avoid}
+  .tw{overflow:visible}
+  .tw table{min-width:0}
   h2.sec{break-after:avoid}
 }
 </style>
@@ -247,7 +275,7 @@ footer{
 
 <h3>Обозначения — здесь путаются чаще всего</h3>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <caption>Notations</caption>
 <tr><th style="width:26%">Запись</th><th>Что это</th></tr>
 <tr>
@@ -262,7 +290,7 @@ footer{
   <td><span class="m">u(n)</span></td>
   <td>То же, что <span class="m">u<sub>n</sub></span>, просто в «функциональной» записи. Встречается реже, но ты её увидишь, когда учитель захочет подчеркнуть, что suite — это функция.</td>
 </tr>
-</table>
+</table></div>
 
 <div class="box trap">
 <span class="lbl">Piège classique</span>
@@ -271,7 +299,7 @@ footer{
 </div>
 
 <h3>Словарь</h3>
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:38%">Français</th><th>Русский</th></tr>
 <tr><td><span class="fr">terme</span></td><td>член последовательности (одно число)</td></tr>
 <tr><td><span class="fr">rang / indice</span></td><td>номер члена</td></tr>
@@ -279,7 +307,7 @@ footer{
 <tr><td><span class="fr">terme général</span></td><td>формула общего члена</td></tr>
 <tr><td><span class="fr">terme de rang n</span></td><td>член с номером <span class="m">n</span></td></tr>
 <tr><td><span class="fr">terme suivant</span></td><td>следующий член (<span class="m">u<sub>n+1</sub></span>)</td></tr>
-</table>
+</table></div>
 
 <div class="box trap">
 <span class="lbl">Внимание</span>
@@ -334,7 +362,7 @@ footer{
 
 <h3>Сравнение</h3>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:34%"></th><th>Explicite</th><th>Récurrence</th></tr>
 <tr>
   <td>Вид</td>
@@ -361,7 +389,7 @@ footer{
   <td>можно через <span class="m">f</span>′</td>
   <td>через знак <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span></td>
 </tr>
-</table>
+</table></div>
 
 <div class="box def">
 <span class="lbl">Ключевая идея</span>
@@ -459,12 +487,12 @@ footer{
 
 <p>Считаем <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> и смотрим на знак.</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:44%">Если для всех <span class="m">n</span></th><th>То suite</th></tr>
 <tr><td><span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> &gt; 0</td><td>строго возрастает</td></tr>
 <tr><td><span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> &lt; 0</td><td>строго убывает</td></tr>
 <tr><td><span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> = 0</td><td>постоянна</td></tr>
-</table>
+</table></div>
 
 <div class="ex">
 <span class="tag">Exemple</span>
@@ -481,11 +509,11 @@ footer{
 
 <p>Работает <strong>только</strong> если все члены строго положительны. Сравниваем <span class="m">u<sub>n+1</sub></span> / <span class="m">u<sub>n</sub></span> с единицей.</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:44%">Если для всех <span class="m">n</span></th><th>То suite</th></tr>
 <tr><td><span class="m">u<sub>n+1</sub></span>/<span class="m">u<sub>n</sub></span> &gt; 1</td><td>возрастает</td></tr>
 <tr><td><span class="m">u<sub>n+1</sub></span>/<span class="m">u<sub>n</sub></span> &lt; 1</td><td>убывает</td></tr>
-</table>
+</table></div>
 
 <div class="box trap">
 <span class="lbl">Обязательное условие</span>
@@ -555,12 +583,12 @@ footer{
 <h3>Монотонность</h3>
 <p>Здесь всё просто: <span class="m">u<sub>n+1</sub> − u<sub>n</sub></span> = <span class="m">r</span>, поэтому знак разности — это знак <span class="m">r</span>.</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:30%">Raison</th><th>Suite</th></tr>
 <tr><td><span class="m">r</span> &gt; 0</td><td>строго возрастает</td></tr>
 <tr><td><span class="m">r</span> &lt; 0</td><td>строго убывает</td></tr>
 <tr><td><span class="m">r</span> = 0</td><td>постоянна</td></tr>
-</table>
+</table></div>
 </section>
 
 <!-- ============ 7 ============ -->
@@ -605,14 +633,14 @@ footer{
 
 <p>Здесь сложнее, чем у арифметической — результат зависит и от <span class="m">q</span>, и от знака первого члена.</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <caption>При <span class="m">u<sub>0</sub></span> &gt; 0</caption>
 <tr><th style="width:30%">Raison</th><th>Suite</th></tr>
 <tr><td><span class="m">q</span> &gt; 1</td><td>строго возрастает (взрыв в бесконечность)</td></tr>
 <tr><td><span class="m">q</span> = 1</td><td>постоянна</td></tr>
 <tr><td>0 &lt; <span class="m">q</span> &lt; 1</td><td>строго убывает (затухает к нулю)</td></tr>
 <tr><td><span class="m">q</span> &lt; 0</td><td>не монотонна — знак чередуется</td></tr>
-</table>
+</table></div>
 
 <div class="box trap">
 <span class="lbl">Отрицательное q</span>
@@ -626,7 +654,7 @@ footer{
 <h2 class="sec"><span class="num">8</span>Сравнение двух типов</h2>
 <p class="lead">Эту таблицу имеет смысл выучить наизусть.</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:26%"></th><th>Arithmétique</th><th>Géométrique</th></tr>
 <tr>
   <td>Переход</td>
@@ -658,7 +686,7 @@ footer{
   <td>простой процент, фиксированная прибавка к зарплате</td>
   <td>сложный процент, инфляция, рост популяции</td>
 </tr>
-</table>
+</table></div>
 
 <div class="box method">
 <span class="lbl">Как различать в задаче</span>
@@ -845,13 +873,13 @@ Montrer que pour tout <span class="m">n</span>, <span class="m">u<sub>n</sub></s
 
 <p>Вопрос простой: к чему приближаются члены, когда <span class="m">n</span> растёт?</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:36%">Suite</th><th>Поведение</th><th>Предел</th></tr>
 <tr><td><span class="m">u<sub>n</sub></span> = 1/<span class="m">n</span></td><td>1&nbsp;;&nbsp; 0,5&nbsp;;&nbsp; 0,33&nbsp;;&nbsp; 0,25&nbsp;;&nbsp; …</td><td>0</td></tr>
 <tr><td><span class="m">u<sub>n</sub></span> = <span class="m">n</span>²</td><td>0&nbsp;;&nbsp; 1&nbsp;;&nbsp; 4&nbsp;;&nbsp; 9&nbsp;;&nbsp; 16&nbsp;;&nbsp; …</td><td>+∞</td></tr>
 <tr><td><span class="m">u<sub>n</sub></span> = (−1)<sup><span class="m">n</span></sup></td><td>1&nbsp;;&nbsp; −1&nbsp;;&nbsp; 1&nbsp;;&nbsp; −1&nbsp;;&nbsp; …</td><td>нет</td></tr>
 <tr><td><span class="m">u<sub>n</sub></span> = 3</td><td>3&nbsp;;&nbsp; 3&nbsp;;&nbsp; 3&nbsp;;&nbsp; …</td><td>3</td></tr>
-</table>
+</table></div>
 
 <div class="box def">
 <span class="lbl">Vocabulaire</span>
@@ -866,7 +894,7 @@ Montrer que pour tout <span class="m">n</span>, <span class="m">u<sub>n</sub></s
 
 <h3>Базовые пределы <span class="fr">(à connaître par cœur)</span></h3>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:50%">Уходят в бесконечность</th><th>Стремятся к нулю</th></tr>
 <tr>
   <td><span class="m">lim n</span> = +∞</td>
@@ -880,19 +908,19 @@ Montrer que pour tout <span class="m">n</span>, <span class="m">u<sub>n</sub></s
   <td><span class="m">lim</span> √<span class="m">n</span> = +∞</td>
   <td><span class="m">lim</span> 1/√<span class="m">n</span> = 0</td>
 </tr>
-</table>
+</table></div>
 
 <h3>Предел <span class="m">q</span><sup><span class="m">n</span></sup> — центральная теорема</h3>
 
 <p>Эта таблица встречается почти в каждой задаче про геометрические suites.</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:34%">Условие</th><th><span class="m">lim q</span><sup><span class="m">n</span></sup></th><th>Пример</th></tr>
 <tr><td><span class="m">q</span> &gt; 1</td><td>+∞</td><td>2<sup><span class="m">n</span></sup> → +∞</td></tr>
 <tr><td><span class="m">q</span> = 1</td><td>1</td><td>1<sup><span class="m">n</span></sup> = 1</td></tr>
 <tr><td>−1 &lt; <span class="m">q</span> &lt; 1</td><td>0</td><td>(0,5)<sup><span class="m">n</span></sup> → 0</td></tr>
 <tr><td><span class="m">q</span> ⩽ −1</td><td>нет предела</td><td>(−2)<sup><span class="m">n</span></sup> прыгает</td></tr>
-</table>
+</table></div>
 
 <div class="box method">
 <span class="lbl">Как запомнить</span>
@@ -1008,7 +1036,7 @@ Toute suite <strong>décroissante et minorée</strong> converge.</p>
 <h2 class="sec"><span class="num">13</span>Типичные ошибки</h2>
 <p class="lead">Собрано по тому, за что реально снимают баллы.</p>
 
-<table>
+<div class="tw" tabindex="0"><table>
 <tr><th style="width:48%">Ошибка</th><th>Как правильно</th></tr>
 <tr>
   <td>Соединять точки на графике линией</td>
@@ -1054,7 +1082,7 @@ Toute suite <strong>décroissante et minorée</strong> converge.</p>
   <td>Путать <span class="m">u<sub>n</sub></span> и <span class="m">(u<sub>n</sub>)</span></td>
   <td>Первое — число, второе — вся suite</td>
 </tr>
-</table>
+</table></div>
 </section>
 
 <!-- ============ 14 ============ -->

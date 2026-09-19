@@ -88,6 +88,11 @@ sub,sup{font-size:.7em;line-height:0}
 .ch.done{background:var(--fog);border-color:transparent}
 .ch.done .ch-name{color:var(--graphite)}
 .ch.lock{opacity:.62}
+.ds-tag{
+  display:inline-block;margin-left:7px;padding:3px 8px;
+  background:var(--signal);color:#fff;border-radius:99px;
+  font:600 10px/1 "Inter",sans-serif;letter-spacing:0.04em;vertical-align:1px;
+}
 .ch-num{
   flex:0 0 32px;height:32px;display:grid;place-items:center;border-radius:50%;
   background:var(--fog);font:600 14px/1 "Inter",sans-serif;color:var(--graphite);
@@ -426,9 +431,19 @@ sub,sup{font-size:.7em;line-height:0}
 <script>
 /* ═══════════ ДАННЫЕ ═══════════ */
 
+/* ═══════════════════════════════════════════════════
+   LES SUITES — contenu
+   Première spé · programme 2026
+   Chapitres 2 à 5 = sujets du DS
+   ═══════════════════════════════════════════════════ */
+
 const CHAPITRES = [
+
+/* ─────────────────────────────────────────────
+   1 · GÉNÉRALITÉS
+   ───────────────────────────────────────────── */
 {
-  n:1, nom:"Généralités", sous:"Notation, explicite, récurrence", pret:true,
+  n:1, nom:"Généralités", sous:"Notation, explicite, récurrence", pret:true, ds:false,
   cartes:[
     {
       k:"L'IDÉE", t:"Une liste de nombres numérotés",
@@ -438,240 +453,747 @@ const CHAPITRES = [
         <div class="show"><span class="v">u<sub>0</sub></span> = 2 &nbsp;&nbsp;&nbsp; <span class="v">u<sub>1</sub></span> = 5 &nbsp;&nbsp;&nbsp; <span class="v">u<sub>2</sub></span> = 8 &nbsp;&nbsp;&nbsp; <span class="v">u<sub>3</sub></span> = 11</div>
         <div class="note"><b>Définition.</b> Une suite est une fonction définie sur <span class="v">ℕ</span> : à chaque entier <span class="v">n</span> elle associe un réel <span class="v">u<sub>n</sub></span>.</div>`,
       lent:`<p><b>Imagine la liste des élèves de ta classe.</b></p>
-        <p>Chaque élève a une place : 1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>… Si je dis « l'élève n°3 », tu sais exactement de qui je parle. Une seule personne.</p>
+        <p>Chaque élève a une place : 1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>… Si je dis « l'élève n°3 », tu sais exactement de qui je parle.</p>
         <p>Une suite, c'est pareil — sauf que ce sont des nombres, et que la liste ne s'arrête jamais.</p>
-        <p><b>Pourquoi écrire <span class="v">u<sub>3</sub></span> et pas juste « le 3<sup>e</sup> nombre » ?</b></p>
-        <p>Parce que c'est plus court, et surtout parce qu'on peut écrire <span class="v">u<sub>n</sub></span> : « le nombre à la place <span class="v">n</span> », sans préciser laquelle. Ça permet de parler de <b>n'importe quelle</b> place d'un seul coup.</p>
-        <p>La lettre <span class="v">u</span> est juste un nom. On aurait pu l'appeler <span class="v">v</span>, <span class="v">w</span> ou <span class="v">a</span> — ça ne change rien.</p>`
+        <p><b>Pourquoi écrire <span class="v">u<sub>3</sub></span> ?</b> Parce qu'on peut aussi écrire <span class="v">u<sub>n</sub></span> : « le nombre à la place <span class="v">n</span> », sans préciser laquelle. Ça permet de parler de n'importe quelle place d'un coup.</p>`
     },
     {
       k:"DISTINCTION CLÉ", t:"Un nombre ou toute la suite",
-      c:`<p>C'est l'erreur la plus fréquente du chapitre. Deux écritures proches, deux sens très différents.</p>
+      c:`<p>C'est l'erreur la plus fréquente. Deux écritures proches, deux sens différents.</p>
         <div class="show" style="text-align:left;padding:19px 21px">
           <div style="margin-bottom:13px"><span class="v">u<sub>n</sub></span> &nbsp;— <b>un nombre</b> : le terme de rang <span class="v">n</span></div>
           <div><span class="v">(u<sub>n</sub>)</span> &nbsp;— <b>toute la suite</b> : la liste entière</div>
         </div>
-        <p>Les parenthèses ne sont pas décoratives. Elles disent : on parle de la suite entière.</p>
-        <div class="note"><b>Dans un énoncé.</b> « Calculer <span class="v">u<sub>5</sub></span> » → un nombre à trouver. « Montrer que <span class="v">(u<sub>n</sub>)</span> est croissante » → une propriété de toute la suite.</div>`,
+        <div class="note"><b>Dans un énoncé.</b> « Calculer <span class="v">u<sub>5</sub></span> » → un nombre. « Montrer que <span class="v">(u<sub>n</sub>)</span> est croissante » → une propriété de toute la suite.</div>`,
       lent:`<p><b>Reprenons la classe.</b></p>
-        <p><span class="v">u<sub>3</sub></span>, c'est <b>un élève</b> — celui de la place 3. Une personne, tu peux la désigner du doigt.</p>
-        <p><span class="v">(u<sub>n</sub>)</span>, c'est <b>la classe entière</b>. Tu ne peux pas la désigner du doigt : c'est un groupe.</p>
-        <p><b>Pourquoi ça compte ?</b></p>
-        <p>Parce que les questions ne sont pas les mêmes. On peut demander « quel âge a l'élève n°3 ? » — c'est une question sur une personne. Ou « la classe est-elle nombreuse ? » — c'est une question sur le groupe.</p>
-        <p>En maths : « calculer <span class="v">u<sub>3</sub></span> » = question sur un nombre. « <span class="v">(u<sub>n</sub>)</span> est-elle croissante ? » = question sur tout le groupe.</p>
-        <p><b>Le réflexe.</b> Tu vois des parenthèses → on parle du groupe entier. Pas de parenthèses → on parle d'un seul nombre.</p>`
+        <p><span class="v">u<sub>3</sub></span>, c'est <b>un élève</b> — celui de la place 3. Tu peux le désigner du doigt.</p>
+        <p><span class="v">(u<sub>n</sub>)</span>, c'est <b>la classe entière</b>. Un groupe, pas une personne.</p>
+        <p>Les questions ne sont pas les mêmes : « quel âge a l'élève n°3 ? » ou « la classe est-elle nombreuse ? ».</p>
+        <p><b>Le réflexe.</b> Parenthèses → le groupe entier. Pas de parenthèses → un seul nombre.</p>`
     },
     {
       k:"DEUX FAÇONS DE DÉFINIR", t:"Explicite ou par récurrence",
       c:`<p><b>Forme explicite</b> — la formule donne directement le terme :</p>
         <div class="show"><span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2</div>
-        <p>On remplace <span class="v">n</span> par le rang voulu. On peut sauter directement à <span class="v">u<sub>100</sub></span>.</p>
+        <p>On peut sauter directement à <span class="v">u<sub>100</sub></span>.</p>
         <p><b>Forme récurrente</b> — la formule relie chaque terme au suivant :</p>
         <div class="show"><span class="v">u<sub>0</sub></span> = 2 &nbsp;&nbsp;et&nbsp;&nbsp; <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 3</div>
-        <p>Il faut calculer de proche en proche. Impossible de sauter.</p>
-        <div class="note"><b>Pourquoi le premier terme ?</b> La relation dit comment avancer, pas d'où partir. Sans <span class="v">u<sub>0</sub></span>, la suite n'est pas définie.</div>`,
+        <div class="note"><b>Pourquoi le premier terme ?</b> La relation dit comment avancer, pas d'où partir.</div>`,
       lent:`<p><b>Deux façons d'expliquer où habite quelqu'un.</b></p>
-        <p><b>1. L'adresse directe</b> — « 12 rue Victor Hugo ». Tu y vas tout de suite, sans passer ailleurs. C'est la <b>forme explicite</b> : tu donnes le rang, tu obtiens le nombre.</p>
-        <div class="show"><span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2 &nbsp;→&nbsp; <span class="v">u<sub>50</sub></span> = 3×50 + 2 = 152</div>
-        <p>Un seul calcul, même pour le rang 50.</p>
-        <p><b>2. L'itinéraire</b> — « pars de la mairie, puis tourne à droite, puis encore à droite… ». Tu es obligé de suivre les étapes une par une. C'est la <b>forme récurrente</b>.</p>
-        <div class="show"><span class="v">u<sub>0</sub></span> = 2 &nbsp;→&nbsp; <span class="v">u<sub>1</sub></span> = 5 &nbsp;→&nbsp; <span class="v">u<sub>2</sub></span> = 8 &nbsp;→&nbsp; …</div>
-        <p>Pour arriver à <span class="v">u<sub>50</sub></span>, il faut faire les 50 pas.</p>
-        <p><b>Et le point de départ ?</b> Un itinéraire sans point de départ ne sert à rien. « Tourne à droite » — mais depuis où ? C'est pour ça qu'une définition par récurrence donne <b>toujours</b> le premier terme.</p>`
+        <p><b>1. L'adresse</b> — « 12 rue Victor Hugo ». Tu y vas directement. C'est la <b>forme explicite</b>.</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2 &nbsp;→&nbsp; <span class="v">u<sub>50</sub></span> = 152</div>
+        <p><b>2. L'itinéraire</b> — « pars de la mairie, puis tourne à droite… ». Tu suis les étapes une par une. C'est la <b>récurrence</b>.</p>
+        <p>Un itinéraire sans point de départ ne sert à rien. D'où le premier terme, toujours donné.</p>`
     },
     {
       k:"PIÈGE", t:"Le rang peut partir de 0 ou de 1",
-      c:`<p>Selon l'énoncé, le premier terme est <span class="v">u<sub>0</sub></span> ou <span class="v">u<sub>1</sub></span>. C'est l'auteur qui décide.</p>
-        <p>Donc <span class="v">u<sub>5</sub></span> est le <b>sixième</b> terme si on compte à partir de 0. Et le cinquième si on part de 1.</p>
-        <div class="note"><b>Comptage.</b> De <span class="v">u<sub>p</sub></span> à <span class="v">u<sub>n</sub></span>, il y a <span class="v">(n − p + 1)</span> termes. Les deux bornes sont incluses.</div>`,
+      c:`<p>Selon l'énoncé, le premier terme est <span class="v">u<sub>0</sub></span> ou <span class="v">u<sub>1</sub></span>.</p>
+        <p>Donc <span class="v">u<sub>5</sub></span> est le <b>sixième</b> terme si on compte à partir de 0.</p>
+        <div class="note"><b>Comptage.</b> De <span class="v">u<sub>p</sub></span> à <span class="v">u<sub>n</sub></span> : <span class="v">(n − p + 1)</span> termes. Les deux bornes incluses.</div>`,
       lent:`<p><b>Le piège des poteaux.</b></p>
         <p>Une clôture de 10 mètres, un poteau tous les mètres. Combien de poteaux ?</p>
-        <p>On répond 10 spontanément. Mais il en faut <b>11</b> : un à chaque bout, plus les 9 du milieu. On oublie toujours celui du départ.</p>
-        <p><b>C'est exactement le même piège avec les rangs.</b></p>
-        <p>De <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>10</sub></span> : on pense « 10 termes », mais <span class="v">u<sub>0</sub></span> compte aussi. Donc <b>11</b>.</p>
-        <div class="show"><span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>, <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>, <span class="v">u<sub>6</sub></span>, <span class="v">u<sub>7</sub></span>, <span class="v">u<sub>8</sub></span>, <span class="v">u<sub>9</sub></span>, <span class="v">u<sub>10</sub></span></div>
-        <p>Compte-les : onze.</p>
-        <p><b>La formule.</b> <span class="v">(n − p + 1)</span>. Le « +1 », c'est le poteau du départ qu'on oublie toujours.</p>`
+        <p>On répond 10 spontanément. Mais il en faut <b>11</b> : un à chaque bout, plus les 9 du milieu.</p>
+        <p>Même piège avec les rangs : de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>10</sub></span>, il y a <b>11</b> termes.</p>
+        <p>Le « +1 » de la formule, c'est le poteau du départ qu'on oublie toujours.</p>`
     }
   ],
   series:[
     [
-      { k:"AUTOMATISME", type:"num",
-        q:`<span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
-        rep:13, ind:"un entier",
-        ok:`<span class="v">u<sub>3</sub></span> = 4×3 + 1 = 12 + 1 = <b>13</b>`,
-        no:`On remplace <span class="v">n</span> par 3 partout.`,
-        regle:`Dans une formule explicite, on remplace <span class="v">n</span> par le rang.`,
-        aides:[`Le rang cherché est 3. Où faut-il le mettre dans la formule ?`,
-               `Remplace <span class="v">n</span> par 3 : ça donne 4×3 + 1. Attention à l'ordre des opérations.`],
-        sol:[`On remplace <span class="v">n</span> par 3 : <span class="v">u<sub>3</sub></span> = 4×3 + 1`,
-             `D'abord la multiplication : 4×3 = 12`,
-             `Puis l'addition : 12 + 1 = <b>13</b>`] },
-      { k:"QCM", type:"qcm",
-        q:`Que désigne l'écriture <span class="v">(u<sub>n</sub>)</span> avec les parenthèses ?`,
-        opts:[{t:`La suite entière`,ok:true,why:`Exact. Les parenthèses désignent toute la liste.`},
-              {t:`Le terme de rang <span class="v">n</span>`,ok:false,why:`Cela, c'est <span class="v">u<sub>n</sub></span> — sans parenthèses. Un seul nombre.`},
-              {t:`Le produit des termes`,ok:false,why:`Les parenthèses n'indiquent pas une multiplication ici.`}],
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
+        rep:13, ind:"un entier", ok:`4×3 + 1 = <b>13</b>`, no:`On remplace <span class="v">n</span> par 3.`,
+        regle:`On remplace <span class="v">n</span> par le rang.`,
+        aides:[`Le rang cherché est 3.`,`4×3 + 1 : multiplication d'abord.`],
+        sol:[`<span class="v">u<sub>3</sub></span> = 4×3 + 1`,`4×3 = 12`,`12 + 1 = <b>13</b>`] },
+      { k:"QCM", type:"qcm", q:`Que désigne <span class="v">(u<sub>n</sub>)</span> avec les parenthèses ?`,
+        opts:[{t:`La suite entière`,ok:true,why:`Exact.`},{t:`Le terme de rang <span class="v">n</span>`,ok:false,why:`Cela, c'est <span class="v">u<sub>n</sub></span> sans parenthèses.`},{t:`Le produit des termes`,ok:false,why:`Pas une multiplication ici.`}],
         regle:`Sans parenthèses : un nombre. Avec : la suite.`,
-        aides:[`Repense à l'image de la classe : un élève ou tout le groupe ?`,
-               `Les parenthèses marquent le groupe entier, pas un élément isolé.`],
-        sol:[`<span class="v">u<sub>n</sub></span> sans parenthèses = un terme précis, un nombre`,
-             `<span class="v">(u<sub>n</sub>)</span> avec parenthèses = la suite complète`,
-             `Réponse : <b>la suite entière</b>`] },
-      { k:"VRAI OU FAUX", type:"qcm",
-        q:`« Si <span class="v">u<sub>0</sub></span> = 5, alors <span class="v">u<sub>5</sub></span> est le cinquième terme. »`,
-        opts:[{t:"Faux",ok:true,why:`Bien vu. En partant de 0, <span class="v">u<sub>5</sub></span> est le <b>sixième</b> terme.`},
-              {t:"Vrai",ok:false,why:`Attention : puisque <span class="v">u<sub>0</sub></span> existe, le rang part de 0 — et 0 compte.`}],
+        aides:[`Un élève ou toute la classe ?`,`Les parenthèses marquent le groupe.`],
+        sol:[`<span class="v">u<sub>n</sub></span> = un terme`,`<span class="v">(u<sub>n</sub>)</span> = la suite complète`,`Réponse : <b>la suite entière</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Si <span class="v">u<sub>0</sub></span> = 5, alors <span class="v">u<sub>5</sub></span> est le cinquième terme. »`,
+        opts:[{t:"Faux",ok:true,why:`En partant de 0, <span class="v">u<sub>5</sub></span> est le <b>sixième</b>.`},{t:"Vrai",ok:false,why:`Le rang part de 0 — et 0 compte.`}],
         regle:`Le rang 0 est un rang comme un autre.`,
-        aides:[`L'énoncé donne <span class="v">u<sub>0</sub></span>. À partir de quel rang compte-t-on ?`,
-               `Écris la liste : <span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>… et compte les places jusqu'à <span class="v">u<sub>5</sub></span>.`],
-        sol:[`On écrit tous les termes : <span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>, <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>`,
-             `On compte : 1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>, 4<sup>e</sup>, 5<sup>e</sup>, 6<sup>e</sup>`,
-             `<span class="v">u<sub>5</sub></span> occupe la <b>sixième</b> place. L'affirmation est <b>fausse</b>.`] },
-      { k:"AUTOMATISME", type:"num",
-        q:`Combien de termes y a-t-il de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>10</sub></span> ?`,
-        rep:11, ind:"un entier",
-        ok:`De 0 à 10 inclus : <b>11</b> termes.`,
-        no:`Les deux bornes sont incluses — il faut ajouter 1.`,
-        regle:`De <span class="v">u<sub>p</sub></span> à <span class="v">u<sub>n</sub></span> : <span class="v">(n − p + 1)</span> termes.`,
-        aides:[`Pense aux poteaux de la clôture : celui du départ compte aussi.`,
-               `Applique <span class="v">(n − p + 1)</span> avec <span class="v">p</span> = 0 et <span class="v">n</span> = 10.`],
-        sol:[`Ici <span class="v">p</span> = 0 et <span class="v">n</span> = 10`,
-             `Formule : <span class="v">n − p + 1</span> = 10 − 0 + 1`,
-             `Résultat : <b>11</b> termes`] },
-      { k:"QCM", type:"qcm",
-        q:`<span class="v">u<sub>0</sub></span> = 3 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> − 1.<br>Que vaut <span class="v">u<sub>2</sub></span> ?`,
-        opts:[{t:"9",ok:true,why:`Exact. <span class="v">u<sub>1</sub></span> = 2×3 − 1 = 5, puis <span class="v">u<sub>2</sub></span> = 2×5 − 1 = 9.`},
-              {t:"5",ok:false,why:`C'est <span class="v">u<sub>1</sub></span>. Il faut faire un pas de plus.`},
-              {t:"11",ok:false,why:`Vérifie : 2×5 = 10, puis 10 − 1 = 9.`}],
+        aides:[`L'énoncé donne <span class="v">u<sub>0</sub></span>.`,`Écris la liste et compte les places.`],
+        sol:[`<span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>, <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>`,`1<sup>er</sup>, 2<sup>e</sup>, 3<sup>e</sup>, 4<sup>e</sup>, 5<sup>e</sup>, 6<sup>e</sup>`,`<b>Faux</b> : c'est le sixième.`] },
+      { k:"AUTOMATISME", type:"num", q:`Combien de termes de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>10</sub></span> ?`,
+        rep:11, ind:"un entier", ok:`De 0 à 10 inclus : <b>11</b>.`, no:`Les deux bornes sont incluses.`,
+        regle:`<span class="v">(n − p + 1)</span> termes.`,
+        aides:[`Pense aux poteaux.`,`10 − 0 + 1.`],
+        sol:[`<span class="v">p</span> = 0, <span class="v">n</span> = 10`,`10 − 0 + 1`,`<b>11</b> termes`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>0</sub></span> = 3 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> − 1.<br>Que vaut <span class="v">u<sub>2</sub></span> ?`,
+        opts:[{t:"9",ok:true,why:`<span class="v">u<sub>1</sub></span> = 5, puis <span class="v">u<sub>2</sub></span> = 9.`},{t:"5",ok:false,why:`C'est <span class="v">u<sub>1</sub></span>.`},{t:"11",ok:false,why:`2×5 = 10, puis 10 − 1 = 9.`}],
         regle:`En récurrence, on avance pas à pas.`,
-        aides:[`Tu ne peux pas aller directement à <span class="v">u<sub>2</sub></span>. Calcule d'abord <span class="v">u<sub>1</sub></span>.`,
-               `<span class="v">u<sub>1</sub></span> = 2×3 − 1 = 5. Applique maintenant la même formule à 5.`],
-        sol:[`Étape 1 : <span class="v">u<sub>1</sub></span> = 2×<span class="v">u<sub>0</sub></span> − 1 = 2×3 − 1 = 5`,
-             `Étape 2 : <span class="v">u<sub>2</sub></span> = 2×<span class="v">u<sub>1</sub></span> − 1 = 2×5 − 1`,
-             `Résultat : <b>9</b>`] }
+        aides:[`Calcule d'abord <span class="v">u<sub>1</sub></span>.`,`<span class="v">u<sub>1</sub></span> = 5. Recommence avec 5.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 2×3 − 1 = 5`,`<span class="v">u<sub>2</sub></span> = 2×5 − 1`,`<b>9</b>`] }
     ],
     [
-      { k:"AUTOMATISME", type:"num",
-        q:`<span class="v">u<sub>n</sub></span> = 5<span class="v">n</span> − 3.<br>Calculer <span class="v">u<sub>4</sub></span>.`,
-        rep:17, ind:"un entier",
-        ok:`<span class="v">u<sub>4</sub></span> = 5×4 − 3 = 20 − 3 = <b>17</b>`,
-        no:`Remplace <span class="v">n</span> par 4 : 5×4 − 3.`,
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 5<span class="v">n</span> − 3.<br>Calculer <span class="v">u<sub>4</sub></span>.`,
+        rep:17, ind:"un entier", ok:`5×4 − 3 = <b>17</b>`, no:`Remplace <span class="v">n</span> par 4.`,
         regle:`Multiplication avant soustraction.`,
-        aides:[`Le rang est 4. Remplace <span class="v">n</span> par 4.`,
-               `5×4 − 3 : commence par la multiplication.`],
-        sol:[`On remplace : <span class="v">u<sub>4</sub></span> = 5×4 − 3`,
-             `Multiplication : 5×4 = 20`,
-             `Soustraction : 20 − 3 = <b>17</b>`] },
-      { k:"QCM", type:"qcm",
-        q:`Une suite est définie par <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 7.<br>Que manque-t-il pour qu'elle soit entièrement définie ?`,
-        opts:[{t:`Le premier terme`,ok:true,why:`Exact. La relation dit comment avancer, pas d'où partir.`},
-              {t:`Le dernier terme`,ok:false,why:`Une suite n'a pas de dernier terme — elle est infinie.`},
-              {t:`Rien, elle est définie`,ok:false,why:`Sans point de départ, aucun terme n'est calculable.`}],
+        aides:[`Le rang est 4.`,`5×4 − 3.`],
+        sol:[`<span class="v">u<sub>4</sub></span> = 5×4 − 3`,`5×4 = 20`,`20 − 3 = <b>17</b>`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 7.<br>Que manque-t-il pour définir la suite ?`,
+        opts:[{t:`Le premier terme`,ok:true,why:`La relation dit comment avancer, pas d'où partir.`},{t:`Le dernier terme`,ok:false,why:`Une suite est infinie.`},{t:`Rien`,ok:false,why:`Sans départ, aucun terme calculable.`}],
         regle:`Récurrence = relation <b>+</b> premier terme.`,
-        aides:[`Essaie de calculer <span class="v">u<sub>1</sub></span> avec cette seule information. Tu y arrives ?`,
-               `Pour appliquer « +7 », il faut savoir à quoi l'ajouter.`],
-        sol:[`La relation dit : chaque terme = le précédent + 7`,
-             `Mais pour calculer <span class="v">u<sub>1</sub></span>, il faut connaître <span class="v">u<sub>0</sub></span>`,
-             `Il manque donc <b>le premier terme</b>`] },
-      { k:"AUTOMATISME", type:"num",
-        q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 2<span class="v">n</span>.<br>Calculer <span class="v">u<sub>5</sub></span>.`,
-        rep:15, ind:"un entier",
-        ok:`<span class="v">u<sub>5</sub></span> = 25 − 10 = <b>15</b>`,
-        no:`D'abord 5² = 25, puis 2×5 = 10.`,
-        regle:`Puissance, puis multiplication, puis soustraction.`,
-        aides:[`Remplace <span class="v">n</span> par 5 dans les deux termes de la formule.`,
-               `5² − 2×5 : calcule chaque morceau séparément avant de soustraire.`],
-        sol:[`On remplace : <span class="v">u<sub>5</sub></span> = 5² − 2×5`,
-             `Puissance : 5² = 25. Multiplication : 2×5 = 10`,
-             `Soustraction : 25 − 10 = <b>15</b>`] },
-      { k:"VRAI OU FAUX", type:"qcm",
-        q:`« Avec une forme explicite, on peut calculer <span class="v">u<sub>100</sub></span> sans calculer les termes précédents. »`,
-        opts:[{t:"Vrai",ok:true,why:`Exact. C'est tout l'intérêt de la forme explicite.`},
-              {t:"Faux",ok:false,why:`C'est vrai pour la forme <b>récurrente</b>. L'explicite permet de sauter.`}],
-        regle:`Explicite = accès direct. Récurrence = de proche en proche.`,
-        aides:[`Repense à l'image : adresse directe ou itinéraire ?`,
-               `Avec <span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2, peux-tu trouver <span class="v">u<sub>100</sub></span> d'un coup ?`],
-        sol:[`Forme explicite : on remplace directement <span class="v">n</span> par 100`,
-             `Exemple : <span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2 donne <span class="v">u<sub>100</sub></span> = 302 en un calcul`,
-             `L'affirmation est <b>vraie</b>`] },
-      { k:"AUTOMATISME", type:"num",
-        q:`Combien de termes de <span class="v">u<sub>3</sub></span> à <span class="v">u<sub>12</sub></span> ?`,
-        rep:10, ind:"un entier",
-        ok:`12 − 3 + 1 = <b>10</b> termes.`,
-        no:`Applique <span class="v">(n − p + 1)</span> : ici 12 − 3 + 1.`,
+        aides:[`Essaie de calculer <span class="v">u<sub>1</sub></span>.`,`Pour ajouter 7, il faut savoir à quoi.`],
+        sol:[`Chaque terme = le précédent + 7`,`Pour <span class="v">u<sub>1</sub></span>, il faut <span class="v">u<sub>0</sub></span>`,`Il manque <b>le premier terme</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 2<span class="v">n</span>.<br>Calculer <span class="v">u<sub>5</sub></span>.`,
+        rep:15, ind:"un entier", ok:`25 − 10 = <b>15</b>`, no:`5² = 25, puis 2×5 = 10.`,
+        regle:`Puissance, puis multiplication.`,
+        aides:[`Remplace <span class="v">n</span> par 5 partout.`,`5² − 2×5.`],
+        sol:[`<span class="v">u<sub>5</sub></span> = 5² − 2×5`,`25 et 10`,`25 − 10 = <b>15</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Avec une forme explicite, on calcule <span class="v">u<sub>100</sub></span> sans les termes précédents. »`,
+        opts:[{t:"Vrai",ok:true,why:`C'est l'intérêt de la forme explicite.`},{t:"Faux",ok:false,why:`Vrai pour la <b>récurrence</b>, pas l'explicite.`}],
+        regle:`Explicite = accès direct.`,
+        aides:[`Adresse directe ou itinéraire ?`,`Avec 3<span class="v">n</span> + 2, un seul calcul suffit.`],
+        sol:[`On remplace <span class="v">n</span> par 100`,`3×100 + 2 = 302 en un calcul`,`<b>Vrai</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Combien de termes de <span class="v">u<sub>3</sub></span> à <span class="v">u<sub>12</sub></span> ?`,
+        rep:10, ind:"un entier", ok:`12 − 3 + 1 = <b>10</b>`, no:`Applique <span class="v">(n − p + 1)</span>.`,
         regle:`La formule marche quel que soit le départ.`,
-        aides:[`Ici on ne part pas de 0, mais la formule reste la même.`,
-               `<span class="v">p</span> = 3 et <span class="v">n</span> = 12. Applique <span class="v">(n − p + 1)</span>.`],
-        sol:[`Ici <span class="v">p</span> = 3 et <span class="v">n</span> = 12`,
-             `Formule : 12 − 3 + 1`,
-             `Résultat : <b>10</b> termes`] }
+        aides:[`On ne part pas de 0, mais la formule ne change pas.`,`12 − 3 + 1.`],
+        sol:[`<span class="v">p</span> = 3, <span class="v">n</span> = 12`,`12 − 3 + 1`,`<b>10</b> termes`] }
     ],
     [
-      { k:"QCM", type:"qcm",
-        q:`Quelle écriture correspond à « le terme suivant » ?`,
-        opts:[{t:`<span class="v">u<sub>n+1</sub></span>`,ok:true,why:`Exact. Le rang augmente de 1.`},
-              {t:`<span class="v">u<sub>n</sub></span> + 1`,ok:false,why:`Ici on ajoute 1 à la <b>valeur</b>, pas au rang. Ce n'est pas la même chose.`},
-              {t:`2<span class="v">u<sub>n</sub></span>`,ok:false,why:`Cela double la valeur — rien à voir avec le rang suivant.`}],
-        regle:`<span class="v">u<sub>n+1</sub></span> ≠ <span class="v">u<sub>n</sub></span> + 1. L'indice bouge, pas la valeur.`,
-        aides:[`« Suivant » parle de la position dans la liste, pas de la valeur.`,
-               `Où faut-il ajouter le 1 : en haut ou en bas, dans l'indice ?`],
-        sol:[`Le terme suivant = celui dont le <b>rang</b> est augmenté de 1`,
-             `Le rang s'écrit en indice, donc : <span class="v">u<sub>n+1</sub></span>`,
-             `<span class="v">u<sub>n</sub></span> + 1 modifierait la valeur, pas la position`] },
-      { k:"AUTOMATISME ⭑", hard:true, type:"num",
-        q:`<span class="v">u<sub>n</sub></span> = 2<span class="v">n</span> + 3.<br>Calculer <span class="v">u<sub>n+1</sub></span> pour <span class="v">n</span> = 4.`,
-        sub:`Remplace <span class="v">n</span> par <span class="v">(n+1)</span>, puis prends <span class="v">n</span> = 4.`,
-        rep:13, ind:"un entier",
-        ok:`<span class="v">u<sub>n+1</sub></span> = 2(<span class="v">n</span>+1) + 3 = 2<span class="v">n</span> + 5. Pour <span class="v">n</span> = 4 : <b>13</b>`,
-        no:`Il faut substituer <span class="v">(n+1)</span> <b>entre parenthèses</b>.`,
+      { k:"QCM", type:"qcm", q:`Quelle écriture correspond à « le terme suivant » ?`,
+        opts:[{t:`<span class="v">u<sub>n+1</sub></span>`,ok:true,why:`Le rang augmente de 1.`},{t:`<span class="v">u<sub>n</sub></span> + 1`,ok:false,why:`Ici on ajoute 1 à la <b>valeur</b>, pas au rang.`},{t:`2<span class="v">u<sub>n</sub></span>`,ok:false,why:`Cela double la valeur.`}],
+        regle:`L'indice bouge, pas la valeur.`,
+        aides:[`« Suivant » parle de la position.`,`Où ajouter le 1 : en bas, dans l'indice.`],
+        sol:[`Terme suivant = rang augmenté de 1`,`Le rang s'écrit en indice`,`<b><span class="v">u<sub>n+1</sub></span></b>`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`<span class="v">u<sub>n</sub></span> = 2<span class="v">n</span> + 3.<br>Calculer <span class="v">u<sub>n+1</sub></span> pour <span class="v">n</span> = 4.`,
+        rep:13, ind:"un entier", ok:`<span class="v">n</span>+1 = 5, donc 2×5 + 3 = <b>13</b>`, no:`Si <span class="v">n</span> = 4, alors <span class="v">n</span>+1 = 5.`,
         regle:`Toujours mettre <span class="v">(n+1)</span> entre parenthèses.`,
-        aides:[`Deux chemins : soit tu développes <span class="v">u<sub>n+1</sub></span>, soit tu calcules directement <span class="v">u<sub>5</sub></span>.`,
-               `Si <span class="v">n</span> = 4, alors <span class="v">n</span>+1 = 5. Tu cherches donc <span class="v">u<sub>5</sub></span>.`],
-        sol:[`Méthode rapide : <span class="v">n</span> = 4 donc <span class="v">n</span>+1 = 5`,
-             `On cherche <span class="v">u<sub>5</sub></span> = 2×5 + 3`,
-             `Résultat : <b>13</b>`] },
-      { k:"QCM", type:"qcm",
-        q:`<span class="v">u<sub>1</sub></span> = 4 et <span class="v">u<sub>n+1</sub></span> = 3<span class="v">u<sub>n</sub></span>.<br>Que vaut <span class="v">u<sub>3</sub></span> ?`,
-        opts:[{t:"36",ok:true,why:`Exact. <span class="v">u<sub>2</sub></span> = 12, puis <span class="v">u<sub>3</sub></span> = 36.`},
-              {t:"12",ok:false,why:`C'est <span class="v">u<sub>2</sub></span>. Encore un pas.`},
-              {t:"108",ok:false,why:`Un pas de trop. Ici le rang part de 1, pas de 0.`}],
-        regle:`Vérifie toujours le rang de départ.`,
-        aides:[`Attention : la suite commence à <span class="v">u<sub>1</sub></span>, pas <span class="v">u<sub>0</sub></span>.`,
-               `De <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>3</sub></span>, combien de pas faut-il faire ?`],
-        sol:[`Départ : <span class="v">u<sub>1</sub></span> = 4`,
-             `Pas 1 : <span class="v">u<sub>2</sub></span> = 3×4 = 12`,
-             `Pas 2 : <span class="v">u<sub>3</sub></span> = 3×12 = <b>36</b>`] },
-      { k:"VRAI OU FAUX", type:"qcm",
-        q:`« Une suite est une fonction définie sur <span class="v">ℕ</span>. »`,
-        opts:[{t:"Vrai",ok:true,why:`Exact. À chaque entier naturel <span class="v">n</span> elle associe un réel <span class="v">u<sub>n</sub></span>.`},
-              {t:"Faux",ok:false,why:`C'est bien la définition du programme : une fonction de <span class="v">ℕ</span> dans <span class="v">ℝ</span>.`}],
-        regle:`Définition à connaître pour l'épreuve.`,
-        aides:[`Une fonction associe un nombre à un autre. Ici, qu'associe-t-on à quoi ?`,
-               `À chaque rang <span class="v">n</span> (entier) correspond une valeur <span class="v">u<sub>n</sub></span> (réel).`],
-        sol:[`Une fonction associe à chaque entrée une sortie unique`,
-             `Ici : entrée = le rang <span class="v">n</span> (dans <span class="v">ℕ</span>), sortie = <span class="v">u<sub>n</sub></span> (dans <span class="v">ℝ</span>)`,
-             `C'est donc bien une fonction. <b>Vrai</b>`] },
-      { k:"AUTOMATISME ⭑", hard:true, type:"num",
-        q:`<span class="v">u<sub>0</sub></span> = 1 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> + 3.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
-        rep:29, ind:"un entier",
-        ok:`<span class="v">u<sub>1</sub></span> = 5, <span class="v">u<sub>2</sub></span> = 13, <span class="v">u<sub>3</sub></span> = <b>29</b>`,
-        no:`Trois pas à faire, un par un.`,
-        regle:`Pose chaque étape, ne saute pas de ligne.`,
-        aides:[`Il faut trois étapes. Commence par <span class="v">u<sub>1</sub></span>.`,
-               `<span class="v">u<sub>1</sub></span> = 2×1 + 3 = 5. Continue avec 5.`],
-        sol:[`<span class="v">u<sub>1</sub></span> = 2×1 + 3 = 5`,
-             `<span class="v">u<sub>2</sub></span> = 2×5 + 3 = 13`,
-             `<span class="v">u<sub>3</sub></span> = 2×13 + 3 = <b>29</b>`] }
+        aides:[`Tu cherches le terme de rang <span class="v">n</span>+1.`,`<span class="v">n</span> = 4 donc <span class="v">n</span>+1 = 5. Cherche <span class="v">u<sub>5</sub></span>.`],
+        sol:[`<span class="v">n</span> = 4 donc <span class="v">n</span>+1 = 5`,`<span class="v">u<sub>5</sub></span> = 2×5 + 3`,`<b>13</b>`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>1</sub></span> = 4 et <span class="v">u<sub>n+1</sub></span> = 3<span class="v">u<sub>n</sub></span>.<br>Que vaut <span class="v">u<sub>3</sub></span> ?`,
+        opts:[{t:"36",ok:true,why:`<span class="v">u<sub>2</sub></span> = 12, puis <span class="v">u<sub>3</sub></span> = 36.`},{t:"12",ok:false,why:`C'est <span class="v">u<sub>2</sub></span>.`},{t:"108",ok:false,why:`Un pas de trop : ici le rang part de 1.`}],
+        regle:`Vérifie le rang de départ.`,
+        aides:[`La suite commence à <span class="v">u<sub>1</sub></span>.`,`De <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>3</sub></span> : deux pas.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 4`,`<span class="v">u<sub>2</sub></span> = 3×4 = 12`,`<span class="v">u<sub>3</sub></span> = 3×12 = <b>36</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Une suite est une fonction définie sur <span class="v">ℕ</span>. »`,
+        opts:[{t:"Vrai",ok:true,why:`À chaque entier <span class="v">n</span> elle associe un réel.`},{t:"Faux",ok:false,why:`C'est la définition du programme.`}],
+        regle:`Définition à connaître.`,
+        aides:[`Une fonction associe une entrée à une sortie.`,`Entrée = rang, sortie = valeur.`],
+        sol:[`Entrée : le rang <span class="v">n</span> dans <span class="v">ℕ</span>`,`Sortie : <span class="v">u<sub>n</sub></span> dans <span class="v">ℝ</span>`,`<b>Vrai</b>`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`<span class="v">u<sub>0</sub></span> = 1 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> + 3.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
+        rep:29, ind:"un entier", ok:`5, puis 13, puis <b>29</b>`, no:`Trois pas, un par un.`,
+        regle:`Pose chaque étape.`,
+        aides:[`Trois étapes. Commence par <span class="v">u<sub>1</sub></span>.`,`<span class="v">u<sub>1</sub></span> = 5. Continue.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 2×1 + 3 = 5`,`<span class="v">u<sub>2</sub></span> = 2×5 + 3 = 13`,`<span class="v">u<sub>3</sub></span> = 2×13 + 3 = <b>29</b>`] }
     ]
   ]
 },
-{ n:2, nom:"Sens de variation", sous:"Croissante, décroissante", pret:false },
-{ n:3, nom:"Suites arithmétiques", sous:"Raison, terme général", pret:false },
-{ n:4, nom:"Suites géométriques", sous:"Raison, terme général", pret:false },
-{ n:5, nom:"Majoration, minoration", sous:"Suites bornées", pret:false },
-{ n:6, nom:"Problèmes", sous:"Exercices type épreuve", pret:false }
+
+/* ─────────────────────────────────────────────
+   2 · SENS DE VARIATION          ← DS
+   ───────────────────────────────────────────── */
+{
+  n:2, nom:"Sens de variation", sous:"Croissante, décroissante", pret:true, ds:true,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"La suite monte-t-elle ou descend-elle ?",
+      c:`<p>On compare chaque terme au <b>suivant</b>. Deux cas simples :</p>
+        <div class="show" style="text-align:left;padding:19px 21px">
+          <div style="margin-bottom:13px"><b>Croissante</b> : <span class="v">u<sub>n+1</sub></span> ⩾ <span class="v">u<sub>n</sub></span> pour tout <span class="v">n</span></div>
+          <div><b>Décroissante</b> : <span class="v">u<sub>n+1</sub></span> ⩽ <span class="v">u<sub>n</sub></span> pour tout <span class="v">n</span></div>
+        </div>
+        <p>Une suite <b>monotone</b> est une suite croissante ou décroissante.</p>
+        <div class="note"><b>Attention au « pour tout ».</b> Il ne suffit pas que ça monte au début. Il faut que ça monte <b>toujours</b>.</div>`,
+      lent:`<p><b>Pense à un escalier.</b></p>
+        <p>Tu montes une marche, puis une autre, puis une autre. Chaque marche est plus haute que la précédente → l'escalier <b>monte</b>. C'est une suite croissante.</p>
+        <p>Si chaque marche est plus basse → l'escalier <b>descend</b>. Suite décroissante.</p>
+        <p><b>Et s'il monte puis descend ?</b> Alors ce n'est ni l'un ni l'autre. En maths on dit qu'elle <b>n'est pas monotone</b>.</p>
+        <p>C'est pour ça que l'énoncé écrit toujours « pour tout <span class="v">n</span> » : une seule marche dans le mauvais sens et c'est fini.</p>`
+    },
+    {
+      k:"MÉTHODE 1", t:"Le signe de la différence",
+      c:`<p>La méthode la plus sûre. On calcule <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> et on regarde son signe.</p>
+        <div class="show" style="text-align:left;padding:19px 21px">
+          <div style="margin-bottom:9px"><span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> &gt; 0 &nbsp;→&nbsp; croissante</div>
+          <div style="margin-bottom:9px"><span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> &lt; 0 &nbsp;→&nbsp; décroissante</div>
+          <div><span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = 0 &nbsp;→&nbsp; constante</div>
+        </div>
+        <p>Exemple avec <span class="v">u<sub>n</sub></span> = <span class="v">n</span>² + 2<span class="v">n</span> :</p>
+        <div class="show"><span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = 2<span class="v">n</span> + 3 &gt; 0</div>
+        <p>Donc la suite est croissante.</p>`,
+      lent:`<p><b>« Combien j'ai gagné depuis hier ? »</b></p>
+        <p>Imagine ton argent de poche. Hier tu avais <span class="v">u<sub>n</sub></span>, aujourd'hui <span class="v">u<sub>n+1</sub></span>.</p>
+        <p>La différence <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>, c'est ce qui a changé :</p>
+        <p>— Résultat <b>positif</b> → tu as plus qu'hier → ça monte.<br>
+           — Résultat <b>négatif</b> → tu as moins → ça descend.</p>
+        <p><b>Pourquoi cette méthode est la meilleure ?</b> Parce qu'elle marche toujours, quelle que soit la suite. Les autres méthodes ont des conditions.</p>
+        <p>La seule difficulté est le calcul : il faut remplacer <span class="v">n</span> par <span class="v">(n+1)</span> <b>entre parenthèses</b>, développer, puis simplifier.</p>`
+    },
+    {
+      k:"MÉTHODE 2", t:"Le quotient — seulement si tout est positif",
+      c:`<p>Si <b>tous les termes sont strictement positifs</b>, on peut comparer <span class="v">u<sub>n+1</sub></span> / <span class="v">u<sub>n</sub></span> à 1.</p>
+        <div class="show" style="text-align:left;padding:19px 21px">
+          <div style="margin-bottom:9px">quotient &gt; 1 &nbsp;→&nbsp; croissante</div>
+          <div>quotient &lt; 1 &nbsp;→&nbsp; décroissante</div>
+        </div>
+        <div class="note"><b>Condition obligatoire.</b> Il faut écrire dans la copie que tous les termes sont strictement positifs. Sans cette phrase, la méthode est fausse — diviser par un négatif inverse l'inégalité.</div>`,
+      lent:`<p><b>Le quotient, c'est « combien de fois plus ».</b></p>
+        <p>Si tu avais 10 € et que tu as maintenant 15 €, le quotient vaut 1,5 : tu as 1,5 fois plus. Le quotient dépasse 1 → ça a augmenté.</p>
+        <p>Si tu avais 10 € et que tu as 8 €, le quotient vaut 0,8 : moins que 1 → ça a diminué.</p>
+        <p><b>Pourquoi la condition sur le signe ?</b></p>
+        <p>Parce qu'avec des nombres négatifs le raisonnement se casse. Prends −2 et −4 : le quotient vaut 2, plus grand que 1 — pourtant −4 est plus <b>petit</b> que −2. La suite descend alors que le quotient dit « ça monte ».</p>
+        <p>D'où la règle : cette méthode est réservée aux suites à termes positifs. Et il faut le <b>dire</b> dans la copie.</p>`
+    },
+    {
+      k:"PIÈGE", t:"Ni croissante, ni décroissante",
+      c:`<p>Certaines suites changent de sens à chaque terme. Exemple : <span class="v">u<sub>n</sub></span> = (−1)<sup><span class="v">n</span></sup></p>
+        <div class="show">1,&nbsp; −1,&nbsp; 1,&nbsp; −1,&nbsp; 1,&nbsp; …</div>
+        <p>Elle monte, puis descend, puis remonte. Elle <b>n'est pas monotone</b>.</p>
+        <div class="note"><b>Formulation attendue.</b> « La suite n'est ni croissante ni décroissante. » On dit aussi qu'elle est <b>alternée</b>.</div>`,
+      lent:`<p><b>Une erreur classique en devoir.</b></p>
+        <p>On calcule deux ou trois termes, on voit que ça monte, et on écrit « la suite est croissante ». C'est faux — ou du moins, ce n'est pas démontré.</p>
+        <p>Regarde : 1, 3, 7, 2, 9, 1… Les trois premiers montent. Est-ce que la suite est croissante ? Non, le quatrième casse tout.</p>
+        <p><b>Ce qu'il faut faire.</b> Calculer <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> <b>en général</b>, avec la lettre <span class="v">n</span>, et montrer que le signe ne dépend pas de <span class="v">n</span>.</p>
+        <p>Quelques termes ne prouvent rien. Ils servent seulement à <b>deviner</b> la réponse avant de la démontrer.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = 3<span class="v">n</span> + 2.<br>Que peut-on dire de la suite ?`,
+        opts:[{t:`Elle est croissante`,ok:true,why:`Pour <span class="v">n</span> ⩾ 0, 3<span class="v">n</span> + 2 &gt; 0. La différence est positive.`},{t:`Elle est décroissante`,ok:false,why:`Il faudrait une différence négative.`},{t:`On ne peut pas savoir`,ok:false,why:`Si, le signe est clair : 3<span class="v">n</span> + 2 est toujours positif.`}],
+        regle:`Différence positive → croissante.`,
+        aides:[`Quel est le signe de 3<span class="v">n</span> + 2 quand <span class="v">n</span> ⩾ 0 ?`,`Pour <span class="v">n</span> = 0 c'est 2, et ça augmente ensuite. Toujours positif.`],
+        sol:[`Pour tout <span class="v">n</span> ⩾ 0 : 3<span class="v">n</span> ⩾ 0`,`Donc 3<span class="v">n</span> + 2 ⩾ 2 &gt; 0`,`La différence est positive → <b>croissante</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 2<span class="v">n</span> + 5.<br>Calculer <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>.`,
+        rep:2, ind:"un nombre", ok:`(2<span class="v">n</span> + 7) − (2<span class="v">n</span> + 5) = <b>2</b>`, no:`Calcule <span class="v">u<sub>n+1</sub></span> = 2(<span class="v">n</span>+1) + 5, puis soustrais.`,
+        regle:`La différence peut être un nombre constant.`,
+        aides:[`Écris d'abord <span class="v">u<sub>n+1</sub></span> en remplaçant <span class="v">n</span> par <span class="v">(n+1)</span>.`,`<span class="v">u<sub>n+1</sub></span> = 2<span class="v">n</span> + 7. Soustrais 2<span class="v">n</span> + 5.`],
+        sol:[`<span class="v">u<sub>n+1</sub></span> = 2(<span class="v">n</span>+1) + 5 = 2<span class="v">n</span> + 7`,`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = (2<span class="v">n</span> + 7) − (2<span class="v">n</span> + 5)`,`Les 2<span class="v">n</span> s'annulent : <b>2</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Pour utiliser la méthode du quotient, aucune condition n'est nécessaire. »`,
+        opts:[{t:"Faux",ok:true,why:`Il faut que tous les termes soient strictement positifs, et l'écrire.`},{t:"Vrai",ok:false,why:`Avec des termes négatifs, diviser inverse l'inégalité — la méthode devient fausse.`}],
+        regle:`Quotient : seulement si tous les termes sont &gt; 0.`,
+        aides:[`Que se passe-t-il si on divise par un nombre négatif ?`,`Teste avec −2 et −4 : le quotient dit « croissant » alors que ça descend.`],
+        sol:[`Diviser par un négatif inverse le sens de l'inégalité`,`Exemple : −4 / −2 = 2 &gt; 1, pourtant −4 &lt; −2`,`La condition est <b>obligatoire</b> : l'affirmation est fausse`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n</sub></span> = (−1)<sup><span class="v">n</span></sup> × 3.<br>Quel est son sens de variation ?`,
+        opts:[{t:`Ni croissante ni décroissante`,ok:true,why:`Les termes alternent : 3, −3, 3, −3…`},{t:`Croissante`,ok:false,why:`Elle descend une fois sur deux.`},{t:`Décroissante`,ok:false,why:`Elle monte une fois sur deux.`}],
+        regle:`Une suite alternée n'est pas monotone.`,
+        aides:[`Calcule les quatre premiers termes.`,`3, −3, 3, −3 : ça monte puis ça descend.`],
+        sol:[`<span class="v">u<sub>0</sub></span> = 3, <span class="v">u<sub>1</sub></span> = −3, <span class="v">u<sub>2</sub></span> = 3`,`De 3 à −3 ça descend, de −3 à 3 ça monte`,`<b>Ni croissante ni décroissante</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 10 − 3<span class="v">n</span>.<br>Calculer <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>.`,
+        rep:-3, ind:"un nombre relatif", ok:`(7 − 3<span class="v">n</span>) − (10 − 3<span class="v">n</span>) = <b>−3</b>`, no:`Attention aux signes en développant.`,
+        regle:`Différence négative → décroissante.`,
+        aides:[`<span class="v">u<sub>n+1</sub></span> = 10 − 3(<span class="v">n</span>+1).`,`Développe : 10 − 3<span class="v">n</span> − 3 = 7 − 3<span class="v">n</span>.`],
+        sol:[`<span class="v">u<sub>n+1</sub></span> = 10 − 3(<span class="v">n</span>+1) = 7 − 3<span class="v">n</span>`,`Différence : (7 − 3<span class="v">n</span>) − (10 − 3<span class="v">n</span>)`,`7 − 10 = <b>−3</b> → décroissante`] }
+    ],
+    [
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 7<span class="v">n</span> − 4.<br>Calculer <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>.`,
+        rep:7, ind:"un nombre", ok:`La différence vaut <b>7</b> : croissante.`, no:`<span class="v">u<sub>n+1</sub></span> = 7(<span class="v">n</span>+1) − 4.`,
+        regle:`Pour une suite du type <span class="v">an</span> + <span class="v">b</span>, la différence vaut <span class="v">a</span>.`,
+        aides:[`Remplace <span class="v">n</span> par <span class="v">(n+1)</span> dans la formule.`,`7<span class="v">n</span> + 7 − 4 puis soustrais 7<span class="v">n</span> − 4.`],
+        sol:[`<span class="v">u<sub>n+1</sub></span> = 7(<span class="v">n</span>+1) − 4 = 7<span class="v">n</span> + 3`,`(7<span class="v">n</span> + 3) − (7<span class="v">n</span> − 4)`,`3 + 4 = <b>7</b>`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = −2<span class="v">n</span> − 1.<br>Sens de variation ?`,
+        opts:[{t:`Décroissante`,ok:true,why:`Pour <span class="v">n</span> ⩾ 0, −2<span class="v">n</span> − 1 est toujours négatif.`},{t:`Croissante`,ok:false,why:`Il faudrait une différence positive.`},{t:`Constante`,ok:false,why:`La différence n'est pas nulle.`}],
+        regle:`Différence négative → décroissante.`,
+        aides:[`Quel est le signe de −2<span class="v">n</span> − 1 ?`,`Pour <span class="v">n</span> = 0 c'est −1, et ça diminue ensuite.`],
+        sol:[`Pour <span class="v">n</span> ⩾ 0 : −2<span class="v">n</span> ⩽ 0`,`Donc −2<span class="v">n</span> − 1 ⩽ −1 &lt; 0`,`<b>Décroissante</b>`] },
+      { k:"QCM", type:"qcm", q:`On a calculé <span class="v">u<sub>0</sub></span> = 2, <span class="v">u<sub>1</sub></span> = 5, <span class="v">u<sub>2</sub></span> = 9.<br>Peut-on conclure que la suite est croissante ?`,
+        opts:[{t:`Non, il faut une démonstration`,ok:true,why:`Trois termes ne prouvent rien : la suite pourrait redescendre ensuite.`},{t:`Oui, ça monte`,ok:false,why:`Ces termes permettent de <b>deviner</b>, pas de démontrer.`},{t:`Oui, trois termes suffisent`,ok:false,why:`Aucun nombre fini de termes ne suffit.`}],
+        regle:`Il faut le signe de <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> <b>en général</b>.`,
+        aides:[`La suite 1, 3, 7, 2, 9 monte au début. Est-elle croissante ?`,`Il faut prouver pour <b>tout</b> <span class="v">n</span>, pas seulement les premiers.`],
+        sol:[`Quelques termes servent à conjecturer`,`Pour démontrer, il faut le signe de la différence en général`,`Réponse : <b>non, il faut une démonstration</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>².<br>Calculer <span class="v">u<sub>3</sub> − u<sub>2</sub></span>.`,
+        rep:5, ind:"un entier", ok:`9 − 4 = <b>5</b>`, no:`<span class="v">u<sub>3</sub></span> = 9 et <span class="v">u<sub>2</sub></span> = 4.`,
+        regle:`On peut tester la différence sur des rangs précis.`,
+        aides:[`Calcule <span class="v">u<sub>3</sub></span> puis <span class="v">u<sub>2</sub></span>.`,`3² = 9 et 2² = 4.`],
+        sol:[`<span class="v">u<sub>3</sub></span> = 3² = 9`,`<span class="v">u<sub>2</sub></span> = 2² = 4`,`9 − 4 = <b>5</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Une suite constante est à la fois croissante et décroissante. »`,
+        opts:[{t:"Vrai",ok:true,why:`Avec les inégalités larges ⩾ et ⩽, les deux définitions sont vérifiées.`},{t:"Faux",ok:false,why:`Les définitions utilisent ⩾ et ⩽, pas &gt; et &lt;. Une constante vérifie les deux.`}],
+        regle:`Croissante : <span class="v">u<sub>n+1</sub></span> ⩾ <span class="v">u<sub>n</sub></span> — l'égalité est permise.`,
+        aides:[`Regarde bien les symboles dans la définition : ⩾ ou &gt; ?`,`Si <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span>, alors ⩾ et ⩽ sont vraies.`],
+        sol:[`Définition : croissante si <span class="v">u<sub>n+1</sub></span> ⩾ <span class="v">u<sub>n</sub></span>`,`Pour une constante, <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> : les deux inégalités larges sont vraies`,`<b>Vrai</b> (mais elle n'est ni strictement croissante ni strictement décroissante)`] }
+    ],
+    [
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² + <span class="v">n</span>.<br>Calculer <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> pour <span class="v">n</span> = 3.`,
+        rep:8, ind:"un entier", ok:`<span class="v">u<sub>4</sub></span> = 20, <span class="v">u<sub>3</sub></span> = 12, différence <b>8</b>`, no:`Calcule les deux termes puis soustrais.`,
+        regle:`En général la différence vaut 2<span class="v">n</span> + 2.`,
+        aides:[`Tu cherches <span class="v">u<sub>4</sub> − u<sub>3</sub></span>.`,`<span class="v">u<sub>4</sub></span> = 16 + 4 = 20, <span class="v">u<sub>3</sub></span> = 9 + 3 = 12.`],
+        sol:[`<span class="v">u<sub>4</sub></span> = 4² + 4 = 20`,`<span class="v">u<sub>3</sub></span> = 3² + 3 = 12`,`20 − 12 = <b>8</b>`] },
+      { k:"QCM", type:"qcm", q:`Tous les termes de <span class="v">(u<sub>n</sub>)</span> sont positifs et <span class="v">u<sub>n+1</sub></span>/<span class="v">u<sub>n</sub></span> = 0,8.<br>Sens de variation ?`,
+        opts:[{t:`Décroissante`,ok:true,why:`Le quotient est inférieur à 1, et les termes sont positifs.`},{t:`Croissante`,ok:false,why:`Il faudrait un quotient supérieur à 1.`},{t:`On ne peut pas conclure`,ok:false,why:`Si : la condition de positivité est donnée dans l'énoncé.`}],
+        regle:`Quotient &lt; 1 et termes positifs → décroissante.`,
+        aides:[`Compare 0,8 à 1.`,`Chaque terme vaut 0,8 fois le précédent : il diminue.`],
+        sol:[`Les termes sont positifs : la méthode du quotient s'applique`,`0,8 &lt; 1`,`Donc la suite est <b>décroissante</b>`] },
+      { k:"QCM", type:"qcm", q:`Quelle phrase doit figurer dans la copie avant d'utiliser le quotient ?`,
+        opts:[{t:`« Tous les termes sont strictement positifs »`,ok:true,why:`C'est la condition d'application de la méthode.`},{t:`« La suite est croissante »`,ok:false,why:`C'est ce qu'on cherche à démontrer, pas une hypothèse.`},{t:`« La suite est arithmétique »`,ok:false,why:`Sans rapport avec la méthode du quotient.`}],
+        regle:`Sans cette phrase, la méthode n'est pas valable.`,
+        aides:[`Quelle est la condition pour pouvoir diviser sans danger ?`,`Il faut savoir le signe des termes.`],
+        sol:[`Diviser par un négatif inverse l'inégalité`,`Il faut donc garantir que tous les termes sont &gt; 0`,`Phrase attendue : <b>« Tous les termes sont strictement positifs »</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 100 − 5<span class="v">n</span>.<br>À partir de quel rang la suite devient-elle négative ?`,
+        sub:`Cherche le plus petit entier <span class="v">n</span> tel que <span class="v">u<sub>n</sub></span> &lt; 0.`,
+        rep:21, ind:"un entier", ok:`100 − 5<span class="v">n</span> &lt; 0 donne <span class="v">n</span> &gt; 20, donc <b>21</b>`, no:`Résous l'inéquation 100 − 5<span class="v">n</span> &lt; 0.`,
+        regle:`On résout une inéquation pour trouver un seuil.`,
+        aides:[`Pose l'inéquation 100 − 5<span class="v">n</span> &lt; 0.`,`100 &lt; 5<span class="v">n</span>, donc <span class="v">n</span> &gt; 20. Le premier entier qui convient ?`],
+        sol:[`100 − 5<span class="v">n</span> &lt; 0`,`100 &lt; 5<span class="v">n</span> donc <span class="v">n</span> &gt; 20`,`Premier entier strictement supérieur à 20 : <b>21</b>`] },
+      { k:"VRAI OU FAUX ⭑", hard:true, type:"qcm", q:`« Si <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = <span class="v">n</span> − 3, la suite est croissante. »`,
+        opts:[{t:"Faux",ok:true,why:`Pour <span class="v">n</span> = 0, 1, 2 la différence est négative. Elle ne devient positive qu'à partir de <span class="v">n</span> = 4.`},{t:"Vrai",ok:false,why:`Le signe change avec <span class="v">n</span> : pour <span class="v">n</span> &lt; 3 la différence est négative.`}],
+        regle:`Il faut que le signe soit constant pour <b>tout</b> <span class="v">n</span>.`,
+        aides:[`Teste <span class="v">n</span> = 0, puis <span class="v">n</span> = 5.`,`Pour <span class="v">n</span> = 0 : −3 (négatif). Pour <span class="v">n</span> = 5 : +2 (positif).`],
+        sol:[`Pour <span class="v">n</span> = 0 : différence = −3 &lt; 0, ça descend`,`Pour <span class="v">n</span> = 5 : différence = 2 &gt; 0, ça monte`,`Le signe change → la suite n'est pas croissante. <b>Faux</b>`] }
+    ]
+  ]
+},
+
+/* ─────────────────────────────────────────────
+   3 · SUITES ARITHMÉTIQUES       ← DS
+   ───────────────────────────────────────────── */
+{
+  n:3, nom:"Suites arithmétiques", sous:"Raison, terme général", pret:true, ds:true,
+  cartes:[
+    {
+      k:"DÉFINITION", t:"On ajoute toujours le même nombre",
+      c:`<p>Une suite est <b>arithmétique</b> s'il existe un réel <span class="v">r</span> tel que, pour tout <span class="v">n</span> :</p>
+        <div class="show"><span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + <span class="v">r</span></div>
+        <p>Ce nombre <span class="v">r</span> s'appelle la <b>raison</b> de la suite.</p>
+        <div class="show">7,&nbsp; 11,&nbsp; 15,&nbsp; 19,&nbsp; 23,&nbsp; … &nbsp;&nbsp;(<span class="v">r</span> = 4)</div>
+        <div class="note"><b>Attention au mot.</b> « Raison » ne veut pas dire « cause ». C'est le nombre qu'on ajoute à chaque étape.</div>`,
+      lent:`<p><b>La tirelire.</b></p>
+        <p>Tu mets 5 € dans ta tirelire chaque semaine. Toujours 5, jamais plus, jamais moins.</p>
+        <p>Semaine 0 : 20 € · semaine 1 : 25 € · semaine 2 : 30 € · semaine 3 : 35 €…</p>
+        <p>C'est une suite arithmétique de <b>raison 5</b>. Le mot « raison » désigne juste ce qu'on ajoute.</p>
+        <p><b>Autre image : l'escalier régulier.</b> Toutes les marches ont la même hauteur. Cette hauteur, c'est la raison.</p>
+        <p>Et si tu <b>retires</b> 5 € par semaine ? Alors la raison vaut −5. Une raison peut être négative — la suite descend.</p>`
+    },
+    {
+      k:"RECONNAÎTRE", t:"La différence doit être constante",
+      c:`<p>Pour vérifier qu'une suite est arithmétique, on calcule <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>.</p>
+        <p>Si le résultat <b>ne dépend pas de <span class="v">n</span></b>, la suite est arithmétique, et ce résultat est la raison.</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2 &nbsp;→&nbsp; <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = 3</div>
+        <div class="note"><b>Erreur de devoir.</b> Vérifier sur deux ou trois termes ne suffit pas. Il faut le calcul général, avec la lettre <span class="v">n</span>.</div>`,
+      lent:`<p><b>Comment savoir si l'escalier est régulier ?</b></p>
+        <p>Tu mesures une marche : 18 cm. Une autre : 18 cm. Une troisième : 18 cm. Bon signe — mais tu n'as mesuré que trois marches sur cent.</p>
+        <p>En maths, on ne peut pas toutes les mesurer : il y en a une infinité. D'où le calcul <b>avec la lettre</b> <span class="v">n</span> : il mesure toutes les marches d'un coup.</p>
+        <p><b>Comment lire le résultat ?</b></p>
+        <p>Si tu trouves 3 → aucun <span class="v">n</span> dedans → toutes les marches font 3 → arithmétique de raison 3.</p>
+        <p>Si tu trouves 2<span class="v">n</span> + 1 → le résultat change selon la marche → les marches ne sont pas égales → <b>pas</b> arithmétique.</p>`
+    },
+    {
+      k:"FORMULE", t:"Le terme général",
+      c:`<p>Pour aller de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>n</sub></span>, on ajoute <span class="v">r</span> exactement <span class="v">n</span> fois :</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">n</span> × <span class="v">r</span></div>
+        <p>Forme générale, d'un rang quelconque à un autre :</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = <span class="v">u<sub>p</sub></span> + (<span class="v">n</span> − <span class="v">p</span>) × <span class="v">r</span></div>
+        <div class="note"><b>Si la suite commence à <span class="v">u<sub>1</sub></span></b> : <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>1</sub></span> + (<span class="v">n</span> − 1)<span class="v">r</span>. Inutile d'apprendre deux formules — la forme générale les contient.</div>`,
+      lent:`<p><b>Retour à la tirelire.</b></p>
+        <p>Tu commences avec 20 € et tu ajoutes 5 € par semaine. Combien après 8 semaines ?</p>
+        <p>Tu pourrais compter semaine après semaine : 25, 30, 35… Long.</p>
+        <p>Ou réfléchir : <b>8 semaines × 5 € = 40 €</b> ajoutés au total. Donc 20 + 40 = <b>60 €</b>.</p>
+        <div class="show"><span class="v">u<sub>8</sub></span> = 20 + 8×5 = 60</div>
+        <p>C'est exactement la formule <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">nr</span>.</p>
+        <p><b>Et la forme avec <span class="v">p</span> ?</b> Si tu pars de la semaine 3 pour aller à la semaine 8, il s'écoule 8 − 3 = 5 semaines. D'où le <span class="v">(n − p)</span> : c'est le <b>nombre de pas</b> entre les deux rangs.</p>`
+    },
+    {
+      k:"VARIATION", t:"Le signe de la raison décide",
+      c:`<p>Ici c'est simple : <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = <span class="v">r</span>. Le sens de variation est donné par le signe de <span class="v">r</span>.</p>
+        <div class="show" style="text-align:left;padding:19px 21px">
+          <div style="margin-bottom:9px"><span class="v">r</span> &gt; 0 &nbsp;→&nbsp; croissante</div>
+          <div style="margin-bottom:9px"><span class="v">r</span> &lt; 0 &nbsp;→&nbsp; décroissante</div>
+          <div><span class="v">r</span> = 0 &nbsp;→&nbsp; constante</div>
+        </div>
+        <div class="note">Une suite arithmétique est <b>toujours monotone</b>. Elle ne peut pas alterner.</div>`,
+      lent:`<p><b>Pourquoi c'est si simple ici ?</b></p>
+        <p>Parce que la différence entre deux termes consécutifs est <b>toujours la même</b> : c'est la raison.</p>
+        <p>Tu ajoutes 5 chaque fois → ça monte à chaque fois → croissante, sans discussion.</p>
+        <p>Tu retires 5 chaque fois → ça descend à chaque fois → décroissante.</p>
+        <p><b>C'est pour ça qu'une suite arithmétique ne peut jamais « zigzaguer ».</b> Le pas est constant, donc la direction ne change jamais.</p>
+        <p>Retiens l'image de l'escalier : toutes les marches identiques. Soit il monte, soit il descend, soit il est plat. Pas d'autre option.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"AUTOMATISME", type:"num", q:`Suite arithmétique : 7, 11, 15, 19, …<br>Quelle est la raison ?`,
+        rep:4, ind:"un nombre", ok:`11 − 7 = <b>4</b>`, no:`La raison est la différence entre deux termes consécutifs.`,
+        regle:`<span class="v">r</span> = <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>`,
+        aides:[`Soustrais deux termes qui se suivent.`,`11 − 7, ou 15 − 11 : tu dois trouver la même chose.`],
+        sol:[`On soustrait deux termes consécutifs`,`11 − 7 = 4 (et 15 − 11 = 4)`,`Raison : <b>4</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>0</sub></span> = 5 et <span class="v">r</span> = 3.<br>Calculer <span class="v">u<sub>10</sub></span>.`,
+        rep:35, ind:"un entier", ok:`5 + 10×3 = <b>35</b>`, no:`Applique <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">nr</span>.`,
+        regle:`<span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">n</span><span class="v">r</span>`,
+        aides:[`On ajoute la raison 10 fois.`,`5 + 10×3.`],
+        sol:[`<span class="v">u<sub>10</sub></span> = <span class="v">u<sub>0</sub></span> + 10<span class="v">r</span>`,`= 5 + 10×3 = 5 + 30`,`<b>35</b>`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n</sub></span> = 6<span class="v">n</span> − 1.<br>Cette suite est-elle arithmétique ?`,
+        opts:[{t:`Oui, de raison 6`,ok:true,why:`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = 6, constante.`},{t:`Non`,ok:false,why:`La différence est constante : elle est bien arithmétique.`},{t:`Oui, de raison −1`,ok:false,why:`−1 est le terme <span class="v">u<sub>0</sub></span>, pas la raison.`}],
+        regle:`Pour <span class="v">an</span> + <span class="v">b</span>, la raison est <span class="v">a</span>.`,
+        aides:[`Calcule <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>.`,`<span class="v">u<sub>n+1</sub></span> = 6<span class="v">n</span> + 5. Soustrais 6<span class="v">n</span> − 1.`],
+        sol:[`<span class="v">u<sub>n+1</sub></span> = 6(<span class="v">n</span>+1) − 1 = 6<span class="v">n</span> + 5`,`Différence : (6<span class="v">n</span> + 5) − (6<span class="v">n</span> − 1) = 6`,`Constante → arithmétique de <b>raison 6</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Suite arithmétique avec <span class="v">u<sub>0</sub></span> = 20 et <span class="v">r</span> = −4.<br>Calculer <span class="v">u<sub>6</sub></span>.`,
+        rep:-4, ind:"un nombre relatif", ok:`20 + 6×(−4) = 20 − 24 = <b>−4</b>`, no:`La raison est négative : on soustrait.`,
+        regle:`Une raison négative fait descendre la suite.`,
+        aides:[`Applique la formule avec <span class="v">r</span> = −4.`,`20 + 6×(−4) = 20 − 24.`],
+        sol:[`<span class="v">u<sub>6</sub></span> = 20 + 6×(−4)`,`= 20 − 24`,`<b>−4</b>`] },
+      { k:"QCM", type:"qcm", q:`Un abonnement coûte 30 € puis augmente de 2 € chaque mois.<br>Quel type de suite ?`,
+        opts:[{t:`Arithmétique de raison 2`,ok:true,why:`On ajoute toujours la même somme : 2 €.`},{t:`Géométrique de raison 2`,ok:false,why:`Il faudrait multiplier par 2, pas ajouter 2.`},{t:`Ni l'une ni l'autre`,ok:false,why:`Une augmentation fixe est bien arithmétique.`}],
+        regle:`Somme fixe ajoutée → arithmétique.`,
+        aides:[`On ajoute 2 € ou on multiplie par 2 ?`,`« Augmente de 2 € » = addition.`],
+        sol:[`Chaque mois on ajoute 2 €`,`L'accroissement est constant`,`Suite <b>arithmétique de raison 2</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME", type:"num", q:`Suite arithmétique : <span class="v">u<sub>3</sub></span> = 14 et <span class="v">r</span> = 5.<br>Calculer <span class="v">u<sub>7</sub></span>.`,
+        rep:34, ind:"un entier", ok:`14 + (7−3)×5 = 14 + 20 = <b>34</b>`, no:`Utilise <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>p</sub></span> + (<span class="v">n−p</span>)<span class="v">r</span>.`,
+        regle:`<span class="v">(n − p)</span> = nombre de pas entre les deux rangs.`,
+        aides:[`Combien de pas de <span class="v">u<sub>3</sub></span> à <span class="v">u<sub>7</sub></span> ?`,`7 − 3 = 4 pas, chacun ajoute 5.`],
+        sol:[`Nombre de pas : 7 − 3 = 4`,`<span class="v">u<sub>7</sub></span> = 14 + 4×5`,`= 14 + 20 = <b>34</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Suite arithmétique : <span class="v">u<sub>0</sub></span> = 2 et <span class="v">u<sub>5</sub></span> = 17.<br>Quelle est la raison ?`,
+        rep:3, ind:"un nombre", ok:`17 = 2 + 5<span class="v">r</span> donne <span class="v">r</span> = <b>3</b>`, no:`Résous l'équation 2 + 5<span class="v">r</span> = 17.`,
+        regle:`On peut retrouver <span class="v">r</span> à partir de deux termes.`,
+        aides:[`Écris la formule avec les données : <span class="v">u<sub>5</sub></span> = <span class="v">u<sub>0</sub></span> + 5<span class="v">r</span>.`,`2 + 5<span class="v">r</span> = 17, donc 5<span class="v">r</span> = 15.`],
+        sol:[`<span class="v">u<sub>5</sub></span> = <span class="v">u<sub>0</sub></span> + 5<span class="v">r</span>`,`17 = 2 + 5<span class="v">r</span> donc 5<span class="v">r</span> = 15`,`<span class="v">r</span> = <b>3</b>`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² + 1.<br>Cette suite est-elle arithmétique ?`,
+        opts:[{t:`Non`,ok:true,why:`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = 2<span class="v">n</span> + 1 : ça dépend de <span class="v">n</span>.`},{t:`Oui, de raison 1`,ok:false,why:`Calcule la différence : elle n'est pas constante.`},{t:`Oui, de raison 2`,ok:false,why:`La différence vaut 2<span class="v">n</span> + 1, qui change avec <span class="v">n</span>.`}],
+        regle:`Différence qui dépend de <span class="v">n</span> → pas arithmétique.`,
+        aides:[`Calcule les premiers termes : 1, 2, 5, 10.`,`Les écarts sont 1, 3, 5 : pas constants.`],
+        sol:[`Termes : 1, 2, 5, 10`,`Écarts : 1, 3, 5 — ils changent`,`<b>Non</b>, la suite n'est pas arithmétique`] },
+      { k:"AUTOMATISME", type:"num", q:`Un salaire de 1 800 € augmente de 60 € par an.<br>Quel salaire après 5 ans ?`,
+        rep:2100, ind:"en euros", ok:`1800 + 5×60 = <b>2 100 €</b>`, no:`On ajoute 60 € cinq fois.`,
+        regle:`Situation concrète → suite arithmétique.`,
+        aides:[`Combien d'augmentations en 5 ans ?`,`1800 + 5×60.`],
+        sol:[`5 augmentations de 60 €`,`Total ajouté : 5×60 = 300 €`,`1800 + 300 = <b>2 100 €</b>`] },
+      { k:"QCM", type:"qcm", q:`Une suite arithmétique a pour raison <span class="v">r</span> = −2.<br>Sens de variation ?`,
+        opts:[{t:`Décroissante`,ok:true,why:`La raison est négative : chaque terme est plus petit.`},{t:`Croissante`,ok:false,why:`Il faudrait une raison positive.`},{t:`Ni l'une ni l'autre`,ok:false,why:`Une suite arithmétique est toujours monotone.`}],
+        regle:`Le signe de <span class="v">r</span> donne le sens.`,
+        aides:[`On ajoute −2 à chaque étape. Ça monte ou ça descend ?`,`Ajouter un nombre négatif, c'est soustraire.`],
+        sol:[`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = <span class="v">r</span> = −2 &lt; 0`,`La différence est négative`,`<b>Décroissante</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`Suite arithmétique : <span class="v">u<sub>2</sub></span> = 7 et <span class="v">u<sub>6</sub></span> = 23.<br>Quelle est la raison ?`,
+        rep:4, ind:"un nombre", ok:`23 = 7 + 4<span class="v">r</span> donne <span class="v">r</span> = <b>4</b>`, no:`Il y a 6 − 2 = 4 pas entre les deux.`,
+        regle:`<span class="v">u<sub>n</sub> − u<sub>p</sub></span> = (<span class="v">n − p</span>)<span class="v">r</span>`,
+        aides:[`Combien de pas entre le rang 2 et le rang 6 ?`,`4 pas. Et l'écart total vaut 23 − 7 = 16.`],
+        sol:[`Nombre de pas : 6 − 2 = 4`,`Écart total : 23 − 7 = 16`,`<span class="v">r</span> = 16 ÷ 4 = <b>4</b>`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`Suite arithmétique : <span class="v">u<sub>0</sub></span> = 3, <span class="v">r</span> = 4.<br>À partir de quel rang a-t-on <span class="v">u<sub>n</sub></span> &gt; 100 ?`,
+        sub:`Cherche le plus petit entier <span class="v">n</span>.`,
+        rep:25, ind:"un entier", ok:`3 + 4<span class="v">n</span> &gt; 100 donne <span class="v">n</span> &gt; 24,25 donc <b>25</b>`, no:`Résous l'inéquation 3 + 4<span class="v">n</span> &gt; 100.`,
+        regle:`Un seuil se trouve par une inéquation.`,
+        aides:[`Écris <span class="v">u<sub>n</sub></span> = 3 + 4<span class="v">n</span> et pose l'inéquation.`,`4<span class="v">n</span> &gt; 97 donc <span class="v">n</span> &gt; 24,25.`],
+        sol:[`3 + 4<span class="v">n</span> &gt; 100`,`4<span class="v">n</span> &gt; 97 donc <span class="v">n</span> &gt; 24,25`,`Premier entier : <b>25</b>`] },
+      { k:"QCM", type:"qcm", q:`Quelle suite est arithmétique ?`,
+        opts:[{t:`<span class="v">u<sub>n</sub></span> = 8 − 3<span class="v">n</span>`,ok:true,why:`Différence constante égale à −3.`},{t:`<span class="v">u<sub>n</sub></span> = 3<sup><span class="v">n</span></sup>`,ok:false,why:`Ici on multiplie par 3 : c'est géométrique.`},{t:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>²`,ok:false,why:`Les écarts 1, 3, 5… ne sont pas constants.`}],
+        regle:`Forme <span class="v">an</span> + <span class="v">b</span> → arithmétique de raison <span class="v">a</span>.`,
+        aides:[`Cherche celle où <span class="v">n</span> apparaît une seule fois, sans puissance.`,`8 − 3<span class="v">n</span> : à chaque pas on retire 3.`],
+        sol:[`8 − 3<span class="v">n</span> : différence constante −3 → arithmétique`,`3<sup><span class="v">n</span></sup> : on multiplie → géométrique`,`<span class="v">n</span>² : écarts variables → ni l'un ni l'autre`] },
+      { k:"AUTOMATISME", type:"num", q:`Suite arithmétique : <span class="v">u<sub>1</sub></span> = 10 et <span class="v">r</span> = 6.<br>Calculer <span class="v">u<sub>8</sub></span>.`,
+        rep:52, ind:"un entier", ok:`10 + (8−1)×6 = 10 + 42 = <b>52</b>`, no:`Attention : la suite part de <span class="v">u<sub>1</sub></span>.`,
+        regle:`Départ à <span class="v">u<sub>1</sub></span> → <span class="v">(n − 1)</span> pas.`,
+        aides:[`Combien de pas de <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>8</sub></span> ?`,`8 − 1 = 7 pas de 6.`],
+        sol:[`Nombre de pas : 8 − 1 = 7`,`<span class="v">u<sub>8</sub></span> = 10 + 7×6`,`= 10 + 42 = <b>52</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Une suite arithmétique peut être ni croissante ni décroissante. »`,
+        opts:[{t:"Faux",ok:true,why:`Elle est toujours monotone : le signe de <span class="v">r</span> ne change jamais.`},{t:"Vrai",ok:false,why:`Impossible : la différence est constante, donc le sens ne change pas.`}],
+        regle:`Une suite arithmétique est toujours monotone.`,
+        aides:[`La différence vaut toujours <span class="v">r</span>. Peut-elle changer de signe ?`,`Un nombre fixe garde son signe.`],
+        sol:[`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> = <span class="v">r</span>, un nombre fixe`,`Son signe ne change jamais`,`La suite est toujours monotone → <b>faux</b>`] }
+    ]
+  ]
+},
+
+/* ─────────────────────────────────────────────
+   4 · SUITES GÉOMÉTRIQUES        ← DS
+   ───────────────────────────────────────────── */
+{
+  n:4, nom:"Suites géométriques", sous:"Raison, pourcentages", pret:true, ds:true,
+  cartes:[
+    {
+      k:"DÉFINITION", t:"On multiplie toujours par le même nombre",
+      c:`<p>Une suite est <b>géométrique</b> s'il existe un réel <span class="v">q</span> non nul tel que :</p>
+        <div class="show"><span class="v">u<sub>n+1</sub></span> = <span class="v">q</span> × <span class="v">u<sub>n</sub></span></div>
+        <p>Ce nombre <span class="v">q</span> s'appelle aussi la <b>raison</b>.</p>
+        <div class="show">3,&nbsp; 6,&nbsp; 12,&nbsp; 24,&nbsp; 48,&nbsp; … &nbsp;&nbsp;(<span class="v">q</span> = 2)</div>
+        <div class="note"><b>Même mot, autre rôle.</b> Chez les arithmétiques on <b>ajoute</b> la raison. Ici on <b>multiplie</b> par elle.</div>`,
+      lent:`<p><b>Les bactéries.</b></p>
+        <p>Une bactérie se divise en deux chaque heure. Au départ il y en a 3.</p>
+        <p>Heure 0 : 3 · heure 1 : 6 · heure 2 : 12 · heure 3 : 24…</p>
+        <p>À chaque étape on <b>multiplie par 2</b>. C'est une suite géométrique de raison 2.</p>
+        <p><b>La différence avec l'arithmétique.</b></p>
+        <p>Arithmétique : +5, +5, +5 → ça monte <b>régulièrement</b>, comme un escalier.<br>
+           Géométrique : ×2, ×2, ×2 → ça monte de plus en plus vite, ça <b>explose</b>.</p>
+        <p>20, 25, 30, 35 (arithmétique) contre 20, 40, 80, 160 (géométrique). Même départ, rien à voir après quelques pas.</p>`
+    },
+    {
+      k:"RECONNAÎTRE", t:"Le quotient doit être constant",
+      c:`<p>On divise chaque terme par le précédent. Si le résultat est toujours le même, la suite est géométrique.</p>
+        <div class="show">6/3 = 2&nbsp;;&nbsp; 12/6 = 2&nbsp;;&nbsp; 24/12 = 2</div>
+        <p>Le quotient vaut 2 partout → suite géométrique de raison 2.</p>
+        <div class="note"><b>Comparaison.</b> Arithmétique → on regarde la <b>différence</b>. Géométrique → on regarde le <b>quotient</b>.</div>`,
+      lent:`<p><b>Comment choisir quoi tester ?</b></p>
+        <p>Devant une liste de nombres, pose-toi la question dans cet ordre :</p>
+        <p><b>1. J'ajoute toujours la même chose ?</b> Teste les différences.<br>
+        7, 11, 15, 19 → écarts 4, 4, 4 → arithmétique.</p>
+        <p><b>2. Sinon, je multiplie toujours par la même chose ?</b> Teste les quotients.<br>
+        3, 6, 12, 24 → quotients 2, 2, 2 → géométrique.</p>
+        <p><b>Indice visuel.</b> Si les nombres grandissent lentement et régulièrement → probablement arithmétique. S'ils s'emballent (3, 6, 12, 24, 48…) → probablement géométrique.</p>`
+    },
+    {
+      k:"FORMULE", t:"Le terme général",
+      c:`<p>Pour aller de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>n</sub></span>, on multiplie par <span class="v">q</span> exactement <span class="v">n</span> fois :</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup></div>
+        <p>Forme générale :</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> = <span class="v">u<sub>p</sub></span> × <span class="v">q</span><sup><span class="v">n − p</span></sup></div>
+        <div class="note"><b>L'exposant est le nombre de pas.</b> Chez les arithmétiques ce nombre multipliait <span class="v">r</span> ; ici il devient l'exposant de <span class="v">q</span>.</div>`,
+      lent:`<p><b>Pourquoi une puissance ?</b></p>
+        <p>Reprends les bactéries : 3 au départ, ×2 chaque heure.</p>
+        <p>Après 4 heures, tu as multiplié par 2 quatre fois de suite :</p>
+        <div class="show">3 × 2 × 2 × 2 × 2 = 3 × 2<sup>4</sup> = 48</div>
+        <p>« Multiplier quatre fois par 2 » s'écrit 2<sup>4</sup>. La puissance, c'est juste une écriture courte.</p>
+        <p><b>Le parallèle avec l'arithmétique.</b></p>
+        <p>Arithmétique : ajouter <span class="v">r</span> quatre fois = + 4<span class="v">r</span><br>
+           Géométrique : multiplier par <span class="v">q</span> quatre fois = × <span class="v">q</span><sup>4</sup></p>
+        <p>Même logique, l'une avec des additions, l'autre avec des multiplications.</p>`
+    },
+    {
+      k:"POURCENTAGES", t:"Le coefficient multiplicateur",
+      c:`<p>Un pourcentage d'évolution donne toujours une suite <b>géométrique</b>.</p>
+        <div class="show" style="text-align:left;padding:19px 21px">
+          <div style="margin-bottom:9px">hausse de <span class="v">t</span> % &nbsp;→&nbsp; × (1 + <span class="v">t</span>/100)</div>
+          <div>baisse de <span class="v">t</span> % &nbsp;→&nbsp; × (1 − <span class="v">t</span>/100)</div>
+        </div>
+        <div class="show">+5 % → ×1,05 &nbsp;&nbsp;·&nbsp;&nbsp; −20 % → ×0,8 &nbsp;&nbsp;·&nbsp;&nbsp; +100 % → ×2</div>
+        <div class="note"><b>Repère pour le DS.</b> « augmente de 3 € » → arithmétique. « augmente de 3 % » → géométrique.</div>`,
+      lent:`<p><b>Pourquoi un pourcentage, c'est une multiplication ?</b></p>
+        <p>Un prix de 200 € augmente de 10 %. L'augmentation vaut 20 €, donc le nouveau prix est 220 €.</p>
+        <p>Écrivons-le autrement : 200 + 10 % de 200 = 200 + 0,1×200 = 200 × (1 + 0,1) = 200 × <b>1,1</b></p>
+        <p>Une seule multiplication remplace les deux étapes.</p>
+        <p><b>Pourquoi ça compte ?</b> Parce que l'année suivante, les 10 % se calculent sur <b>220</b>, pas sur 200. L'augmentation n'est plus 20 € mais 22 €.</p>
+        <p>C'est toute la différence avec une hausse fixe de 20 € par an. Le pourcentage s'applique à un montant qui change — d'où la multiplication, d'où la suite géométrique.</p>
+        <p><b>Pour une baisse de 20 %</b> : il reste 80 % du prix, donc on multiplie par 0,8.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"AUTOMATISME", type:"num", q:`Suite géométrique : 3, 6, 12, 24, …<br>Quelle est la raison ?`,
+        rep:2, ind:"un nombre", ok:`6/3 = <b>2</b>`, no:`La raison est le quotient de deux termes consécutifs.`,
+        regle:`<span class="v">q</span> = <span class="v">u<sub>n+1</sub></span> / <span class="v">u<sub>n</sub></span>`,
+        aides:[`Divise un terme par le précédent.`,`6 ÷ 3, ou 12 ÷ 6 : même résultat.`],
+        sol:[`On divise deux termes consécutifs`,`6 ÷ 3 = 2 (et 12 ÷ 6 = 2)`,`Raison : <b>2</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>0</sub></span> = 5 et <span class="v">q</span> = 3.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
+        rep:135, ind:"un entier", ok:`5 × 3³ = 5 × 27 = <b>135</b>`, no:`On multiplie par 3 trois fois.`,
+        regle:`<span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup>`,
+        aides:[`3³ = 27.`,`5 × 27.`],
+        sol:[`<span class="v">u<sub>3</sub></span> = 5 × 3³`,`3³ = 27`,`5 × 27 = <b>135</b>`] },
+      { k:"QCM", type:"qcm", q:`Un loyer de 600 € augmente de 5 % par an.<br>Par combien multiplie-t-on chaque année ?`,
+        opts:[{t:`1,05`,ok:true,why:`+5 % correspond au coefficient 1 + 0,05.`},{t:`5`,ok:false,why:`Ce serait multiplier par 5 — une hausse de 400 %.`},{t:`0,05`,ok:false,why:`Ce serait garder 5 % du loyer.`}],
+        regle:`Hausse de <span class="v">t</span> % → × (1 + <span class="v">t</span>/100).`,
+        aides:[`Le loyer garde 100 % et gagne 5 % de plus.`,`100 % + 5 % = 105 % = 1,05.`],
+        sol:[`Le nouveau loyer vaut 105 % de l'ancien`,`105 % = 105/100 = 1,05`,`Coefficient : <b>1,05</b>`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n</sub></span> = 4 × 2<sup><span class="v">n</span></sup>.<br>Quelle est la nature de la suite ?`,
+        opts:[{t:`Géométrique de raison 2`,ok:true,why:`La forme <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup> donne <span class="v">q</span> = 2.`},{t:`Arithmétique de raison 2`,ok:false,why:`Ici <span class="v">n</span> est en exposant : on multiplie.`},{t:`Géométrique de raison 4`,ok:false,why:`4 est le premier terme <span class="v">u<sub>0</sub></span>, pas la raison.`}],
+        regle:`Dans <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup>, la raison est la base de la puissance.`,
+        aides:[`Compare avec la formule <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup>.`,`Qui joue le rôle de <span class="v">q</span> : le 4 ou le 2 ?`],
+        sol:[`Formule : <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup>`,`Ici <span class="v">u<sub>0</sub></span> = 4 et <span class="v">q</span> = 2`,`<b>Géométrique de raison 2</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Un prix de 200 € baisse de 25 %.<br>Quel est le nouveau prix ?`,
+        rep:150, ind:"en euros", ok:`200 × 0,75 = <b>150 €</b>`, no:`Il reste 75 % du prix.`,
+        regle:`Baisse de <span class="v">t</span> % → × (1 − <span class="v">t</span>/100).`,
+        aides:[`Si on enlève 25 %, combien reste-t-il ?`,`75 %, donc ×0,75.`],
+        sol:[`Baisse de 25 % → il reste 75 %`,`Coefficient : 0,75`,`200 × 0,75 = <b>150 €</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME", type:"num", q:`Suite géométrique : 80, 40, 20, 10, …<br>Quelle est la raison ?`,
+        rep:0.5, ind:"un décimal", ok:`40/80 = <b>0,5</b>`, no:`Divise un terme par le précédent.`,
+        regle:`Une raison entre 0 et 1 fait décroître la suite.`,
+        aides:[`40 ÷ 80.`,`Chaque terme est la moitié du précédent.`],
+        sol:[`40 ÷ 80 = 0,5`,`Vérification : 20 ÷ 40 = 0,5`,`Raison : <b>0,5</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>0</sub></span> = 2 et <span class="v">q</span> = 5.<br>Calculer <span class="v">u<sub>2</sub></span>.`,
+        rep:50, ind:"un entier", ok:`2 × 5² = 2 × 25 = <b>50</b>`, no:`On multiplie par 5 deux fois.`,
+        regle:`L'exposant est le nombre de multiplications.`,
+        aides:[`5² = 25.`,`2 × 25.`],
+        sol:[`<span class="v">u<sub>2</sub></span> = 2 × 5²`,`5² = 25`,`2 × 25 = <b>50</b>`] },
+      { k:"QCM", type:"qcm", q:`Quelle situation donne une suite géométrique ?`,
+        opts:[{t:`Une population augmente de 3 % par an`,ok:true,why:`Un pourcentage → multiplication → géométrique.`},{t:`Un salaire augmente de 50 € par mois`,ok:false,why:`Somme fixe ajoutée → arithmétique.`},{t:`On retire 4 unités chaque jour`,ok:false,why:`Soustraction fixe → arithmétique.`}],
+        regle:`Pourcentage → géométrique. Somme fixe → arithmétique.`,
+        aides:[`Cherche celle où l'on multiplie.`,`Un pourcentage se calcule sur un montant qui change.`],
+        sol:[`+3 % → on multiplie par 1,03 chaque année`,`+50 € ou −4 → on ajoute une somme fixe`,`Réponse : <b>la population</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Une somme de 1 000 € placée à 10 % par an.<br>Combien après 2 ans ?`,
+        rep:1210, ind:"en euros", ok:`1000 × 1,1² = 1000 × 1,21 = <b>1 210 €</b>`, no:`Applique ×1,1 deux fois.`,
+        regle:`Intérêts composés → suite géométrique.`,
+        aides:[`Coefficient : 1,1. Applique-le deux fois.`,`1000 × 1,1 = 1100, puis 1100 × 1,1.`],
+        sol:[`Année 1 : 1000 × 1,1 = 1 100 €`,`Année 2 : 1100 × 1,1 = 1 210 €`,`Résultat : <b>1 210 €</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Après une hausse de 10 % puis une baisse de 10 %, on retrouve le prix de départ. »`,
+        opts:[{t:"Faux",ok:true,why:`1,1 × 0,9 = 0,99 : il manque 1 %. La baisse s'applique à un montant plus grand.`},{t:"Vrai",ok:false,why:`Les pourcentages ne s'additionnent pas. 1,1 × 0,9 = 0,99, pas 1.`}],
+        regle:`Les coefficients se multiplient, les pourcentages ne s'additionnent pas.`,
+        aides:[`Teste avec 100 € : +10 % puis −10 %.`,`100 → 110 → 99. Pas 100.`],
+        sol:[`Départ 100 € : hausse → 110 €`,`Baisse de 10 % sur 110 → 110 − 11 = 99 €`,`Coefficient global 1,1 × 0,9 = 0,99. <b>Faux</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`Suite géométrique : <span class="v">u<sub>1</sub></span> = 6 et <span class="v">u<sub>3</sub></span> = 54.<br>Quelle est la raison (positive) ?`,
+        rep:3, ind:"un nombre positif", ok:`<span class="v">q</span>² = 54/6 = 9 donc <span class="v">q</span> = <b>3</b>`, no:`Il y a deux pas entre les rangs 1 et 3.`,
+        regle:`<span class="v">u<sub>n</sub></span> = <span class="v">u<sub>p</sub></span> × <span class="v">q</span><sup><span class="v">n−p</span></sup>`,
+        aides:[`Combien de pas de <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>3</sub></span> ?`,`2 pas : 6 × <span class="v">q</span>² = 54, donc <span class="v">q</span>² = 9.`],
+        sol:[`Nombre de pas : 3 − 1 = 2`,`6 × <span class="v">q</span>² = 54 donc <span class="v">q</span>² = 9`,`<span class="v">q</span> = <b>3</b> (raison positive)`] },
+      { k:"QCM", type:"qcm", q:`Suite géométrique avec <span class="v">u<sub>0</sub></span> = 2 et <span class="v">q</span> = −3.<br>Que peut-on dire du sens de variation ?`,
+        opts:[{t:`Ni croissante ni décroissante`,ok:true,why:`Avec <span class="v">q</span> &lt; 0 les signes alternent : 2, −6, 18, −54…`},{t:`Croissante`,ok:false,why:`Les termes changent de signe à chaque pas.`},{t:`Décroissante`,ok:false,why:`Elle remonte une fois sur deux.`}],
+        regle:`<span class="v">q</span> &lt; 0 → suite alternée, non monotone.`,
+        aides:[`Calcule les quatre premiers termes.`,`2, −6, 18, −54 : le signe change à chaque fois.`],
+        sol:[`<span class="v">u<sub>0</sub></span> = 2, <span class="v">u<sub>1</sub></span> = −6, <span class="v">u<sub>2</sub></span> = 18`,`Le signe alterne à chaque pas`,`<b>Ni croissante ni décroissante</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`Une valeur baisse de 20 % puis encore de 50 %.<br>Quel est le coefficient global ?`,
+        rep:0.4, ind:"un décimal", ok:`0,8 × 0,5 = <b>0,4</b>`, no:`On multiplie les deux coefficients.`,
+        regle:`Évolutions successives → on multiplie les coefficients.`,
+        aides:[`Coefficient d'une baisse de 20 % ? de 50 % ?`,`0,8 et 0,5. Multiplie-les.`],
+        sol:[`−20 % → coefficient 0,8`,`−50 % → coefficient 0,5`,`0,8 × 0,5 = <b>0,4</b> (soit −60 %)`] },
+      { k:"QCM", type:"qcm", q:`Quelle suite croît le plus vite à long terme ?`,
+        opts:[{t:`<span class="v">u<sub>n</sub></span> = 2<sup><span class="v">n</span></sup> (géométrique)`,ok:true,why:`Une croissance géométrique finit toujours par dépasser une croissance arithmétique.`},{t:`<span class="v">u<sub>n</sub></span> = 100<span class="v">n</span> (arithmétique)`,ok:false,why:`Elle démarre plus haut, mais 2<sup><span class="v">n</span></sup> la dépasse vers <span class="v">n</span> = 15.`},{t:`Elles croissent pareil`,ok:false,why:`Non : la géométrique explose.`}],
+        regle:`Géométrique (<span class="v">q</span> &gt; 1) bat toujours arithmétique à long terme.`,
+        aides:[`Compare pour <span class="v">n</span> = 20.`,`2<sup>20</sup> dépasse le million ; 100×20 = 2 000.`],
+        sol:[`Pour <span class="v">n</span> = 10 : 1024 contre 1000 — presque égal`,`Pour <span class="v">n</span> = 20 : plus d'un million contre 2 000`,`La <b>géométrique</b> l'emporte largement`] },
+      { k:"AUTOMATISME ⭑", hard:true, type:"num", q:`<span class="v">u<sub>0</sub></span> = 1 et <span class="v">q</span> = 2.<br>À partir de quel rang a-t-on <span class="v">u<sub>n</sub></span> &gt; 100 ?`,
+        sub:`Cherche le plus petit entier <span class="v">n</span>.`,
+        rep:7, ind:"un entier", ok:`2<sup>6</sup> = 64 et 2<sup>7</sup> = 128 &gt; 100, donc <b>7</b>`, no:`Calcule les puissances de 2 jusqu'à dépasser 100.`,
+        regle:`Sans calculatrice : connaître les puissances de 2.`,
+        aides:[`Liste : 1, 2, 4, 8, 16, 32, 64, 128…`,`La première qui dépasse 100 est 128. Quel est son rang ?`],
+        sol:[`Puissances de 2 : 1, 2, 4, 8, 16, 32, 64, 128`,`Rangs : 0, 1, 2, 3, 4, 5, 6, 7`,`128 &gt; 100 au rang <b>7</b>`] }
+    ]
+  ]
+},
+
+/* ─────────────────────────────────────────────
+   5 · MAJORATION, MINORATION     ← DS
+   ───────────────────────────────────────────── */
+{
+  n:5, nom:"Majoration, minoration", sous:"Suites bornées", pret:true, ds:true,
+  cartes:[
+    {
+      k:"DÉFINITIONS", t:"Un plafond, un plancher",
+      c:`<p>Trois mots à distinguer :</p>
+        <div class="show" style="text-align:left;padding:19px 21px;font-size:16px">
+          <div style="margin-bottom:11px"><b>Majorée</b> : il existe <span class="v">M</span> tel que <span class="v">u<sub>n</sub></span> ⩽ <span class="v">M</span> pour tout <span class="v">n</span></div>
+          <div style="margin-bottom:11px"><b>Minorée</b> : il existe <span class="v">m</span> tel que <span class="v">u<sub>n</sub></span> ⩾ <span class="v">m</span> pour tout <span class="v">n</span></div>
+          <div><b>Bornée</b> : majorée <b>et</b> minorée</div>
+        </div>
+        <p><span class="v">M</span> s'appelle un <b>majorant</b>, <span class="v">m</span> un <b>minorant</b>.</p>
+        <div class="note"><b>Article indéfini.</b> On dit « <b>un</b> majorant », pas « le » : s'il en existe un, il en existe une infinité d'autres au-dessus.</div>`,
+      lent:`<p><b>Le plafond de la pièce.</b></p>
+        <p>Tu sautes dans une pièce. Tu ne peux pas dépasser le plafond, à 2,50 m. Le plafond <b>majore</b> ta hauteur.</p>
+        <p>Le sol, lui, te <b>minore</b> : tu ne descends jamais en dessous de 0.</p>
+        <p>Tu es donc <b>borné</b> entre le sol et le plafond.</p>
+        <p><b>Un détail important.</b> Le toit de l'immeuble est aussi un majorant — tu ne le dépasses pas non plus. Et le ciel aussi. Il y a une infinité de majorants.</p>
+        <p>C'est pour ça qu'on dit « <b>un</b> majorant » : il suffit d'en trouver un seul pour prouver que la suite est majorée. Pas besoin du plus petit.</p>
+        <p><b>Et on ne le touche pas forcément.</b> Si tu sautes à 1,80 m maximum, le plafond à 2,50 m reste un majorant valable, même si tu ne l'atteins jamais.</p>`
+    },
+    {
+      k:"MÉTHODE", t:"Comment montrer qu'une suite est majorée",
+      c:`<p>Pour prouver <span class="v">u<sub>n</sub></span> ⩽ <span class="v">M</span>, on étudie le signe de <span class="v">u<sub>n</sub> − M</span>.</p>
+        <p>Si on montre que <span class="v">u<sub>n</sub> − M</span> ⩽ 0 pour tout <span class="v">n</span>, c'est gagné.</p>
+        <p>Exemple : montrer que <span class="v">u<sub>n</sub></span> = <span class="v">n</span>/(<span class="v">n</span>+1) est majorée par 1.</p>
+        <div class="show"><span class="v">u<sub>n</sub></span> − 1 = <span style="display:inline-block;text-align:center;vertical-align:middle"><span style="display:block;border-bottom:1.4px solid;padding:0 5px">−1</span><span style="display:block;padding:0 5px"><span class="v">n</span>+1</span></span> &lt; 0</div>
+        <p>Le numérateur est négatif, le dénominateur positif : le quotient est négatif. Donc <span class="v">u<sub>n</sub></span> &lt; 1.</p>`,
+      lent:`<p><b>La technique de la soustraction.</b></p>
+        <p>Comment prouver que tu es plus petit que ton frère ? Tu mesures la différence : si « toi moins lui » donne un nombre négatif, tu es plus petit.</p>
+        <p>En maths, pareil. Pour montrer <span class="v">u<sub>n</sub></span> ⩽ 3, on calcule <span class="v">u<sub>n</sub></span> − 3 et on montre que c'est négatif.</p>
+        <p><b>Pourquoi ne pas comparer directement ?</b></p>
+        <p>Parce qu'une soustraction se simplifie, alors qu'une inégalité se manipule mal. Après calcul, on tombe souvent sur une fraction dont le signe se lit d'un coup d'œil.</p>
+        <p><b>La règle des signes pour une fraction :</b></p>
+        <p>négatif ÷ positif = <b>négatif</b><br>positif ÷ positif = <b>positif</b></p>
+        <p>Il suffit donc de regarder le signe du haut et celui du bas séparément.</p>`
+    },
+    {
+      k:"THÉORÈME", t:"Croissante et majorée",
+      c:`<p>Le résultat le plus utilisé du chapitre :</p>
+        <div class="show" style="text-align:left;padding:19px 21px;font-size:15.5px">
+          <div style="margin-bottom:9px">Toute suite <b>croissante et majorée</b> converge.</div>
+          <div>Toute suite <b>décroissante et minorée</b> converge.</div>
+        </div>
+        <div class="note"><b>Attention.</b> Le théorème garantit que la limite <b>existe</b>, mais il ne donne <b>pas sa valeur</b>. C'est une question classique de DS.</div>`,
+      lent:`<p><b>L'ascenseur qui monte vers un plafond.</b></p>
+        <p>Un ascenseur monte, monte, monte — mais il y a un plafond qu'il ne peut pas traverser.</p>
+        <p>Que va-t-il se passer ? Il ne peut pas monter indéfiniment (le plafond l'en empêche) et il ne peut pas redescendre (il ne fait que monter). Il est donc obligé de <b>se stabiliser</b> quelque part.</p>
+        <p>C'est exactement le théorème : croissante + majorée → elle converge vers une valeur.</p>
+        <p><b>Mais attention au piège du DS.</b></p>
+        <p>Le théorème dit « elle s'arrête quelque part ». Il ne dit <b>pas où</b>.</p>
+        <p>L'ascenseur peut s'arrêter juste sous le plafond, ou bien trois étages plus bas. Le plafond ne donne pas la réponse — il garantit seulement qu'il y en a une.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`Tous les termes d'une suite vérifient <span class="v">u<sub>n</sub></span> ⩽ 7.<br>Que peut-on dire ?`,
+        opts:[{t:`La suite est majorée par 7`,ok:true,why:`7 est un majorant de la suite.`},{t:`La suite est minorée par 7`,ok:false,why:`Un minorant serait en dessous, avec ⩾.`},{t:`La suite est bornée`,ok:false,why:`Il manque un minorant pour conclure.`}],
+        regle:`<span class="v">u<sub>n</sub></span> ⩽ <span class="v">M</span> → majorée par <span class="v">M</span>.`,
+        aides:[`Le symbole ⩽ indique un plafond ou un plancher ?`,`⩽ signifie « ne dépasse pas » → plafond → majorée.`],
+        sol:[`⩽ 7 signifie que 7 n'est jamais dépassé`,`7 joue le rôle de plafond`,`La suite est <b>majorée par 7</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Si 5 est un majorant d'une suite, alors 10 aussi. »`,
+        opts:[{t:"Vrai",ok:true,why:`Si tous les termes sont ⩽ 5, ils sont aussi ⩽ 10.`},{t:"Faux",ok:false,why:`Tout nombre au-dessus d'un majorant est encore un majorant.`}],
+        regle:`Il existe une infinité de majorants.`,
+        aides:[`Si tu ne dépasses pas 5, dépasses-tu 10 ?`,`Non — donc 10 majore aussi.`],
+        sol:[`Tous les termes vérifient <span class="v">u<sub>n</sub></span> ⩽ 5`,`Or 5 ⩽ 10, donc <span class="v">u<sub>n</sub></span> ⩽ 10`,`10 est bien un majorant. <b>Vrai</b>`] },
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>².<br>Cette suite est-elle majorée ?`,
+        opts:[{t:`Non, elle est seulement minorée`,ok:true,why:`Elle croît sans limite, mais reste ⩾ 0.`},{t:`Oui, par 0`,ok:false,why:`0 est un <b>minorant</b>, pas un majorant.`},{t:`Oui, elle est bornée`,ok:false,why:`Aucun nombre ne peut la majorer.`}],
+        regle:`Une suite qui tend vers +∞ n'est pas majorée.`,
+        aides:[`Les termes sont 0, 1, 4, 9, 16, 25… Y a-t-il un plafond ?`,`Ils dépassent n'importe quel nombre donné.`],
+        sol:[`Termes : 0, 1, 4, 9, 16, 25, …`,`Aucun nombre ne les majore tous`,`Mais tous sont ⩾ 0 : <b>minorée seulement</b>`] },
+      { k:"QCM", type:"qcm", q:`Une suite vérifie −3 ⩽ <span class="v">u<sub>n</sub></span> ⩽ 8.<br>Comment la qualifier ?`,
+        opts:[{t:`Bornée`,ok:true,why:`Elle est minorée par −3 et majorée par 8.`},{t:`Seulement majorée`,ok:false,why:`Elle est aussi minorée par −3.`},{t:`Croissante`,ok:false,why:`L'encadrement ne dit rien sur le sens de variation.`}],
+        regle:`Majorée + minorée = bornée.`,
+        aides:[`Il y a un plancher et un plafond.`,`Les deux ensemble donnent un mot précis.`],
+        sol:[`−3 ⩽ <span class="v">u<sub>n</sub></span> : minorée`,`<span class="v">u<sub>n</sub></span> ⩽ 8 : majorée`,`Les deux → <b>bornée</b>`] },
+      { k:"QCM", type:"qcm", q:`Une suite est croissante et majorée.<br>Que garantit le théorème ?`,
+        opts:[{t:`Elle converge`,ok:true,why:`C'est exactement l'énoncé du théorème.`},{t:`Elle converge vers le majorant`,ok:false,why:`La limite peut être bien inférieure au majorant.`},{t:`Elle tend vers +∞`,ok:false,why:`Impossible : elle est majorée.`}],
+        regle:`Croissante + majorée → converge (limite inconnue).`,
+        aides:[`L'ascenseur monte mais ne traverse pas le plafond.`,`Il s'arrête — mais le théorème dit-il où ?`],
+        sol:[`Le théorème garantit l'existence d'une limite`,`Il ne donne pas sa valeur`,`Réponse : <b>elle converge</b>`] }
+    ],
+    [
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n</sub></span> = (−1)<sup><span class="v">n</span></sup>.<br>Cette suite est-elle bornée ?`,
+        opts:[{t:`Oui, entre −1 et 1`,ok:true,why:`Tous les termes valent 1 ou −1.`},{t:`Non, elle alterne`,ok:false,why:`Alterner n'empêche pas d'être bornée.`},{t:`Elle est seulement majorée`,ok:false,why:`Elle est aussi minorée par −1.`}],
+        regle:`Une suite alternée peut être bornée.`,
+        aides:[`Quelles valeurs prend-elle réellement ?`,`Seulement 1 et −1.`],
+        sol:[`Les termes valent 1, −1, 1, −1, …`,`Tous sont entre −1 et 1`,`<b>Bornée</b> entre −1 et 1`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 3 − 1/(<span class="v">n</span>+1).<br>Quel est le plus petit majorant entier ?`,
+        rep:3, ind:"un entier", ok:`On retire toujours un nombre positif à 3, donc <span class="v">u<sub>n</sub></span> &lt; <b>3</b>.`, no:`Regarde ce qu'on retire à 3.`,
+        regle:`Retirer une quantité positive garde le résultat sous la valeur de départ.`,
+        aides:[`Quel est le signe de 1/(<span class="v">n</span>+1) ?`,`Positif — donc on retire toujours quelque chose à 3.`],
+        sol:[`1/(<span class="v">n</span>+1) &gt; 0 pour tout <span class="v">n</span> ⩾ 0`,`Donc <span class="v">u<sub>n</sub></span> = 3 − (positif) &lt; 3`,`Majorant : <b>3</b>`] },
+      { k:"VRAI OU FAUX", type:"qcm", q:`« Une suite majorée atteint forcément son majorant. »`,
+        opts:[{t:"Faux",ok:true,why:`Exemple : <span class="v">u<sub>n</sub></span> = 1 − 1/(<span class="v">n</span>+1) est majorée par 1 sans jamais l'atteindre.`},{t:"Vrai",ok:false,why:`Un majorant peut ne jamais être atteint — pense au plafond qu'on ne touche pas.`}],
+        regle:`Un majorant n'est pas forcément atteint.`,
+        aides:[`Tu sautes à 1,80 m, le plafond est à 2,50 m. Le touches-tu ?`,`Non — pourtant il te majore.`],
+        sol:[`Le majorant est une borne, pas une valeur atteinte`,`Exemple : 1 − 1/(<span class="v">n</span>+1) approche 1 sans l'atteindre`,`<b>Faux</b>`] },
+      { k:"QCM", type:"qcm", q:`Une suite décroissante et minorée par 0.<br>Que peut-on affirmer ?`,
+        opts:[{t:`Elle converge`,ok:true,why:`Théorème : décroissante + minorée → convergente.`},{t:`Elle converge vers 0`,ok:false,why:`Pas forcément : la limite peut être n'importe quel nombre ⩾ 0.`},{t:`Elle tend vers −∞`,ok:false,why:`Impossible : elle est minorée.`}],
+        regle:`Décroissante + minorée → converge.`,
+        aides:[`Version « descendante » du théorème de l'ascenseur.`,`Elle descend mais bute sur un plancher.`],
+        sol:[`Elle descend sans passer sous 0`,`Le théorème garantit une limite`,`<b>Elle converge</b> — sans qu'on sache vers quoi`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² + 4.<br>Quel est le plus grand minorant entier ?`,
+        rep:4, ind:"un entier", ok:`<span class="v">n</span>² ⩾ 0 donc <span class="v">u<sub>n</sub></span> ⩾ <b>4</b>.`, no:`Quelle est la plus petite valeur possible de <span class="v">n</span>² ?`,
+        regle:`Un carré est toujours positif ou nul.`,
+        aides:[`Le plus petit <span class="v">n</span>² possible est atteint pour <span class="v">n</span> = 0.`,`0 + 4 = 4.`],
+        sol:[`<span class="v">n</span>² ⩾ 0 pour tout <span class="v">n</span>`,`Donc <span class="v">u<sub>n</sub></span> ⩾ 0 + 4`,`Minorant : <b>4</b> (atteint en <span class="v">n</span> = 0)`] }
+    ],
+    [
+      { k:"QCM ⭑", hard:true, type:"qcm", q:`Pour montrer que <span class="v">u<sub>n</sub></span> ⩽ 5, quelle est la bonne méthode ?`,
+        opts:[{t:`Étudier le signe de <span class="v">u<sub>n</sub></span> − 5`,ok:true,why:`Si la différence est négative, alors <span class="v">u<sub>n</sub></span> ⩽ 5.`},{t:`Calculer les 10 premiers termes`,ok:false,why:`Cela ne prouve rien pour les suivants.`},{t:`Montrer que la suite est croissante`,ok:false,why:`Sans rapport avec la majoration.`}],
+        regle:`Majoration → signe de <span class="v">u<sub>n</sub> − M</span>.`,
+        aides:[`Comment prouver qu'un nombre est plus petit qu'un autre ?`,`On soustrait et on regarde le signe.`],
+        sol:[`<span class="v">u<sub>n</sub></span> ⩽ 5 équivaut à <span class="v">u<sub>n</sub></span> − 5 ⩽ 0`,`On calcule cette différence et on étudie son signe`,`Méthode : <b>signe de <span class="v">u<sub>n</sub></span> − 5</b>`] },
+      { k:"QCM", type:"qcm", q:`Suite géométrique de raison 0,5 avec <span class="v">u<sub>0</sub></span> = 8 : 8, 4, 2, 1, …<br>Est-elle bornée ?`,
+        opts:[{t:`Oui, entre 0 et 8`,ok:true,why:`Elle décroît vers 0 sans jamais devenir négative.`},{t:`Non, elle décroît`,ok:false,why:`Décroître n'empêche pas d'être bornée.`},{t:`Seulement minorée`,ok:false,why:`8 la majore aussi : c'est son plus grand terme.`}],
+        regle:`Une suite décroissante positive est bornée.`,
+        aides:[`Quel est le plus grand terme ? Descend-elle sous 0 ?`,`Le premier terme majore, et 0 minore.`],
+        sol:[`Le plus grand terme est <span class="v">u<sub>0</sub></span> = 8 : majorant`,`Tous les termes restent positifs : 0 minore`,`<b>Bornée entre 0 et 8</b>`] },
+      { k:"VRAI OU FAUX ⭑", hard:true, type:"qcm", q:`« Une suite croissante est toujours minorée. »`,
+        opts:[{t:"Vrai",ok:true,why:`Son premier terme minore toute la suite, puisqu'elle ne descend jamais.`},{t:"Faux",ok:false,why:`Si elle croît, aucun terme ne passe sous le premier — celui-ci la minore.`}],
+        regle:`Une suite croissante est minorée par son premier terme.`,
+        aides:[`Si la suite ne descend jamais, peut-elle passer sous son point de départ ?`,`Non : <span class="v">u<sub>0</sub></span> la minore.`],
+        sol:[`Croissante : <span class="v">u<sub>0</sub></span> ⩽ <span class="v">u<sub>1</sub></span> ⩽ <span class="v">u<sub>2</sub></span> ⩽ …`,`Tous les termes sont ⩾ <span class="v">u<sub>0</sub></span>`,`<span class="v">u<sub>0</sub></span> est un minorant. <b>Vrai</b>`] },
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 2 + 3/(<span class="v">n</span>+1).<br>Quel est le plus grand terme de la suite ?`,
+        sub:`Il est atteint pour <span class="v">n</span> = 0.`,
+        rep:5, ind:"un entier", ok:`<span class="v">u<sub>0</sub></span> = 2 + 3 = <b>5</b>`, no:`Calcule <span class="v">u<sub>0</sub></span>.`,
+        regle:`Une suite décroissante atteint son maximum au premier terme.`,
+        aides:[`Remplace <span class="v">n</span> par 0.`,`2 + 3/1.`],
+        sol:[`<span class="v">u<sub>0</sub></span> = 2 + 3/(0+1)`,`= 2 + 3`,`<b>5</b> — c'est le maximum car la fraction diminue ensuite`] },
+      { k:"QCM", type:"qcm", q:`Quelle suite n'est <b>pas</b> bornée ?`,
+        opts:[{t:`<span class="v">u<sub>n</sub></span> = 3<sup><span class="v">n</span></sup>`,ok:true,why:`Elle croît sans limite : aucun majorant possible.`},{t:`<span class="v">u<sub>n</sub></span> = (−1)<sup><span class="v">n</span></sup>`,ok:false,why:`Elle reste entre −1 et 1.`},{t:`<span class="v">u<sub>n</sub></span> = 1/(<span class="v">n</span>+1)`,ok:false,why:`Elle reste entre 0 et 1.`}],
+        regle:`Une suite géométrique de raison &gt; 1 n'est pas majorée.`,
+        aides:[`Laquelle dépasse n'importe quel nombre ?`,`3<sup><span class="v">n</span></sup> : 1, 3, 9, 27, 81, 243…`],
+        sol:[`3<sup><span class="v">n</span></sup> dépasse tout nombre donné → non majorée`,`(−1)<sup><span class="v">n</span></sup> reste dans [−1 ; 1]`,`1/(<span class="v">n</span>+1) reste dans ]0 ; 1]`] }
+    ]
+  ]
+},
+
+/* ─────────────────────────────────────────────
+   6 · PROBLÈMES
+   ───────────────────────────────────────────── */
+{ n:6, nom:"Problèmes", sous:"Exercices type épreuve", pret:false, ds:false }
+
 ];
+
 
 /* ═══════════ СОСТОЯНИЕ ═══════════ */
 
@@ -719,11 +1241,17 @@ function drawHome(){
     $("streak-w").textContent = DB.streak===1 ? "jour d'affilée" : "jours d'affilée";
   }
 
-  const st = DB.ch[1];
-  if(st && st.done){
-    const s = (st.serie||0) % 3;
+  const todo = CHAPITRES.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
+  if(todo){
+    $("r-lbl").textContent = todo.ds ? "AU PROGRAMME DU DS" : "CONTINUER";
+    $("r-name").textContent = todo.nom;
+    $("r-meta").textContent = todo.cartes.length + " fiches · 5 exercices · ~12 min";
+  } else {
+    const prets = CHAPITRES.filter(x=>x.pret);
+    const pick = prets[0];
+    const s = ((DB.ch[pick.n]||{}).serie||0) % pick.series.length;
     $("r-lbl").textContent = "SÉRIE " + (s+1);
-    $("r-name").textContent = "Généralités";
+    $("r-name").textContent = pick.nom;
     $("r-meta").textContent = "5 nouveaux exercices";
   }
 
@@ -731,14 +1259,15 @@ function drawHome(){
   CHAPITRES.forEach(c=>{
     const d = DB.ch[c.n];
     const b=document.createElement("button");
-    b.className="ch"+(d&&d.done?" done":"")+(c.n===1&&!(d&&d.done)?" next":"")+(!c.pret?" lock":"");
+    const firstTodo = CHAPITRES.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
+    b.className="ch"+(d&&d.done?" done":"")+(firstTodo&&firstTodo.n===c.n?" next":"")+(!c.pret?" lock":"");
     const meta = c.pret
       ? (d&&d.done ? "série "+(((d.serie||0)%3)+1)+" disponible" : c.sous)
       : "bientôt";
     b.innerHTML=`
       <span class="ch-num">${c.n}</span>
       <span class="ch-body">
-        <span class="ch-name">${c.nom}</span>
+        <span class="ch-name">${c.nom}${c.ds?`<span class="ds-tag">DS</span>`:``}</span>
         <span class="ch-meta">${meta}</span>
       </span>
       <span class="stars">${[1,2,3].map(i=>starSVG(d&&d.stars>=i)).join("")}</span>`;
@@ -980,7 +1509,10 @@ function nextSerie(){
   show("s-work");
 }
 
-$("resume").onclick=()=>startCh(1);
+$("resume").onclick=()=>{
+  const t = CHAPITRES.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done)) || CHAPITRES[0];
+  startCh(t.n);
+};
 $("back").onclick=()=>{ show("s-home"); drawHome(); };
 $("d-home").onclick=()=>{ show("s-home"); drawHome(); };
 $("d-more").onclick=nextSerie;

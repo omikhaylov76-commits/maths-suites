@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Les suites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ ТОКЕНЫ ═══════════════ */
+:root{
+  --ink:#1c2024;
+  --graphite:#60646c;
+  --steel:#80838d;
+  --mist:#d9d9e0;
+  --fog:#f0f0f3;
+  --canvas:#ffffff;
+  --signal:#0090ff;
+  --deep:#0072de;
+
+  --ok:#2d7a4f;
+  --ok-soft:#eef6f0;
+  --ok-line:#b8ddc6;
+  --miss:#b4552b;
+  --miss-soft:#fdf2ec;
+  --miss-line:#eecdb8;
+
+  --r-card:20px;
+  --r-pill:36px;
+  --r-sm:12px;
+
+  --ease:cubic-bezier(0.23,1,0.32,1);
+  --ease-io:cubic-bezier(0.77,0,0.175,1);
+
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;overflow-x:hidden}
+body{
+  background:var(--canvas);
+  color:var(--ink);
+  font:400 16px/1.5 "Inter",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  letter-spacing:-0.012em;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+button{font:inherit;letter-spacing:inherit;color:inherit;border:none;background:none;cursor:pointer;padding:0}
+input{font:inherit;letter-spacing:inherit;color:inherit}
+
+/* ═══════════════ ЭКРАНЫ ═══════════════ */
+.screens{position:relative;width:100%;min-height:100dvh;overflow:hidden}
+.screen{
+  position:absolute;inset:0;
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  opacity:0;pointer-events:none;
+  transform:translateX(24px);
+  transition:opacity .28s var(--ease),transform .3s var(--ease);
+}
+.screen.on{opacity:1;pointer-events:auto;transform:translateX(0)}
+.screen.left{transform:translateX(-24px)}
+
+.pad{
+  max-width:720px;margin:0 auto;
+  padding:calc(20px + var(--safe-t)) 20px calc(120px + var(--safe-b));
+}
+
+/* ═══════════════ ГЛАВНАЯ ═══════════════ */
+.hero{padding:8px 0 4px}
+.hero h1{
+  font:700 30px/1.15 "Inter",sans-serif;
+  letter-spacing:-0.025em;margin:0 0 6px;
+}
+.hero .sub{color:var(--graphite);font-size:15px;margin:0}
+
+.meter{margin:26px 0 8px}
+.meter-top{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin-bottom:9px;
+}
+.meter-lbl{font:500 12px/1 "Inter",sans-serif;color:var(--steel);letter-spacing:0.02em}
+.meter-val{font:600 13px/1 "Inter",sans-serif;color:var(--graphite);font-variant-numeric:tabular-nums}
+.meter-bar{height:5px;background:var(--fog);border-radius:99px;overflow:hidden}
+.meter-fill{
+  height:100%;background:var(--ink);border-radius:99px;
+  width:0;transition:width .6s var(--ease);
+}
+
+.streak{
+  display:inline-flex;align-items:center;gap:7px;
+  margin-top:16px;padding:8px 15px;
+  background:var(--fog);border-radius:var(--r-pill);
+  font:500 13px/1 "Inter",sans-serif;color:var(--graphite);
+}
+.streak b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+.resume{
+  display:block;width:100%;margin:26px 0 30px;
+  padding:19px 22px;
+  background:var(--ink);color:var(--canvas);
+  border-radius:var(--r-card);
+  text-align:left;
+  transition:transform .12s var(--ease),opacity .12s var(--ease);
+}
+.resume:active{transform:scale(.975)}
+.resume .r-lbl{
+  display:block;font:500 11px/1 "Inter",sans-serif;
+  letter-spacing:0.09em;text-transform:uppercase;
+  opacity:.62;margin-bottom:8px;
+}
+.resume .r-name{display:block;font:600 19px/1.25 "Inter",sans-serif;letter-spacing:-0.02em}
+.resume .r-meta{display:block;font:400 13px/1 "Inter",sans-serif;opacity:.6;margin-top:7px}
+
+.list-lbl{
+  font:500 12px/1 "Inter",sans-serif;color:var(--steel);
+  letter-spacing:0.08em;text-transform:uppercase;
+  margin:0 0 12px;
+}
+
+.sections{display:flex;flex-direction:column;gap:8px}
+.sec{
+  display:flex;align-items:center;gap:14px;
+  padding:15px 17px;
+  background:var(--canvas);
+  border:1px solid var(--mist);
+  border-radius:var(--r-card);
+  text-align:left;width:100%;
+  transition:transform .12s var(--ease),border-color .18s,background .18s;
+}
+.sec:active{transform:scale(.985)}
+.sec.next{border-color:var(--ink);border-width:1.5px}
+.sec.done{background:var(--fog);border-color:transparent}
+.sec.done .sec-name{color:var(--graphite)}
+.sec.lock{opacity:.62}
+.sec.lock .sec-meta{color:var(--steel)}
+.more-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin-top:10px;padding:15px;
+  background:var(--fog);border-radius:var(--r-pill);
+  font:600 14px/1 "Inter",sans-serif;color:var(--graphite);
+  transition:transform .12s var(--ease),background .18s;
+  min-height:48px;
+}
+.more-btn:active{transform:scale(.98)}
+.more-btn svg{transition:transform .26s var(--ease)}
+.more-btn.open svg{transform:rotate(180deg)}
+.rest{
+  max-height:0;overflow:hidden;
+  transition:max-height .34s var(--ease);
+}
+.rest.open{max-height:1200px}
+.rest .sec{margin-top:8px}
+
+.sec-num{
+  flex:0 0 32px;height:32px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:var(--fog);
+  font:600 14px/1 "Inter",sans-serif;color:var(--graphite);
+  font-variant-numeric:tabular-nums;
+  transition:background .2s,color .2s;
+}
+.sec.next .sec-num{background:var(--ink);color:var(--canvas)}
+.sec.done .sec-num{background:var(--ok-soft);color:var(--ok)}
+
+.sec-body{flex:1;min-width:0}
+.sec-name{font:600 15px/1.3 "Inter",sans-serif;letter-spacing:-0.015em;display:block}
+.sec-meta{font:400 12.5px/1 "Inter",sans-serif;color:var(--steel);margin-top:4px;display:block}
+
+.stars{display:flex;gap:2.5px;flex:0 0 auto}
+.star{width:13px;height:13px;opacity:.2}
+.star.lit{opacity:1}
+
+.foot-link{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:26px;padding:16px;
+  border:1px solid var(--mist);border-radius:var(--r-pill);
+  font:600 14.5px/1 "Inter",sans-serif;color:var(--ink);
+  text-decoration:none;
+  transition:transform .12s var(--ease),background .18s,border-color .18s;
+  min-height:52px;
+}
+.foot-link:active{transform:scale(.98);background:var(--fog)}
+
+/* ═══════════════ ШАПКА РАЗДЕЛА ═══════════════ */
+.top{
+  position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.93);
+  backdrop-filter:saturate(180%) blur(16px);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid var(--mist);
+  padding-top:var(--safe-t);
+}
+.top-in{
+  max-width:720px;margin:0 auto;
+  display:flex;align-items:center;gap:12px;
+  padding:11px 20px;
+}
+.back{
+  flex:0 0 auto;width:38px;height:38px;
+  display:grid;place-items:center;
+  border-radius:50%;margin-left:-8px;
+  transition:background .16s,transform .12s var(--ease);
+}
+.back:active{background:var(--fog);transform:scale(.92)}
+.top-t{flex:1;min-width:0}
+.top-name{font:600 14.5px/1.2 "Inter",sans-serif;letter-spacing:-0.015em;display:block}
+.top-step{font:400 12px/1 "Inter",sans-serif;color:var(--steel);margin-top:3px;display:block;font-variant-numeric:tabular-nums}
+.top-bar{height:2px;background:var(--fog)}
+.top-fill{height:100%;background:var(--ink);width:0;transition:width .4s var(--ease)}
+
+/* ═══════════════ КАРТОЧКИ РАЗБОРА ═══════════════ */
+.deck{position:relative;margin:4px 0 0}
+.card{
+  display:none;
+  padding:26px 24px 24px;
+  background:var(--canvas);
+  border:1px solid var(--mist);
+  border-radius:24px;
+}
+.card.on{display:block;animation:cardIn .26s var(--ease)}
+@keyframes cardIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+.card.back-anim{animation:cardBack .26s var(--ease)}
+@keyframes cardBack{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
+
+.card-k{
+  font:500 11px/1 "Inter",sans-serif;
+  letter-spacing:0.09em;text-transform:uppercase;
+  color:var(--steel);margin-bottom:13px;
+}
+.card h3{font:600 20px/1.3 "Inter",sans-serif;letter-spacing:-0.022em;margin:0 0 13px}
+.card p{margin:0 0 13px;color:var(--graphite);font-size:15.5px;line-height:1.6}
+.card p:last-child{margin-bottom:0}
+.card strong{color:var(--ink);font-weight:600}
+
+.show{
+  display:block;text-align:center;
+  padding:17px;margin:17px 0;
+  background:var(--fog);border-radius:var(--r-sm);
+  font-family:"Cambria Math","Georgia",serif;
+  font-size:18px;line-height:1.8;
+}
+.show .v{font-style:italic}
+.show sub{font-size:.7em;font-style:normal}
+
+.note{
+  margin-top:17px;padding:14px 16px;
+  background:var(--fog);border-radius:var(--r-sm);
+  font-size:14px;line-height:1.55;color:var(--graphite);
+}
+.note b{color:var(--ink);font-weight:600}
+
+.dots{display:flex;justify-content:center;gap:6px;margin:18px 0 6px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--mist);transition:background .22s,width .22s}
+.dot.on{background:var(--ink);width:18px;border-radius:99px}
+
+.nav2{display:flex;gap:10px;margin-top:14px}
+.nav2 button{
+  flex:1;padding:15px;border-radius:var(--r-pill);
+  font:600 15px/1 "Inter",sans-serif;
+  transition:transform .12s var(--ease),background .18s;
+  min-height:48px;
+}
+.nav2 .sec-btn{background:var(--fog);color:var(--ink)}
+.nav2 .sec-btn:active{transform:scale(.97);background:var(--mist)}
+.nav2 .pri{background:var(--ink);color:var(--canvas)}
+.nav2 .pri:active{transform:scale(.97)}
+
+/* ═══════════════ ВОПРОС ═══════════════ */
+.q{animation:qIn .22s var(--ease)}
+@keyframes qIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.q-kind{
+  font:500 11px/1 "Inter",sans-serif;
+  letter-spacing:0.09em;text-transform:uppercase;
+  color:var(--steel);margin-bottom:13px;
+}
+.q-kind .hard{color:var(--signal)}
+.q-text{font:600 19px/1.4 "Inter",sans-serif;letter-spacing:-0.02em;margin:0 0 6px}
+.q-text .v{font-family:"Cambria Math","Georgia",serif;font-style:italic;font-weight:600}
+.q-text sub{font-size:.68em;font-style:normal}
+.q-sub{color:var(--graphite);font-size:15px;margin:10px 0 0;line-height:1.55}
+
+.opts{display:flex;flex-direction:column;gap:9px;margin-top:20px}
+.opt{
+  display:flex;align-items:center;gap:13px;
+  padding:16px 17px;
+  background:var(--canvas);
+  border:1px solid var(--mist);
+  border-radius:var(--r-card);
+  text-align:left;width:100%;
+  font-size:15.5px;line-height:1.4;
+  transition:transform .12s var(--ease),border-color .2s,background .2s;
+  min-height:56px;
+}
+.opt:active:not(.dead){transform:scale(.98)}
+.opt .mark{
+  flex:0 0 26px;height:26px;
+  display:grid;place-items:center;
+  border-radius:50%;background:var(--fog);
+  font:600 12.5px/1 "Inter",sans-serif;color:var(--graphite);
+  transition:background .2s,color .2s;
+}
+.opt .txt{flex:1}
+.opt .txt .v{font-family:"Cambria Math","Georgia",serif;font-style:italic}
+.opt .txt sub{font-size:.7em;font-style:normal}
+
+.opt.good{background:var(--ok-soft);border-color:var(--ok-line)}
+.opt.good .mark{background:var(--ok);color:#fff}
+.opt.bad{background:var(--miss-soft);border-color:var(--miss-line);animation:nope .18s var(--ease)}
+.opt.bad .mark{background:var(--miss);color:#fff}
+@keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.opt.dead{opacity:.45;pointer-events:none}
+.opt.dead.good{opacity:1}
+
+/* ввод числа */
+.num-wrap{margin-top:20px}
+.num-in{
+  width:100%;padding:17px 19px;
+  background:var(--canvas);
+  border:1.5px solid var(--mist);
+  border-radius:var(--r-card);
+  font:600 20px/1 "Inter",sans-serif;
+  font-variant-numeric:tabular-nums;
+  text-align:center;
+  transition:border-color .2s,background .2s;
+  min-height:58px;
+}
+.num-in:focus{outline:none;border-color:var(--ink)}
+.num-in.good{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.num-in.bad{background:var(--miss-soft);border-color:var(--miss);color:var(--miss);animation:nope .18s var(--ease)}
+.num-hint{text-align:center;font-size:12.5px;color:var(--steel);margin-top:9px}
+
+/* ═══════════════ ОБЪЯСНЕНИЕ ═══════════════ */
+.exp{
+  max-height:0;overflow:hidden;
+  transition:max-height .28s var(--ease),margin .28s var(--ease);
+  margin-top:0;
+}
+.exp.open{max-height:680px;margin-top:18px}
+.exp-in{
+  padding:18px 19px;
+  border-radius:var(--r-card);
+  font-size:14.8px;line-height:1.62;
+}
+.exp-in.win{background:var(--ok-soft);border:1px solid var(--ok-line)}
+.exp-in.lose{background:var(--miss-soft);border:1px solid var(--miss-line)}
+.exp-h{
+  font:600 13px/1 "Inter",sans-serif;
+  margin-bottom:11px;display:flex;align-items:center;gap:7px;
+}
+.exp-in.win .exp-h{color:var(--ok)}
+.exp-in.lose .exp-h{color:var(--miss)}
+.exp p{margin:0 0 10px;color:var(--ink)}
+.exp p:last-child{margin-bottom:0}
+.exp .rule{
+  margin-top:13px;padding-top:13px;
+  border-top:1px solid rgba(0,0,0,.09);
+  font-size:14px;color:var(--graphite);
+}
+.exp .rule b{color:var(--ink);font-weight:600}
+.exp .v{font-family:"Cambria Math","Georgia",serif;font-style:italic}
+.exp sub{font-size:.7em;font-style:normal}
+
+/* ═══════════════ НИЖНЯЯ КНОПКА ═══════════════ */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  padding:14px 20px calc(14px + var(--safe-b));
+  background:linear-gradient(to top,var(--canvas) 62%,rgba(255,255,255,0));
+  pointer-events:none;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .24s var(--ease),transform .24s var(--ease);
+}
+.dock.up{opacity:1;transform:translateY(0);pointer-events:auto}
+.dock-in{max-width:720px;margin:0 auto}
+.go{
+  width:100%;padding:18px;
+  background:var(--ink);color:var(--canvas);
+  border-radius:var(--r-pill);
+  font:600 16px/1 "Inter",sans-serif;
+  transition:transform .12s var(--ease);
+  min-height:56px;
+}
+.go:active{transform:scale(.975)}
+.go.ghost{background:var(--fog);color:var(--ink)}
+
+/* ═══════════════ ИТОГ ═══════════════ */
+.done-wrap{text-align:center;padding:44px 0 0}
+.big-stars{display:flex;justify-content:center;gap:11px;margin-bottom:26px}
+.bstar{width:38px;height:38px;opacity:0;transform:scale(.88)}
+.bstar.pop{animation:pop .32s var(--ease) forwards}
+@keyframes pop{to{opacity:1;transform:scale(1)}}
+.done-h{font:700 25px/1.2 "Inter",sans-serif;letter-spacing:-0.025em;margin:0 0 9px}
+.done-s{color:var(--graphite);font-size:15.5px;margin:0 0 30px}
+.tip{
+  text-align:left;padding:17px 19px;
+  background:var(--fog);border-radius:var(--r-card);
+  margin-bottom:26px;font-size:14.5px;line-height:1.6;color:var(--graphite);
+}
+.tip b{color:var(--ink);font-weight:600;display:block;margin-bottom:6px;font-size:13px}
+.done-btns{display:flex;flex-direction:column;gap:10px}
+.done-btns button{
+  padding:17px;border-radius:var(--r-pill);
+  font:600 15.5px/1 "Inter",sans-serif;
+  transition:transform .12s var(--ease);
+  min-height:54px;
+}
+.done-btns .pri{background:var(--ink);color:var(--canvas)}
+.done-btns .sub{background:var(--fog);color:var(--ink)}
+.done-btns button:active{transform:scale(.975)}
+
+/* ═══════════════ ДЕСКТОП ═══════════════ */
+@media (min-width:900px){
+  .screens{min-height:100vh}
+  .pad{max-width:1080px;padding:38px 40px 60px}
+
+  .home-grid{display:grid;grid-template-columns:1fr 380px;gap:52px;align-items:start}
+  .home-left{min-width:0}
+  .home-right{position:sticky;top:38px}
+  .hero h1{font-size:38px}
+  .resume{margin-top:0}
+
+  .sec{padding:16px 18px}
+  .sec:hover{border-color:var(--steel);background:var(--fog)}
+  .sec.next:hover{border-color:var(--ink)}
+
+  .work{max-width:720px;margin:0 auto}
+  .card{padding:34px 32px}
+  .card h3{font-size:22px}
+  .opt:hover:not(.dead){border-color:var(--steel);background:var(--fog)}
+  .back:hover{background:var(--fog)}
+  .go:hover{opacity:.9}
+
+  .dock{position:static;opacity:1;transform:none;pointer-events:auto;
+        background:none;padding:22px 0 0;max-width:720px;margin:0 auto}
+  .keys{
+    display:flex;justify-content:center;gap:16px;
+    margin-top:18px;font-size:12px;color:var(--steel);
+  }
+  .keys kbd{
+    display:inline-block;padding:2px 7px;margin-right:5px;
+    background:var(--fog);border:1px solid var(--mist);
+    border-radius:5px;font:500 11px/1.5 "Inter",sans-serif;
+  }
+}
+@media (max-width:899px){
+  .keys{display:none}
+  .home-grid{display:block}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="screens">
+
+  <!-- ══════ ГЛАВНАЯ ══════ -->
+  <section class="screen on" id="s-home">
+    <div class="pad">
+      <div class="home-grid">
+        <div class="home-left">
+          <div class="hero">
+            <h1>Les suites</h1>
+            <p class="sub">Последовательности · 1<sup>re</sup> spé</p>
+          </div>
+
+          <div class="meter">
+            <div class="meter-top">
+              <span class="meter-lbl">ПРОЙДЕНО</span>
+              <span class="meter-val" id="m-val">0 из 14</span>
+            </div>
+            <div class="meter-bar"><div class="meter-fill" id="m-fill"></div></div>
+          </div>
+
+          <div class="streak" id="streak" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5.5-2.5S6 10 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z"/></svg>
+            <span><b id="streak-n">0</b> дня подряд</span>
+          </div>
+        </div>
+
+        <div class="home-right">
+          <button class="resume" id="resume">
+            <span class="r-lbl" id="r-lbl">НАЧАТЬ</span>
+            <span class="r-name" id="r-name">Что такое suite</span>
+            <span class="r-meta" id="r-meta">3 карточки · 4 вопроса · ~10 мин</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="list-lbl" style="margin-top:34px">РАЗДЕЛЫ</p>
+      <div class="sections" id="secs"></div>
+      <button class="more-btn" id="more-btn">
+        <span id="more-txt">Ещё 11 разделов</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="rest" id="rest"></div>
+
+      <a class="foot-link" href="../" id="lnk">
+        Открыть конспект
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════ РАЗДЕЛ ══════ -->
+  <section class="screen" id="s-work">
+    <div class="top">
+      <div class="top-in">
+        <button class="back" id="back" aria-label="Назад">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="top-t">
+          <span class="top-name" id="w-name">Что такое suite</span>
+          <span class="top-step" id="w-step">Разбор · 1 из 3</span>
+        </div>
+      </div>
+      <div class="top-bar"><div class="top-fill" id="w-fill"></div></div>
+    </div>
+
+    <div class="pad">
+      <div class="work">
+        <div id="stage"></div>
+      </div>
+    </div>
+
+    <div class="dock" id="dock">
+      <div class="dock-in">
+        <button class="go" id="go">Дальше</button>
+        <div class="keys" id="keys"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ ИТОГ ══════ -->
+  <section class="screen" id="s-done">
+    <div class="pad">
+      <div class="work">
+        <div class="done-wrap">
+          <div class="big-stars" id="bstars"></div>
+          <h2 class="done-h" id="d-h">Раздел пройден</h2>
+          <p class="done-s" id="d-s"></p>
+          <div class="tip" id="d-tip" style="display:none"></div>
+          <div class="done-btns">
+            <button class="pri" id="d-more">Ещё вопросы</button>
+            <button class="sub" id="d-home">К разделам</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   ДАННЫЕ
+   ═══════════════════════════════════════════ */
+
+const SECTIONS = [
+  {n:1, name:"Что такое suite", ready:true},
+  {n:2, name:"Два способа задать", ready:false},
+  {n:3, name:"Как считать члены", ready:false},
+  {n:4, name:"График", ready:false},
+  {n:5, name:"Монотонность", ready:false},
+  {n:6, name:"Suites arithmétiques", ready:false},
+  {n:7, name:"Suites géométriques", ready:false},
+  {n:8, name:"Сравнение двух типов", ready:false},
+  {n:9, name:"Суммы", ready:false},
+  {n:10, name:"Récurrence", ready:false},
+  {n:11, name:"Пределы", ready:false},
+  {n:12, name:"Арифметико-геометрические", ready:false},
+  {n:13, name:"Типичные ошибки", ready:false},
+  {n:14, name:"Задачи с решениями", ready:false}
+];
+
+const CARDS = [
+  {
+    kicker:"ИДЕЯ",
+    title:"Список чисел с номерами",
+    body:`<p><b>Suite</b> — это просто пронумерованный список чисел. Первое, второе, третье — и так до бесконечности.</p>
+      <div class="show">2,&nbsp; 5,&nbsp; 8,&nbsp; 11,&nbsp; 14,&nbsp; …</div>
+      <p>Номер каждого числа записывают маленькой цифрой внизу. По-французски номер — это <b>rang</b> или <b>indice</b>.</p>
+      <div class="show">
+        <span class="v">u<sub>0</sub></span> = 2 &nbsp;&nbsp;&nbsp;
+        <span class="v">u<sub>1</sub></span> = 5 &nbsp;&nbsp;&nbsp;
+        <span class="v">u<sub>2</sub></span> = 8 &nbsp;&nbsp;&nbsp;
+        <span class="v">u<sub>3</sub></span> = 11
+      </div>`
+  },
+  {
+    kicker:"ГЛАВНОЕ РАЗЛИЧЕНИЕ",
+    title:"Одно число или весь список",
+    body:`<p>Здесь путаются чаще всего. Две похожие записи означают совершенно разное.</p>
+      <div class="show" style="text-align:left;padding:19px 21px">
+        <div style="margin-bottom:13px"><span class="v">u<sub>n</sub></span> &nbsp;— одно число, член с номером <span class="v">n</span></div>
+        <div><span class="v">(u<sub>n</sub>)</span> &nbsp;— весь бесконечный список целиком</div>
+      </div>
+      <p>Скобки — не украшение. Они говорят: речь про всю последовательность.</p>
+      <div class="note"><b>Как отличить в задании.</b> «Calculer <span style="font-family:Georgia,serif;font-style:italic">u</span><sub style="font-size:.7em">5</sub>» — посчитать одно число. «Montrer que <span style="font-family:Georgia,serif;font-style:italic">(u<sub style="font-size:.7em">n</sub>)</span> est croissante» — доказать свойство всего списка.</div>`
+  },
+  {
+    kicker:"ЛОВУШКА",
+    title:"Счёт может начинаться с нуля",
+    body:`<p>В одних задачах первый член — это <span class="v">u<sub>0</sub></span>, в других — <span class="v">u<sub>1</sub></span>. Автор задачи решает сам.</p>
+      <p>Поэтому <span class="v">u<sub>5</sub></span> — это <b>шестой</b> член, если счёт с нуля. И пятый, если с единицы.</p>
+      <div class="note"><b>Правило.</b> Всегда смотри на условие. Если написано «<span style="font-family:Georgia,serif;font-style:italic">u</span><sub style="font-size:.7em">0</sub> = 3» — значит, отсчёт с нуля, и ноль тоже считается членом.</div>`
+  }
+];
+
+const WARMUP = [
+  {
+    kind:"РАЗМИНКА",
+    type:"pick",
+    q:`Вот suite: 3, 7, 11, 15, 19.<br>Чему равен <span class="v">u<sub>2</sub></span>, если счёт с нуля?`,
+    opts:[
+      {t:"11", ok:true,  why:`Верно. Считаем с нуля: <span class="v">u<sub>0</sub></span>=3, <span class="v">u<sub>1</sub></span>=7, <span class="v">u<sub>2</sub></span>=11.`},
+      {t:"7",  ok:false, why:`Это <span class="v">u<sub>1</sub></span>. Когда счёт с нуля, третье по порядку число имеет номер 2.`},
+      {t:"15", ok:false, why:`Это <span class="v">u<sub>3</sub></span>. Ты посчитал, будто первый член — это <span class="v">u<sub>1</sub></span>.`}
+    ],
+    rule:`При счёте с нуля номер всегда на единицу меньше, чем «место по порядку».`
+  }
+];
+
+const MAIN = [
+  {
+    kind:"ВЫБОР",
+    type:"pick",
+    q:`Что означает запись <span class="v">(u<sub>n</sub>)</span> со скобками?`,
+    opts:[
+      {t:`Всю последовательность целиком`, ok:true,
+       why:`Верно. Скобки означают весь бесконечный список, а не отдельное число.`},
+      {t:`Член с номером <span class="v">n</span>`, ok:false,
+       why:`Это <span class="v">u<sub>n</sub></span> — без скобок. Одно конкретное число.`},
+      {t:`Произведение членов`, ok:false,
+       why:`Скобки здесь не про умножение. Это обозначение всей последовательности.`}
+    ],
+    rule:`Без скобок — число. Со скобками — весь список.`
+  },
+  {
+    kind:"ЧИСЛО",
+    type:"num",
+    q:`Suite задана: <span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1.<br>Чему равен <span class="v">u<sub>3</sub></span>?`,
+    sub:`Подставь вместо <span class="v">n</span> число 3.`,
+    answer:13,
+    hint:"целое число",
+    why:`<span class="v">u<sub>3</sub></span> = 4·3 + 1 = 12 + 1 = <b>13</b>`,
+    miss:`Подставляем 3 вместо <span class="v">n</span>: получается 4·3 + 1. Сначала умножение, потом сложение.`,
+    rule:`В явной формуле просто подставляешь номер вместо <span class="v">n</span>.`
+  },
+  {
+    kind:"ВЕРНО ИЛИ НЕТ",
+    type:"pick",
+    q:`«Если <span class="v">u<sub>0</sub></span> = 5, то <span class="v">u<sub>5</sub></span> — это пятый член списка.»`,
+    opts:[
+      {t:"Неверно", ok:true,
+       why:`Верно подмечено. При счёте с нуля <span class="v">u<sub>5</sub></span> — это <b>шестой</b> член: <span class="v">u<sub>0</sub></span>, <span class="v">u<sub>1</sub></span>, <span class="v">u<sub>2</sub></span>, <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>.`},
+      {t:"Верно", ok:false,
+       why:`Здесь ловушка. Раз <span class="v">u<sub>0</sub></span> существует, счёт идёт с нуля — и ноль тоже член. Значит <span class="v">u<sub>5</sub></span> шестой по порядку.`}
+    ],
+    rule:`Ноль — полноценный номер. Он не «нулевой, значит не считается».`
+  },
+  {
+    kind:"ВЫБОР",
+    type:"pick",
+    q:`Сколько членов в списке от <span class="v">u<sub>0</sub></span> до <span class="v">u<sub>10</sub></span>?`,
+    opts:[
+      {t:"11", ok:true,
+       why:`Верно. Считаем: от 0 до 10 включительно — это 11 номеров.`},
+      {t:"10", ok:false,
+       why:`Самая частая ошибка в теме. Ты посчитал от 1 до 10, но нумерация начинается с нуля — <span class="v">u<sub>0</sub></span> тоже член.`},
+      {t:"9", ok:false,
+       why:`Похоже, посчитал промежутки между членами, а не сами члены. Между 11 столбами 10 промежутков — но столбов всё равно 11.`}
+    ],
+    rule:`От <span class="v">u<sub>p</sub></span> до <span class="v">u<sub>n</sub></span> членов ровно <span class="v">(n − p + 1)</span>.`
+  }
+];
+
+const EXTRA = [
+  {
+    kind:"ВЫБОР",
+    type:"pick",
+    q:`В задании написано: «Étudier le sens de variation de <span class="v">(u<sub>n</sub>)</span>».<br>Что просят сделать?`,
+    opts:[
+      {t:`Выяснить, растёт список или убывает`, ok:true,
+       why:`Верно. <b>Sens de variation</b> — направление изменения. И скобки подсказывают: речь про всю последовательность.`},
+      {t:`Вычислить несколько членов`, ok:false,
+       why:`Это было бы «calculer». А «étudier le sens de variation» — изучить поведение всего списка.`},
+      {t:`Найти предел`, ok:false,
+       why:`Предел — это «limite». А здесь про направление: возрастает или убывает.`}
+    ],
+    rule:`Скобки <span class="v">(u<sub>n</sub>)</span> в задании = вопрос про всю последовательность.`
+  },
+  {
+    kind:"ЧИСЛО",
+    type:"num",
+    q:`Suite: <span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 2<span class="v">n</span>.<br>Чему равен <span class="v">u<sub>4</sub></span>?`,
+    sub:`Подставь 4 вместо <span class="v">n</span>.`,
+    answer:8,
+    hint:"целое число",
+    why:`<span class="v">u<sub>4</sub></span> = 4² − 2·4 = 16 − 8 = <b>8</b>`,
+    miss:`Считаем по шагам: 4² = 16, потом 2·4 = 8, и вычитаем: 16 − 8.`,
+    rule:`Сначала степень, потом умножение, потом вычитание.`
+  },
+  {
+    kind:"ВЫБОР ⭑ посложнее",
+    hard:true,
+    type:"pick",
+    q:`Suite начинается с <span class="v">u<sub>1</sub></span>. Сколько членов от <span class="v">u<sub>3</sub></span> до <span class="v">u<sub>9</sub></span>?`,
+    opts:[
+      {t:"7", ok:true,
+       why:`Верно. По формуле: 9 − 3 + 1 = 7. Проверим: <span class="v">u<sub>3</sub></span>, <span class="v">u<sub>4</sub></span>, <span class="v">u<sub>5</sub></span>, <span class="v">u<sub>6</sub></span>, <span class="v">u<sub>7</sub></span>, <span class="v">u<sub>8</sub></span>, <span class="v">u<sub>9</sub></span> — семь.`},
+      {t:"6", ok:false,
+       why:`Ты посчитал 9 − 3 = 6, но забыл прибавить единицу. Оба конца входят в счёт.`},
+      {t:"9", ok:false,
+       why:`Это номер последнего члена, а не их количество. Начинаем-то не с первого.`}
+    ],
+    rule:`Формула работает при любом старте: <span class="v">(n − p + 1)</span>.`
+  }
+];
+
+/* ═══════════════════════════════════════════
+   СОСТОЯНИЕ
+   ═══════════════════════════════════════════ */
+
+const KEY = "suites.v1";
+let DB = load();
+
+function load(){
+  try{
+    const r = localStorage.getItem(KEY);
+    if(r) return JSON.parse(r);
+  }catch(e){}
+  return {secs:{}, streak:0, last:null};
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){}
+}
+function today(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function bumpStreak(){
+  const t = today();
+  if(DB.last === t) return;
+  const y = new Date(Date.now()-864e5);
+  const yk = y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+  DB.streak = (DB.last === yk) ? (DB.streak||0)+1 : 1;
+  DB.last = t;
+  save();
+}
+
+/* ═══════════════════════════════════════════
+   ХОД РАБОТЫ
+   ═══════════════════════════════════════════ */
+
+let R = { card:0, qi:0, queue:[], first:0, total:0, tried:false, mode:"card", weak:[] };
+
+const $ = id => document.getElementById(id);
+const starSVG = lit =>
+  `<svg class="star ${lit?'lit':''}" viewBox="0 0 24 24" fill="${lit?'#1c2024':'#80838d'}"><path d="M12 2l2.9 6.3 6.6.7-4.9 4.5 1.4 6.5L12 16.8 6 20l1.4-6.5L2.5 9l6.6-.7z"/></svg>`;
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>{
+    s.classList.remove("on");
+    s.classList.toggle("left", s.id !== id);
+  });
+  const el = $(id);
+  el.classList.remove("left");
+  el.classList.add("on");
+  el.scrollTop = 0;
+}
+
+/* ── главная ── */
+function drawHome(){
+  const done = Object.values(DB.secs).filter(s=>s.done).length;
+  $("m-val").textContent = done + " из 14";
+  if(done>0) $("m-val").textContent += "  ·  " + Math.round(done/14*100) + "%";
+  setTimeout(()=>{ $("m-fill").style.width = (done/14*100) + "%"; }, 60);
+
+  if(DB.streak > 0){
+    $("streak").style.display = "inline-flex";
+    $("streak-n").textContent = DB.streak;
+  }
+
+  const st = DB.secs[1];
+  if(st && st.done){
+    $("r-lbl").textContent = "ПОВТОРИТЬ";
+    $("r-meta").textContent = "Раздел 1 · " + st.stars + " из 3 звёзд";
+  }
+
+  const box = $("secs");
+  const rest = $("rest");
+  box.innerHTML = ""; rest.innerHTML = "";
+  SECTIONS.forEach((s,idx)=>{
+    const d = DB.secs[s.n];
+    const b = document.createElement("button");
+    b.className = "sec" + (d&&d.done ? " done" : "") + (s.n===1&&!(d&&d.done) ? " next" : "") + (!s.ready ? " lock" : "");
+    b.innerHTML = `
+      <span class="sec-num">${s.n}</span>
+      <span class="sec-body">
+        <span class="sec-name">${s.name}</span>
+        <span class="sec-meta">${s.ready ? (d&&d.done ? "пройден" : "готов") : "скоро"}</span>
+      </span>
+      <span class="stars">${[1,2,3].map(i=>starSVG(d&&d.stars>=i)).join("")}</span>`;
+    if(s.ready) b.onclick = ()=> startSection(s.n);
+    (idx < 3 ? box : rest).appendChild(b);
+  });
+}
+
+/* ── старт раздела ── */
+function startSection(n){
+  R = { card:0, qi:0, queue:[...WARMUP, ...MAIN], first:0, total:0, tried:false, mode:"card", weak:[] };
+  $("w-name").textContent = SECTIONS[n-1].name;
+  show("s-work");
+  drawCard();
+}
+
+/* ── карточки ── */
+function drawCard(){
+  R.mode = "card";
+  const c = CARDS[R.card];
+  $("w-step").textContent = `Разбор · ${R.card+1} из ${CARDS.length}`;
+  $("w-fill").style.width = ((R.card+1)/(CARDS.length + R.queue.length) * 100) + "%";
+
+  $("stage").innerHTML = `
+    <div class="deck">
+      <div class="card on">
+        <div class="card-k">${c.kicker}</div>
+        <h3>${c.title}</h3>
+        ${c.body}
+      </div>
+    </div>
+    <div class="dots">${CARDS.map((_,i)=>`<span class="dot ${i===R.card?'on':''}"></span>`).join("")}</div>
+    <div class="nav2">
+      ${R.card>0 ? `<button class="sec-btn" id="cprev">Назад</button>` : ``}
+      <button class="pri" id="cnext">${R.card===CARDS.length-1 ? "К вопросам" : "Дальше"}</button>
+    </div>`;
+
+  $("dock").classList.remove("up");
+  const p = $("cprev");
+  if(p) p.onclick = ()=>{ R.card--; drawCard(); };
+  $("cnext").onclick = ()=>{
+    if(R.card === CARDS.length-1){ R.qi = 0; drawQ(); }
+    else { R.card++; drawCard(); }
+  };
+}
+
+/* ── вопрос ── */
+function drawQ(){
+  R.mode = "q";
+  R.tried = false;
+  const q = R.queue[R.qi];
+  const step = CARDS.length + R.qi + 1;
+  const all  = CARDS.length + R.queue.length;
+
+  $("w-step").textContent = `Вопрос ${R.qi+1} из ${R.queue.length}`;
+  $("w-fill").style.width = (step/all*100) + "%";
+
+  let inner = "";
+  if(q.type === "pick"){
+    inner = `<div class="opts">` + q.opts.map((o,i)=>
+      `<button class="opt" data-i="${i}">
+        <span class="mark">${String.fromCharCode(65+i)}</span>
+        <span class="txt">${o.t}</span>
+      </button>`).join("") + `</div>`;
+  } else {
+    inner = `<div class="num-wrap">
+      <input class="num-in" id="nin" type="text" inputmode="decimal" autocomplete="off" placeholder="—">
+      <div class="num-hint">${q.hint || ""}</div>
+    </div>`;
+  }
+
+  const kindHtml = q.hard
+    ? q.kind.replace("⭑ посложнее", `<span class="hard">⭑ посложнее</span>`)
+    : q.kind;
+
+  $("stage").innerHTML = `
+    <div class="q">
+      <div class="q-kind">${kindHtml}</div>
+      <p class="q-text">${q.q}</p>
+      ${q.sub ? `<p class="q-sub">${q.sub}</p>` : ``}
+      ${inner}
+      <div class="exp" id="exp"><div class="exp-in" id="expin"></div></div>
+    </div>`;
+
+  $("dock").classList.remove("up");
+  $("go").className = "go";
+  $("go").textContent = "Дальше";
+
+  if(q.type === "pick"){
+    document.querySelectorAll(".opt").forEach(b=>{
+      b.onclick = ()=> answerPick(parseInt(b.dataset.i));
+    });
+    $("keys").innerHTML = q.opts.map((_,i)=>`<span><kbd>${i+1}</kbd></span>`).join("") + `<span><kbd>↵</kbd>дальше</span>`;
+  } else {
+    const inp = $("nin");
+    setTimeout(()=>{ if(window.innerWidth>=900) inp.focus(); }, 300);
+    inp.onkeydown = e=>{ if(e.key === "Enter") answerNum(); };
+    $("go").textContent = "Проверить";
+    $("go").onclick = answerNum;
+    $("dock").classList.add("up");
+    $("keys").innerHTML = `<span><kbd>↵</kbd>проверить</span>`;
+  }
+}
+
+/* ── ответ: выбор ── */
+function answerPick(i){
+  const q = R.queue[R.qi];
+  const btns = document.querySelectorAll(".opt");
+  const good = q.opts[i].ok;
+
+  if(good){
+    btns.forEach((b,j)=>{
+      b.classList.add("dead");
+      if(j===i) b.classList.add("good");
+    });
+    if(!R.tried) R.first++;
+    R.total++;
+    openExp(true, q.opts[i].why, q.rule);
+    finishQ();
+  } else {
+    btns[i].classList.add("bad","dead");
+    R.tried = true;
+    if(!R.weak.includes(R.qi)) R.weak.push(R.qi);
+    openExp(false, q.opts[i].why, null);
+    $("dock").classList.remove("up");
+  }
+}
+
+/* ── ответ: число ── */
+function answerNum(){
+  const q = R.queue[R.qi];
+  const inp = $("nin");
+  const raw = (inp.value||"").trim().replace(",",".").replace("−","-").replace(/\s/g,"");
+  if(raw === "") return;
+  const val = parseFloat(raw);
+  const good = Math.abs(val - q.answer) < 1e-9;
+
+  if(good){
+    inp.classList.remove("bad");
+    inp.classList.add("good");
+    inp.disabled = true;
+    if(!R.tried) R.first++;
+    R.total++;
+    openExp(true, q.why, q.rule);
+    finishQ();
+  } else {
+    inp.classList.add("bad");
+    setTimeout(()=>inp.classList.remove("bad"), 400);
+    R.tried = true;
+    if(!R.weak.includes(R.qi)) R.weak.push(R.qi);
+    openExp(false, q.miss, null);
+    inp.select();
+  }
+}
+
+/* ── объяснение ── */
+function openExp(win, text, rule){
+  const box = $("exp"), inner = $("expin");
+  inner.className = "exp-in " + (win ? "win" : "lose");
+  inner.innerHTML = `
+    <div class="exp-h">
+      ${win
+        ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Верно`
+        : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16.5v.01"/><circle cx="12" cy="12" r="9"/></svg> Не совсем`}
+    </div>
+    <p>${text}</p>
+    ${rule ? `<div class="rule"><b>Правило.</b> ${rule}</div>` : ``}
+    ${!win ? `<div class="rule" style="color:var(--miss)">Попробуй ещё раз.</div>` : ``}`;
+  box.classList.add("open");
+}
+
+function finishQ(){
+  const d = $("dock");
+  d.classList.add("up");
+  const last = R.qi === R.queue.length - 1;
+  $("go").textContent = last ? "Завершить" : "Дальше";
+  $("go").onclick = ()=>{
+    if(last) finishSection();
+    else { R.qi++; drawQ(); }
+  };
+}
+
+/* ── итог ── */
+function finishSection(){
+  const rate = R.total ? R.first / R.total : 0;
+  const stars = rate === 1 ? 3 : rate >= 0.5 ? 2 : 1;
+
+  const prev = DB.secs[1] || {stars:0};
+  DB.secs[1] = { done:true, stars: Math.max(stars, prev.stars||0) };
+  bumpStreak();
+  save();
+
+  $("d-s").textContent = `${R.first} из ${R.total} с первой попытки`;
+  $("d-h").textContent = stars === 3 ? "Отлично" : stars === 2 ? "Хорошо" : "Раздел пройден";
+
+  const box = $("bstars");
+  box.innerHTML = [1,2,3].map(i=>
+    `<svg class="bstar" viewBox="0 0 24 24" fill="${i<=stars?'#1c2024':'#d9d9e0'}"><path d="M12 2l2.9 6.3 6.6.7-4.9 4.5 1.4 6.5L12 16.8 6 20l1.4-6.5L2.5 9l6.6-.7z"/></svg>`
+  ).join("");
+  box.querySelectorAll(".bstar").forEach((s,i)=>{
+    setTimeout(()=> s.classList.add("pop"), 140 + i*80);
+  });
+
+  const tip = $("d-tip");
+  if(R.weak.length){
+    const names = R.weak.map(i=>R.queue[i].kind.replace(" ⭑ посложнее","").toLowerCase());
+    tip.style.display = "block";
+    tip.innerHTML = `<b>СТОИТ ВЕРНУТЬСЯ</b>Споткнулись на вопросах: ${[...new Set(names)].join(", ")}. Перечитай карточки — там это разбирается.`;
+  } else {
+    tip.style.display = "none";
+  }
+
+  show("s-done");
+}
+
+/* ── ещё вопросы ── */
+function moreQuestions(){
+  R.queue = [...EXTRA];
+  R.qi = 0; R.first = 0; R.total = 0; R.weak = [];
+  show("s-work");
+  drawQ();
+}
+
+/* ═══════════════════════════════════════════
+   СОБЫТИЯ
+   ═══════════════════════════════════════════ */
+
+$("more-btn").onclick = ()=>{
+  const r = $("rest"), b = $("more-btn");
+  const open = r.classList.toggle("open");
+  b.classList.toggle("open", open);
+  $("more-txt").textContent = open ? "Свернуть" : "Ещё 11 разделов";
+};
+
+$("resume").onclick = ()=> startSection(1);
+$("back").onclick = ()=>{ show("s-home"); drawHome(); };
+$("d-home").onclick = ()=>{ show("s-home"); drawHome(); };
+$("d-more").onclick = moreQuestions;
+
+document.addEventListener("keydown", e=>{
+  if(!$("s-work").classList.contains("on")) {
+    if(e.key === "Escape" && $("s-done").classList.contains("on")){ show("s-home"); drawHome(); }
+    return;
+  }
+  if(R.mode === "q"){
+    const q = R.queue[R.qi];
+    if(q.type === "pick" && /^[1-9]$/.test(e.key)){
+      const i = parseInt(e.key) - 1;
+      const b = document.querySelectorAll(".opt")[i];
+      if(b && !b.classList.contains("dead")) b.click();
+    }
+    if(e.key === "Enter" && $("dock").classList.contains("up")) $("go").click();
+  }
+  if(e.key === "Escape"){ show("s-home"); drawHome(); }
+});
+
+drawHome();
+</script>
+</body>
+</html>

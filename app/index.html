@@ -199,8 +199,12 @@ to{opacity:1;transform:translateX(0)}
 .slow-btn:active{transform:scale(.98)}
 .slow-btn svg{transition:transform var(--t-move) var(--e)}
 .slow-btn.open svg{transform:rotate(180deg)}
-.slow{max-height:0;overflow:hidden;transition:max-height 300ms var(--e),margin 300ms var(--e)}
-.slow.open{max-height:900px;margin-top:14px}
+.slow{
+  max-height:0;overflow:hidden;margin-top:0;
+  transition:max-height 440ms var(--e),margin-top 440ms var(--e),opacity 300ms var(--e-soft);
+  opacity:0;
+}
+.slow.open{margin-top:16px;opacity:1}
 .slow-in{
   padding:19px 21px;background:var(--dust);border:1px solid var(--mist);
   border-radius:var(--r-card);font-size:15px;line-height:1.62;color:var(--charcoal);
@@ -211,7 +215,7 @@ to{opacity:1;transform:translateX(0)}
 
 .viewport{
   position:relative;overflow:hidden;
-  transition:height 300ms var(--e);
+  transition:height 440ms var(--e);
   touch-action:pan-y;
 }
 .track{
@@ -1375,12 +1379,12 @@ function trackTo(i, animate){
   tr.style.transform = `translate3d(${-i * slideWidth()}px,0,0)`;
 }
 
-function fitHeight(animate){
+function fitHeight(animate, ms){
   const vp = $("viewport"), tr = $("track");
   if(!vp || !tr) return;
   const s = tr.children[R.card];
   if(!s) return;
-  vp.style.transition = animate ? "height 300ms var(--e)" : "none";
+  vp.style.transition = animate ? `height ${ms||340}ms var(--e)` : "none";
   vp.style.height = s.offsetHeight + "px";
 }
 
@@ -1534,15 +1538,48 @@ function drawCard(){
     requestAnimationFrame(()=> trackTo(R.card, false));
   });
 
-  /* accordéon « je n'ai pas compris » */
+  /* accordéon « je n'ai pas compris » — hauteur exacte, mouvement conjoint */
   document.querySelectorAll("[data-slow]").forEach(btn=>{
     btn.onclick = ()=>{
-      const box = btn.nextElementSibling;
-      const open = box.classList.toggle("open");
-      btn.classList.toggle("open", open);
-      btn.querySelector("span").textContent = open ? "Masquer" : "Je n'ai pas compris";
-      if(open){ DB.aides=(DB.aides||0)+1; save(); }
-      setTimeout(()=>fitHeight(true), 30);
+      const box  = btn.nextElementSibling;
+      const inner = box.firstElementChild;
+      const vp   = $("viewport");
+      const slide = btn.closest(".slide");
+      const opening = !box.classList.contains("open");
+
+      btn.querySelector("span").textContent = opening ? "Masquer" : "Je n'ai pas compris";
+      btn.classList.toggle("open", opening);
+
+      if(opening){
+        DB.aides=(DB.aides||0)+1; save();
+
+        /* hauteur réelle du contenu, sans plafond */
+        const h = inner.scrollHeight;
+        box.classList.add("open");
+        box.style.maxHeight = h + "px";
+
+        /* la carte grandit exactement de la même quantité, en même temps */
+        if(vp && slide){
+          const now = vp.offsetHeight;
+          vp.style.height = (now + h + 16) + "px";
+          /* ajustement fin une fois l'ouverture terminée */
+          setTimeout(()=>{
+            box.style.maxHeight = "none";
+            fitHeight(true, 160);
+          }, 470);
+        }
+      } else {
+        /* fixer la hauteur courante avant de replier */
+        box.style.maxHeight = inner.scrollHeight + "px";
+        void box.offsetHeight;
+        box.classList.remove("open");
+        box.style.maxHeight = "0px";
+        if(vp){
+          const now = vp.offsetHeight;
+          vp.style.height = (now - inner.scrollHeight - 16) + "px";
+          setTimeout(()=>fitHeight(true, 160), 470);
+        }
+      }
     };
   });
 

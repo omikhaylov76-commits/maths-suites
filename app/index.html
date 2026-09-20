@@ -571,6 +571,24 @@ to{opacity:1;transform:translateX(0)}
   font:600 13.5px/1 "Inter",sans-serif;color:var(--charcoal);cursor:pointer}
 .rtest:active{transform:scale(.985);background:var(--dust)}
 
+.guide-link{
+  display:flex; align-items:center; gap:13px;
+  margin-top:30px; padding:16px 18px;
+  background:#fff; border:1px solid var(--mist); border-radius:16px;
+  text-decoration:none; color:var(--ink);
+  transition:transform .13s var(--e), background .18s var(--e);
+}
+.guide-link:active{transform:scale(.985); background:var(--dust)}
+.gl-ic{
+  flex:0 0 38px; height:38px; border-radius:11px;
+  background:var(--warm); color:var(--ember);
+  display:grid; place-items:center;
+}
+.gl-t{flex:1; min-width:0; display:block}
+.gl-t b{display:block; font:600 14.5px/1.3 "Inter",sans-serif; letter-spacing:-.01em}
+.gl-t i{display:block; font-style:normal; font-size:12.5px; color:var(--soft); margin-top:3px}
+.gl-go{flex:0 0 auto; color:var(--slate)}
+
 /* ── suivi parent ── */
 .pstate{display:flex;gap:14px;align-items:flex-start;background:#fff;
   border:1px solid var(--mist);border-radius:16px;padding:18px 20px}
@@ -911,6 +929,19 @@ to{opacity:1;transform:translateX(0)}
 
         <button class="rtest" id="rap-test">Envoyer un exemple</button>
       </div>
+
+      <a class="guide-link" href="guide.html">
+        <span class="gl-ic">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </span>
+        <span class="gl-t">
+          <b>Mode d'emploi</b>
+          <i>Tout ce que l'application sait faire</i>
+        </span>
+        <svg class="gl-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
 
     </div></div>
   </section>

@@ -1,7 +1,7 @@
 /* Service worker — hors-ligne + rappels locaux */
 
-const CACHE = "suites-v1";
-const FICHIERS = ["./", "./index.html", "./manifest.json",
+const CACHE = "suites-v2";
+const FICHIERS = ["./", "./index.html", "./guide.html", "./manifest.json",
                   "./i/icon-192.png", "./i/icon-512.png"];
 
 self.addEventListener("install", e => {

@@ -448,7 +448,8 @@ to{opacity:1;transform:translateX(0)}
 
 
 
-.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:9px}
+.hero-top h1{flex:1;min-width:0}
 .bell{position:relative;flex:0 0 42px;height:42px;border-radius:50%;
   border:1px solid var(--mist);background:#fff;color:var(--charcoal);
   display:grid;place-items:center;cursor:pointer;margin-top:3px;
@@ -483,6 +484,32 @@ to{opacity:1;transform:translateX(0)}
   transition:width .6s cubic-bezier(.215,.61,.355,1)}
 .meter-week{margin-top:9px;font-size:12.5px;color:var(--ember);font-weight:600}
 .meter-tot{display:block;margin-top:4px;font-size:11.5px;color:var(--soft);font-weight:400}
+
+
+/* ── appareils ── */
+.sy-intro{margin:0 0 20px;font-size:14.5px;line-height:1.6;color:var(--charcoal)}
+.sy-intro b{color:var(--ink);font-weight:600}
+.sycode{background:#fff;border:1px solid var(--mist);border-radius:16px;
+  padding:22px 18px;text-align:center;
+  font:600 30px/1 "Inter",sans-serif;letter-spacing:.14em;color:var(--ember)}
+.sy-h{margin:24px 0 6px;font:600 15px/1.3 "Inter",sans-serif;color:var(--ink)}
+.sy-p{margin:0 0 10px;font-size:13.5px;line-height:1.55;color:var(--soft)}
+.sylink{background:var(--dust);border-radius:12px;padding:13px 15px;
+  font:400 12px/1.5 ui-monospace,SFMono-Regular,monospace;color:var(--charcoal);
+  word-break:break-all;margin-bottom:14px}
+.sy-etat{margin:12px 0 0;font-size:13px;line-height:1.5;color:var(--soft);text-align:center}
+.sy-etat.ok{color:#3fa66a}
+.sy-etat.err{color:var(--miss)}
+.sy-del{width:100%;margin-top:26px;padding:12px;border:0;background:none;
+  font:500 12.5px/1 "Inter",sans-serif;color:var(--soft);cursor:pointer}
+.sy-in{width:100%;padding:16px 18px;border-radius:14px;border:1px solid var(--mist);
+  background:#fff;font:600 21px/1 "Inter",sans-serif;letter-spacing:.1em;
+  text-align:center;color:var(--ink);text-transform:uppercase;margin-bottom:14px}
+.syb{position:relative;flex:0 0 42px;height:42px;border-radius:50%;
+  border:1px solid var(--mist);background:#fff;color:var(--charcoal);
+  display:grid;place-items:center;cursor:pointer;margin-top:3px}
+.syb:active{transform:scale(.93)}
+.syb.lie{color:var(--ember);border-color:rgba(246,119,72,.35)}
 
 /* ── rappels ── */
 .rinstall{background:var(--warm);border-radius:16px;padding:18px 20px;margin-bottom:22px}
@@ -664,6 +691,11 @@ to{opacity:1;transform:translateX(0)}
       <div class="hero">
         <div class="hero-top">
           <h1>Mathématiques</h1>
+          <button class="syb" id="syb" aria-label="Mes appareils">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="14" height="10" rx="2"/><path d="M8 18h6M11 14v4"/><rect x="17" y="9" width="5" height="11" rx="1.5"/>
+            </svg>
+          </button>
           <button class="bell" id="bell" aria-label="Rappels">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>
@@ -775,6 +807,45 @@ to{opacity:1;transform:translateX(0)}
         <div class="keys" id="keys"></div>
       </div>
     </div>
+  </section>
+
+  <section class="screen" id="s-sync">
+    <div class="top">
+      <div class="top-in">
+        <button class="back" id="sy-back" aria-label="Retour">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="top-t"><span class="top-name">Mes appareils</span></div>
+      </div>
+    </div>
+    <div class="pad"><div class="work">
+
+      <div id="sy-off">
+        <p class="sy-intro">Ton travail est enregistré sur cet appareil. Pour le retrouver sur le téléphone <b>et</b> l'ordinateur, crée un lien.</p>
+        <button class="pri" id="sy-creer">Créer mon lien</button>
+        <button class="rtest" id="sy-saisir">J'ai déjà un code</button>
+      </div>
+
+      <div id="sy-on" style="display:none">
+        <div class="sycode" id="sy-code">—</div>
+        <p class="sy-h">Sur ton autre appareil</p>
+        <p class="sy-p">Ouvre ce lien, et tout se retrouve automatiquement :</p>
+        <div class="sylink" id="sy-link">—</div>
+        <button class="pri" id="sy-copier">Copier le lien</button>
+        <button class="rtest" id="sy-forcer">Synchroniser maintenant</button>
+        <p class="sy-etat" id="sy-etat"></p>
+        <button class="sy-del" id="sy-delier">Délier cet appareil</button>
+      </div>
+
+      <div id="sy-form" style="display:none">
+        <p class="sy-h">Entre ton code</p>
+        <input class="sy-in" id="sy-champ" type="text" placeholder="ABCD-1234"
+               autocapitalize="characters" autocomplete="off" maxlength="9">
+        <button class="pri" id="sy-valider">Récupérer mon travail</button>
+        <p class="sy-etat" id="sy-etat2"></p>
+      </div>
+
+    </div></div>
   </section>
 
   <section class="screen" id="s-rap">
@@ -3611,7 +3682,7 @@ function derniersJours(n){
 /* ═══════════ SYNCHRONISATION ═══════════ */
 /* un code, pas de compte. Le code voyage avec l'élève. */
 
-const SYNC_URL = "https://suites-sync.__COMPTE__.workers.dev";
+const SYNC_URL = "https://suites-sync.o-mikhaylov76.workers.dev";
 const SYNC_KEY = "suites.fr.code";
 
 let SYNC = {
@@ -3619,6 +3690,15 @@ let SYNC = {
   etat: "hors",      /* hors · ok · envoi · erreur */
   dernier: 0
 };
+
+/* code transmis par lien : ...?c=MIRA-7412 */
+(function(){
+  const m = location.search.match(/[?&]c=([A-Za-z]{4}-?\d{4})/);
+  if(m){
+    const c = m[1].toUpperCase().replace(/^([A-Z]{4})(\d{4})$/, "$1-$2");
+    try{ localStorage.setItem(SYNC_KEY, c); }catch(e){}
+  }
+})();
 
 function codeSync(){
   if(SYNC.code) return SYNC.code;
@@ -3741,6 +3821,7 @@ function retour(){
     case "s-done":   show("s-done");   redrawDone(); break;
     case "s-parent": show("s-parent"); drawParent(); break;
     case "s-rap":    show("s-rap");    drawRappels(); break;
+    case "s-sync":   show("s-sync");   drawSync(); break;
     default:        show("s-mods");  drawMods();
   }
 }
@@ -3762,6 +3843,111 @@ function redrawDone(){
 }
 
 
+
+
+/* ═══════════ ÉCRAN APPAREILS ═══════════ */
+
+function lienSync(code){
+  return location.origin + location.pathname + "?c=" + code;
+}
+
+function drawSync(vue){
+  const code = codeSync();
+  const v = vue || (code ? "on" : "off");
+  $("sy-off").style.display  = v === "off"  ? "block" : "none";
+  $("sy-on").style.display   = v === "on"   ? "block" : "none";
+  $("sy-form").style.display = v === "form" ? "block" : "none";
+
+  if(v === "on" && code){
+    $("sy-code").textContent = code;
+    $("sy-link").textContent = lienSync(code);
+    const e = $("sy-etat");
+    if(SYNC.dernier){
+      const min = Math.round((Date.now()-SYNC.dernier)/60000);
+      e.className = "sy-etat ok";
+      e.textContent = min < 1 ? "À jour" : "Dernière synchro il y a " + min + " min";
+    } else { e.className = "sy-etat"; e.textContent = ""; }
+  }
+}
+
+function ouvrirSync(){
+  PILE.push({ ecran: (document.querySelector(".screen.on")||{}).id || "s-mods" });
+  show("s-sync");
+  drawSync();
+}
+
+$("syb").onclick = ()=> ouvrirSync();
+$("sy-back").onclick = ()=> retour();
+$("sy-saisir").onclick = ()=> drawSync("form");
+
+$("sy-creer").onclick = async ()=>{
+  poserCode(nouveauCode());
+  drawSync("on");
+  $("sy-etat").textContent = "Envoi…";
+  pousser(true);
+  setTimeout(()=>drawSync("on"), 1600);
+};
+
+$("sy-copier").onclick = async ()=>{
+  const l = lienSync(codeSync());
+  try{
+    await navigator.clipboard.writeText(l);
+    const e = $("sy-etat"); e.className = "sy-etat ok"; e.textContent = "Lien copié";
+  }catch(err){
+    /* Safari refuse parfois : on sélectionne pour un copier manuel */
+    const r = document.createRange(); r.selectNodeContents($("sy-link"));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    $("sy-etat").textContent = "Sélectionné — appuie longuement pour copier";
+  }
+};
+
+$("sy-forcer").onclick = async ()=>{
+  const e = $("sy-etat"); e.className = "sy-etat"; e.textContent = "Synchronisation…";
+  const r = await tirer();
+  if(r.ok){
+    pousser(true);
+    e.className = "sy-etat ok";
+    e.textContent = r.vide ? "Rien à récupérer — tes données sont envoyées" : "À jour";
+    setTimeout(()=>{ drawHome && drawHome(); }, 300);
+  } else {
+    e.className = "sy-etat err";
+    e.textContent = "Échec — vérifie ta connexion";
+  }
+};
+
+$("sy-valider").onclick = async ()=>{
+  const brut = ($("sy-champ").value||"").toUpperCase().trim()
+                 .replace(/\s/g,"").replace(/^([A-Z]{4})(\d{4})$/,"$1-$2");
+  const e = $("sy-etat2");
+  if(!/^[A-Z]{4}-\d{4}$/.test(brut)){
+    e.className = "sy-etat err"; e.textContent = "Format attendu : ABCD-1234";
+    return;
+  }
+  poserCode(brut);
+  e.className = "sy-etat"; e.textContent = "Récupération…";
+  const r = await tirer();
+  if(r.ok && !r.vide){
+    e.className = "sy-etat ok"; e.textContent = "Travail récupéré";
+    setTimeout(()=>{ drawSync("on"); drawHome && drawHome(); }, 700);
+  } else if(r.ok && r.vide){
+    e.className = "sy-etat"; e.textContent = "Ce code est vide — tes données y seront envoyées";
+    pousser(true);
+    setTimeout(()=>drawSync("on"), 1200);
+  } else {
+    e.className = "sy-etat err"; e.textContent = "Échec — vérifie ta connexion";
+  }
+};
+
+$("sy-delier").onclick = ()=>{
+  oublierCode();
+  drawSync("off");
+};
+
+/* pastille sur l'icône si déjà lié */
+function majIconeSync(){
+  const b = $("syb");
+  if(b) b.classList.toggle("lie", !!codeSync());
+}
 
 /* ═══════════ ÉCRAN RAPPELS ═══════════ */
 
@@ -4929,6 +5115,11 @@ function ouvrirSuivi(){
 
 $("p-back").onclick = ()=> retour();
 
+
+majIconeSync();
+if(codeSync()){
+  tirer().then(r=>{ if(r.ok && !r.vide){ drawMods(); } });
+}
 
 drawMods();
 </script>

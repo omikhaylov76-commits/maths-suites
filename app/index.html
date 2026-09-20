@@ -447,6 +447,54 @@ to{opacity:1;transform:translateX(0)}
   font-size:12px;line-height:1.5;color:var(--soft)}
 
 
+
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.bell{position:relative;flex:0 0 42px;height:42px;border-radius:50%;
+  border:1px solid var(--mist);background:#fff;color:var(--charcoal);
+  display:grid;place-items:center;cursor:pointer;margin-top:3px;
+  transition:transform .12s var(--e),background .18s var(--e)}
+.bell:active{transform:scale(.93)}
+.bell-dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;
+  background:var(--ember);border:2px solid #fff;display:none}
+.bell-dot.on{display:block}
+
+/* ── rappels ── */
+.rinstall{background:var(--warm);border-radius:16px;padding:18px 20px;margin-bottom:22px}
+.rinstall b{display:block;font:600 15.5px/1.3 "Inter",sans-serif;color:var(--ink);margin-bottom:7px}
+.rinstall p{margin:0 0 12px;font-size:13.5px;line-height:1.55;color:var(--charcoal)}
+.rinstall ol{margin:0;padding-left:20px;font-size:13.5px;line-height:1.75;color:var(--charcoal)}
+.rinstall li b{display:inline;font-weight:600}
+
+.rrow{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:#fff;border:1px solid var(--mist);border-radius:16px;padding:17px 19px}
+.rrow-h{font:600 15.5px/1.2 "Inter",sans-serif;color:var(--ink)}
+.rrow-s{font-size:13px;color:var(--soft);margin-top:4px}
+
+.tog{flex:0 0 50px;height:30px;border-radius:15px;background:#ddd6cb;position:relative;
+  transition:background .22s var(--e);cursor:pointer;border:0;padding:0}
+.tog i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);
+  transition:transform .22s cubic-bezier(.215,.61,.355,1)}
+.tog.on{background:var(--ember)}
+.tog.on i{transform:translateX(20px)}
+
+.rtime{width:100%;padding:15px 18px;border-radius:14px;border:1px solid var(--mist);
+  background:#fff;font:600 17px/1 "Inter",sans-serif;color:var(--ink);
+  -webkit-appearance:none;appearance:none}
+
+.rjours{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.rjour{aspect-ratio:1;border-radius:11px;border:1px solid var(--mist);background:#fff;
+  font:600 12.5px/1 "Inter",sans-serif;color:var(--soft);cursor:pointer;
+  transition:transform .12s var(--e),background .18s var(--e),color .18s var(--e)}
+.rjour:active{transform:scale(.94)}
+.rjour.on{background:var(--ember);border-color:var(--ember);color:#fff}
+
+.rnote{margin:18px 0 0;font-size:12.5px;line-height:1.55;color:var(--soft)}
+.rtest{width:100%;margin-top:20px;padding:14px;border-radius:var(--r-pill);
+  border:1px solid var(--mist);background:#fff;
+  font:600 13.5px/1 "Inter",sans-serif;color:var(--charcoal);cursor:pointer}
+.rtest:active{transform:scale(.985);background:var(--dust)}
+
 /* ── suivi parent ── */
 .pstate{display:flex;gap:14px;align-items:flex-start;background:#fff;
   border:1px solid var(--mist);border-radius:16px;padding:18px 20px}
@@ -574,6 +622,12 @@ to{opacity:1;transform:translateX(0)}
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
 </style>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="i/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Les suites">
+  <meta name="theme-color" content="#fdf9f4">
 </head>
 <body>
 
@@ -582,7 +636,15 @@ to{opacity:1;transform:translateX(0)}
   <section class="screen on" id="s-mods">
     <div class="pad">
       <div class="hero">
-        <h1>Mathématiques</h1>
+        <div class="hero-top">
+          <h1>Mathématiques</h1>
+          <button class="bell" id="bell" aria-label="Rappels">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>
+            </svg>
+            <i class="bell-dot" id="bell-dot"></i>
+          </button>
+        </div>
         <p class="sub">Première spécialité · programme 2026</p>
       </div>
       <div class="meter">
@@ -683,6 +745,50 @@ to{opacity:1;transform:translateX(0)}
         <div class="keys" id="keys"></div>
       </div>
     </div>
+  </section>
+
+  <section class="screen" id="s-rap">
+    <div class="top">
+      <div class="top-in">
+        <button class="back" id="rap-back" aria-label="Retour">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="top-t"><span class="top-name">Rappels</span></div>
+      </div>
+    </div>
+    <div class="pad"><div class="work">
+
+      <div class="rinstall" id="rap-install" style="display:none">
+        <b>Installe d'abord l'application</b>
+        <p>Sur iPhone, les rappels ne fonctionnent que si l'app est sur l'écran d'accueil.</p>
+        <ol>
+          <li>Touche le bouton <b>Partager</b> en bas de Safari</li>
+          <li>Choisis <b>Sur l'écran d'accueil</b></li>
+          <li>Rouvre l'app depuis l'icône, puis reviens ici</li>
+        </ol>
+      </div>
+
+      <div id="rap-form">
+        <div class="rrow">
+          <div>
+            <div class="rrow-h">Me rappeler</div>
+            <div class="rrow-s" id="rap-etat">désactivé</div>
+          </div>
+          <button class="tog" id="rap-tog" role="switch" aria-checked="false"><i></i></button>
+        </div>
+
+        <p class="list-lbl" style="margin-top:24px">À QUELLE HEURE</p>
+        <input class="rtime" id="rap-h" type="time" value="18:30">
+
+        <p class="list-lbl" style="margin-top:22px">QUELS JOURS</p>
+        <div class="rjours" id="rap-j"></div>
+
+        <p class="rnote">Si tu as déjà travaillé dans la journée, aucun rappel n'arrive.</p>
+
+        <button class="rtest" id="rap-test">Envoyer un exemple</button>
+      </div>
+
+    </div></div>
   </section>
 
   <section class="screen" id="s-parent">
@@ -3300,6 +3406,122 @@ function show(id){
 
 
 
+
+/* ═══════════ RAPPELS ═══════════ */
+/* iOS : les notifications n'existent que si l'appli est sur l'écran d'accueil */
+
+const RAP_KEY = "suites.fr.rappel";
+
+function estInstallee(){
+  return window.matchMedia("(display-mode: standalone)").matches ||
+         window.navigator.standalone === true;
+}
+function estIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function rappelConf(){
+  try{ const r = localStorage.getItem(RAP_KEY); if(r) return JSON.parse(r); }catch(e){}
+  return { actif:false, heure:"18:30", jours:[1,2,3,4,5] };   /* lun→ven */
+}
+function poserRappel(c){
+  try{ localStorage.setItem(RAP_KEY, JSON.stringify(c)); }catch(e){}
+}
+
+async function activerRappels(heure, jours){
+  if(!("Notification" in window)) return { ok:false, raison:"non supporté" };
+
+  if(estIOS() && !estInstallee())
+    return { ok:false, raison:"installer" };
+
+  let perm = Notification.permission;
+  if(perm === "default") perm = await Notification.requestPermission();
+  if(perm !== "granted") return { ok:false, raison:"refusé" };
+
+  poserRappel({ actif:true, heure, jours });
+  planifierProchain();
+  return { ok:true };
+}
+
+function desactiverRappels(){
+  const c = rappelConf(); c.actif = false; poserRappel(c);
+  if(RAP_TIMER){ clearTimeout(RAP_TIMER); RAP_TIMER = null; }
+}
+
+/* ── minuterie locale : fonctionne quand l'appli est ouverte ── */
+let RAP_TIMER = null;
+
+function prochainMoment(c){
+  const [h,m] = c.heure.split(":").map(Number);
+  for(let i=0;i<8;i++){
+    const d = new Date();
+    d.setDate(d.getDate()+i);
+    d.setHours(h, m, 0, 0);
+    const jour = d.getDay() === 0 ? 7 : d.getDay();   /* 1=lun … 7=dim */
+    if(d > new Date() && c.jours.includes(jour)) return d;
+  }
+  return null;
+}
+
+function planifierProchain(){
+  if(RAP_TIMER){ clearTimeout(RAP_TIMER); RAP_TIMER = null; }
+  const c = rappelConf();
+  if(!c.actif) return;
+  const quand = prochainMoment(c);
+  if(!quand) return;
+
+  const delai = quand.getTime() - Date.now();
+  /* setTimeout plafonne à ~24 j ; on re-planifie au réveil de toute façon */
+  if(delai > 0 && delai < 2147483647){
+    RAP_TIMER = setTimeout(()=>{ tirerRappel(); planifierProchain(); }, delai);
+  }
+}
+
+function tirerRappel(){
+  /* déjà travaillé aujourd'hui ? on ne dérange pas */
+  const j = (DB.jours||{})[today()];
+  if(j && j.ex >= 5) return;
+
+  const msg = messageRappel();
+  if(navigator.serviceWorker && navigator.serviceWorker.controller){
+    navigator.serviceWorker.controller.postMessage({
+      type:"rappel", titre:msg.titre, corps:msg.corps
+    });
+  } else if("Notification" in window && Notification.permission === "granted"){
+    new Notification(msg.titre, { body: msg.corps, icon:"i/icon-192.png" });
+  }
+}
+
+/* le message s'adapte à la situation : ni culpabilisant, ni robotique */
+function messageRappel(){
+  const due = typeof nbDus === "function" ? nbDus() : 0;
+  const s = DB.streak || 0;
+
+  if(due > 0)
+    return { titre:"Les suites",
+             corps: due + (due>1 ? " exercices t'attendent" : " exercice t'attend") + " — 10 minutes." };
+  if(s >= 3)
+    return { titre:"Les suites", corps: s + " jours d'affilée. On continue ?" };
+
+  const v = [
+    "Dix minutes aujourd'hui ?",
+    "Une petite séance et c'est fait.",
+    "Cinq exercices, pas plus."
+  ];
+  return { titre:"Les suites", corps: v[Math.floor(Math.random()*v.length)] };
+}
+
+/* au démarrage : on replanifie et on enregistre le service worker */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+document.addEventListener("visibilitychange", ()=>{
+  if(!document.hidden) planifierProchain();
+});
+
 /* ═══════════ JOURNAL D'ACTIVITÉ ═══════════ */
 /* une ligne par jour : ce qui permet au parent de voir l'assiduité */
 
@@ -3476,6 +3698,7 @@ function retour(){
     case "s-home":  show("s-home");  drawHome();  break;
     case "s-done":   show("s-done");   redrawDone(); break;
     case "s-parent": show("s-parent"); drawParent(); break;
+    case "s-rap":    show("s-rap");    drawRappels(); break;
     default:        show("s-mods");  drawMods();
   }
 }
@@ -3496,6 +3719,108 @@ function redrawDone(){
   R.ch = s.ch;
 }
 
+
+
+/* ═══════════ ÉCRAN RAPPELS ═══════════ */
+
+const NOMS_J = ["L","M","M","J","V","S","D"];
+
+function drawRappels(){
+  const c = rappelConf();
+  const besoinInstall = estIOS() && !estInstallee();
+
+  $("rap-install").style.display = besoinInstall ? "block" : "none";
+  $("rap-form").style.opacity = besoinInstall ? ".4" : "1";
+  $("rap-form").style.pointerEvents = besoinInstall ? "none" : "auto";
+
+  const tog = $("rap-tog");
+  tog.classList.toggle("on", c.actif);
+  tog.setAttribute("aria-checked", c.actif ? "true" : "false");
+
+  const prochain = c.actif ? prochainMoment(c) : null;
+  $("rap-etat").textContent = !c.actif
+    ? "désactivé"
+    : prochain
+      ? "prochain : " + jourCourt(prochain) + " à " + c.heure
+      : "aucun jour choisi";
+
+  $("rap-h").value = c.heure;
+
+  const box = $("rap-j"); box.innerHTML = "";
+  for(let i=1;i<=7;i++){
+    const b = document.createElement("button");
+    b.className = "rjour" + (c.jours.includes(i) ? " on" : "");
+    b.textContent = NOMS_J[i-1];
+    b.onclick = ()=>{
+      const cc = rappelConf();
+      const k = cc.jours.indexOf(i);
+      if(k >= 0) cc.jours.splice(k,1); else cc.jours.push(i);
+      cc.jours.sort();
+      poserRappel(cc);
+      planifierProchain();
+      drawRappels();
+    };
+    box.appendChild(b);
+  }
+}
+
+function jourCourt(d){
+  const n = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+  const auj = new Date();
+  if(d.toDateString() === auj.toDateString()) return "aujourd'hui";
+  const dem = new Date(Date.now()+864e5);
+  if(d.toDateString() === dem.toDateString()) return "demain";
+  return n[d.getDay()];
+}
+
+function ouvrirRappels(){
+  PILE.push({ ecran: (document.querySelector(".screen.on")||{}).id || "s-mods" });
+  show("s-rap");
+  drawRappels();
+}
+
+$("rap-back").onclick = ()=> retour();
+$("bell").onclick = ()=> ouvrirRappels();
+
+$("rap-tog").onclick = async ()=>{
+  const c = rappelConf();
+  if(c.actif){ desactiverRappels(); drawRappels(); return; }
+
+  const r = await activerRappels($("rap-h").value || "18:30", c.jours);
+  if(!r.ok){
+    if(r.raison === "installer"){ drawRappels(); return; }
+    $("rap-etat").textContent = r.raison === "refusé"
+      ? "refusé — autorise dans les réglages"
+      : "non disponible sur ce navigateur";
+    return;
+  }
+  drawRappels();
+};
+
+$("rap-h").onchange = ()=>{
+  const c = rappelConf();
+  c.heure = $("rap-h").value || "18:30";
+  poserRappel(c);
+  planifierProchain();
+  drawRappels();
+};
+
+$("rap-test").onclick = ()=>{
+  if("Notification" in window && Notification.permission === "granted"){
+    tirerRappelForce();
+  } else {
+    $("rap-etat").textContent = "active d'abord les rappels";
+  }
+};
+
+function tirerRappelForce(){
+  const msg = messageRappel();
+  if(navigator.serviceWorker && navigator.serviceWorker.controller){
+    navigator.serviceWorker.controller.postMessage({ type:"rappel", titre:msg.titre, corps:msg.corps });
+  } else {
+    new Notification(msg.titre, { body: msg.corps, icon:"i/icon-192.png" });
+  }
+}
 
 /* ═══════════ SUIVI PARENT ═══════════ */
 
@@ -3615,6 +3940,13 @@ function drawMods(){
     $("mm-streak").style.display="inline-flex";
     $("mm-streak-n").textContent = DB.streak;
     $("mm-streak-w").textContent = DB.streak===1 ? "jour d'affilée" : "jours d'affilée";
+  }
+
+  /* pastille sur la cloche si les rappels ne sont pas encore actifs */
+  const bd = $("bell-dot");
+  if(bd){
+    const fait = Object.keys(DB.ch||{}).length > 0;
+    bd.classList.toggle("on", fait && !rappelConf().actif);
   }
 
   const box = $("mods"); box.innerHTML = "";

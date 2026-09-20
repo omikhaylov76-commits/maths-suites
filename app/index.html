@@ -7677,12 +7677,34 @@ function bindPad(){
 
 /* ═══════════ ВОПРОС ═══════════ */
 
+/* la bonne réponse ne doit jamais rester en première position :
+   sinon on répond juste en cliquant toujours A, sans réfléchir */
+function melangerOpts(q){
+  if(!q || q.type !== "qcm" || !q.opts || q._mel) return q;
+
+  /* les questions vrai/faux gardent leur ordre logique */
+  const vf = q.opts.length === 2 &&
+             q.opts.every(o => /^(Vrai|Faux|Oui|Non)$/i.test(
+               String(o.t).replace(/<[^>]*>/g, "").trim()));
+
+  if(!vf){
+    const i = q.opts.map((o,k)=>k);
+    for(let k=i.length-1;k>0;k--){
+      const j = Math.floor(Math.random()*(k+1));
+      [i[k],i[j]] = [i[j],i[k]];
+    }
+    q.opts = i.map(k=>q.opts[k]);
+  }
+  q._mel = true;
+  return q;
+}
+
 function drawQ(){
   R.mode="q"; R.tried=false;
   tic();
   padHide();
   const ch = CHAPITRES.find(c=>c.n===R.ch);
-  const q = R.queue[R.qi];
+  const q = melangerOpts(R.queue[R.qi]);
   const base = (R.defi || (DB.ch[R.ch] && DB.ch[R.ch].done)) ? 0 : ch.cartes.length;
   const step = base + R.qi + 1;
   const all  = base + R.queue.length;

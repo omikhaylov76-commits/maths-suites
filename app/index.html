@@ -11,6 +11,29 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
+/* ── переход между страницами (конспект ↔ приложение) ── */
+@view-transition{ navigation:auto }
+
+@media (prefers-reduced-motion:no-preference){
+  ::view-transition-old(root){
+    animation:pgOut 260ms cubic-bezier(.4,0,.2,1) both;
+  }
+  ::view-transition-new(root){
+    animation:pgIn 300ms cubic-bezier(.215,.61,.355,1) both;
+  }
+  html.retour::view-transition-old(root){
+    animation:pgOutR 260ms cubic-bezier(.4,0,.2,1) both;
+  }
+  html.retour::view-transition-new(root){
+    animation:pgInR 300ms cubic-bezier(.215,.61,.355,1) both;
+  }
+}
+@keyframes pgOut { from{transform:translateX(0);opacity:1}      to{transform:translateX(-22%);opacity:0} }
+@keyframes pgIn  { from{transform:translateX(100%);opacity:.4}  to{transform:translateX(0);opacity:1} }
+@keyframes pgOutR{ from{transform:translateX(0);opacity:1}      to{transform:translateX(100%);opacity:0} }
+@keyframes pgInR { from{transform:translateX(-22%);opacity:.4}  to{transform:translateX(0);opacity:1} }
+
 :root{
   /* parchment — palette Slite */
   --canvas:#fdf9f4;        /* cream paper, jamais blanc froid */
@@ -69,12 +92,12 @@ sub,sup{font-size:.7em;line-height:0}
 .screen{
   position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;opacity:0;pointer-events:none;
-  transform:translateX(18px);
+  transform:translateX(30px);
   transition:opacity var(--t-fade) var(--e-soft),transform var(--t-move) var(--e);
   will-change:opacity,transform;
 }
 .screen.on{opacity:1;pointer-events:auto;transform:translateX(0)}
-.screen.left{transform:translateX(-18px)}
+.screen.left{transform:translateX(-30px)}
 .pad{max-width:720px;margin:0 auto;padding:calc(20px + var(--safe-t)) 20px calc(150px + var(--safe-b))}
 
 /* главная */
@@ -3678,6 +3701,36 @@ function derniersJours(n){
   }
   return out;
 }
+
+
+/* ── направление перехода между страницами ── */
+(function(){
+  const H = document.documentElement;
+  document.addEventListener("click", e=>{
+    const a = e.target.closest("a[href]");
+    if(!a) return;
+    const href = a.getAttribute("href");
+    if(!href || href.startsWith("#")) return;
+    /* ссылка «наверх», к конспекту → это возврат */
+    const back = href.indexOf("..") === 0 || href === "../";
+    H.classList.toggle("retour", back);
+    try{ sessionStorage.setItem("nav.dir", back ? "retour" : "avant"); }catch(err){}
+  }, true);
+
+  addEventListener("popstate", ()=>{
+    H.classList.add("retour");
+    try{ sessionStorage.setItem("nav.dir", "retour"); }catch(err){}
+  });
+
+  let dir = "avant";
+  try{ dir = sessionStorage.getItem("nav.dir") || "avant"; }catch(err){}
+  const nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+  if((nav && nav.type === "back_forward") || dir === "retour") H.classList.add("retour");
+  setTimeout(()=>{
+    H.classList.remove("retour");
+    try{ sessionStorage.setItem("nav.dir","avant"); }catch(err){}
+  }, 700);
+})();
 
 /* ═══════════ SYNCHRONISATION ═══════════ */
 /* un code, pas de compte. Le code voyage avec l'élève. */

@@ -2675,22 +2675,181 @@ function pickSession(n, size){
   const st = DB.ch[n] || {};
   const seen = st.vus || [];
 
-  let frais = pool.filter((q,i)=> !seen.includes(i));
-  if(frais.length < size){
-    /* tout vu : on repart à zéro */
+  let idx = pool.map((q,i)=>i).filter(i => !seen.includes(i));
+  if(idx.length < size){
     if(DB.ch[n]) DB.ch[n].vus = [];
-    frais = pool.slice();
+    idx = pool.map((q,i)=>i);
   }
-  const idx = pool.map((q,i)=>i).filter(i=> frais.includes(pool[i]));
   const chosen = shuffle(idx).slice(0, Math.min(size, idx.length));
 
-  /* mémoriser */
   if(!DB.ch[n]) DB.ch[n] = {};
   DB.ch[n].vus = (DB.ch[n].vus||[]).concat(chosen).slice(-40);
   save();
 
-  return chosen.map(i=>pool[i]);
+  let items = chosen.map(i =>
+    Object.assign({}, pool[i], { _id: qid(n,i), _ch: n, meth: methOf(pool[i], n) })
+  );
+
+  /* entrelacement réel : 2 exercices venus d'autres chapitres déjà faits
+     (Rohrer 2019 — deux exercices voisins ne doivent pas partager la méthode) */
+  const autres = [];
+  CHAPITRES.forEach(c => {
+    if(!c.pret || c.n === n) return;
+    const s = DB.ch[c.n];
+    if(!s || !s.done) return;
+    poolOf(c.n).forEach((q,i) =>
+      autres.push(Object.assign({}, q, { _id:qid(c.n,i), _ch:c.n, meth:methOf(q, c.n), _vieux:true }))
+    );
+  });
+  if(autres.length){
+    /* priorité aux fiches dues */
+    const j = dayNum();
+    autres.sort((a,b) => {
+      const fa = (DB.fiches||{})[a._id], fb = (DB.fiches||{})[b._id];
+      const da = fa && fa.due <= j ? 0 : 1, db = fb && fb.due <= j ? 0 : 1;
+      return da - db || Math.random() - 0.5;
+    });
+    items = items.concat(autres.slice(0, 3));
+  }
+
+  return entrelacer(items);
 }
+
+/* ── méthode dominante par chapitre (repli) ── */
+const METH_CH = {
+  1:"notation", 2:"variation", 3:"arith", 4:"geom",
+  5:"bornes",   6:"somme",     7:"algo",  8:"mixte"
+};
+
+/* identifiant stable d'un exercice */
+function qid(ch, i, kind){ return ch + ":" + (kind||"e") + i; }
+
+/* méthode d'un exercice : tag explicite sinon repli chapitre */
+function methOf(q, ch){ return q.meth || METH_CH[ch] || "autre"; }
+
+/* ═══════════ BOÎTES DE LEITNER ═══════════ */
+/* boîte 0 → revoir demain · 1 → 3 j · 2 → 7 j · 3 → 16 j · 4 → 35 j */
+const INTERVALLES = [1, 3, 7, 16, 35];
+
+function dayNum(){ return Math.floor(Date.now() / 864e5); }
+
+function fiche(id){
+  if(!DB.fiches) DB.fiches = {};
+  if(!DB.fiches[id]) DB.fiches[id] = { b:0, due:dayNum(), err:0, vu:0 };
+  return DB.fiches[id];
+}
+
+/* enregistre le résultat et replanifie */
+function planifier(id, juste){
+  const f = fiche(id);
+  f.vu = dayNum();
+  if(juste){
+    f.b = Math.min((f.b||0) + 1, INTERVALLES.length - 1);
+  } else {
+    f.b = 0;
+    f.err = (f.err||0) + 1;
+  }
+  f.due = dayNum() + INTERVALLES[f.b];
+  save();
+}
+
+/* exercices dus, tous chapitres terminés confondus */
+function fichesDues(){
+  const out = [];
+  const j = dayNum();
+  CHAPITRES.forEach(c => {
+    if(!c.pret) return;
+    const st = DB.ch[c.n];
+    if(!st || !st.done) return;          /* seulement le déjà vu */
+    poolOf(c.n).forEach((q, i) => {
+      const id = qid(c.n, i);
+      const f = DB.fiches && DB.fiches[id];
+      if(f && f.due <= j) out.push({ q, id, ch:c.n, f });
+    });
+  });
+  /* priorité : plus d'erreurs d'abord, puis le plus ancien */
+  out.sort((a,b) => (b.f.err - a.f.err) || (a.f.vu - b.f.vu));
+  return out;
+}
+
+/* ═══════════ ENTRELACEMENT ═══════════ */
+/* réordonne pour que deux exercices voisins n'aient pas la même méthode */
+function entrelacer(items){
+  if(items.length < 3) return items;
+
+  const paquets = {};
+  items.forEach(it => {
+    const m = it.meth || "autre";
+    (paquets[m] = paquets[m] || []).push(it);
+  });
+
+  const cles = Object.keys(paquets);
+  if(cles.length === 1) return shuffle(items);
+
+  /* on pioche toujours dans le paquet le plus fourni, jamais le même deux fois */
+  const res = [];
+  let dernier = null;
+  while(res.length < items.length){
+    const dispo = cles
+      .filter(m => paquets[m].length && m !== dernier)
+      .sort((a,b) => paquets[b].length - paquets[a].length);
+
+    const m = dispo.length
+      ? dispo[0]
+      : cles.filter(k => paquets[k].length)[0];
+
+    res.push(paquets[m].shift());
+    dernier = m;
+  }
+  return res;
+}
+
+/* ═══════════ ÉCHAUFFEMENT ═══════════ */
+/* 3 questions tirées du passé : erreurs d'abord, puis le plus ancien */
+function construireEchauffement(chCourant, taille){
+  taille = taille || 3;
+  const dues = fichesDues().filter(d => d.ch !== chCourant);
+  if(!dues.length) return [];
+
+  /* diversifier les chapitres : au plus 2 du même */
+  const compte = {};
+  const sel = [];
+  for(const d of dues){
+    if(sel.length >= taille) break;
+    compte[d.ch] = (compte[d.ch]||0);
+    if(compte[d.ch] >= 2) continue;
+    compte[d.ch]++;
+    sel.push(Object.assign({}, d.q, { _id:d.id, _ch:d.ch, meth:methOf(d.q, d.ch) }));
+  }
+  return entrelacer(sel);
+}
+
+/* ═══════════ RÉVISION MÊLÉE ═══════════ */
+/* session transversale : tous chapitres terminés, méthodes mélangées */
+function sessionMelee(taille){
+  taille = taille || 8;
+  const faits = CHAPITRES.filter(c => c.pret && DB.ch[c.n] && DB.ch[c.n].done);
+  if(faits.length < 2) return [];
+
+  /* d'abord ce qui est dû, complété au hasard */
+  let sel = fichesDues().slice(0, taille).map(d =>
+    Object.assign({}, d.q, { _id:d.id, _ch:d.ch, meth:methOf(d.q, d.ch) })
+  );
+
+  if(sel.length < taille){
+    const reste = [];
+    faits.forEach(c => poolOf(c.n).forEach((q,i) => {
+      const id = qid(c.n, i);
+      if(!sel.some(s => s._id === id))
+        reste.push(Object.assign({}, q, { _id:id, _ch:c.n, meth:methOf(q, c.n) }));
+    }));
+    sel = sel.concat(shuffle(reste).slice(0, taille - sel.length));
+  }
+  return entrelacer(sel);
+}
+
+/* combien d'exercices attendent une révision */
+function nbDus(){ return fichesDues().length; }
 
 /* ═══════════ СОСТОЯНИЕ ═══════════ */
 
@@ -2848,13 +3007,38 @@ function startCh(n, mode){
   const ch = CHAPITRES.find(c=>c.n===n);
   const st = DB.ch[n] || {};
   const defi = mode === "defi";
+  const melee = mode === "melee";
+
+  if(melee){
+    const q = sessionMelee(8);
+    if(!q.length){ show("s-home"); return; }
+    R = { ch:n, card:0, qi:0, queue:q, first:0, total:0,
+          tried:false, mode:"q", weak:[], aides:0, defi:false, melee:true };
+    $("w-name").textContent = "Révision mêlée";
+    show("s-work"); drawQ(); return;
+  }
 
   const queue = defi ? shuffle(defisOf(n)).slice(0,5) : pickSession(n, 5);
 
   R = { ch:n, card:0, qi:0, queue, first:0, total:0,
-        tried:false, mode:"card", weak:[], aides:0, defi };
+        tried:false, mode:"card", weak:[], aides:0, defi, melee:false };
 
   $("w-name").textContent = ch.nom + (defi ? " · défis" : "");
+
+  /* échauffement : 3 questions du passé avant d'entrer */
+  const ech = defi ? [] : construireEchauffement(n, 3);
+  if(ech.length){
+    R.apres = { ch:n, mode };
+    R.queue = ech;
+    R.mode = "q";
+    R.ech = true;
+    $("w-name").textContent = "Échauffement";
+    R.echNote = true;
+    show("s-work");
+    drawQ();
+    return;
+  }
+
   show("s-work");
   if(st.done || defi) { R.mode="q"; drawQ(); } else drawCard();
 }
@@ -3291,11 +3475,13 @@ function answerQcm(i){
     btns.forEach((b,j)=>{ b.classList.add("dead"); if(j===i) b.classList.add("good"); });
     if(!R.tried) R.first++;
     R.total++;
+    if(q._id) planifier(q._id, !R.tried);
     openExp(true,q.opts[i].why,q.regle);
     finishQ();
   } else {
     btns[i].classList.add("bad","dead");
     R.tried=true;
+    if(q._id) planifier(q._id, false);
     if(!R.weak.includes(R.qi)) R.weak.push(R.qi);
     openExp(false,q.opts[i].why,null);
     $("dock").classList.remove("up");
@@ -3311,6 +3497,7 @@ function answerNum(){
     inp.classList.remove("bad"); inp.classList.add("good"); inp.disabled=true;
     if(!R.tried) R.first++;
     R.total++;
+    if(q._id) planifier(q._id, !R.tried);
     padHide();
     openExp(true,q.ok,q.regle);
     finishQ();
@@ -3318,6 +3505,7 @@ function answerNum(){
     inp.classList.add("bad");
     setTimeout(()=>inp.classList.remove("bad"),400);
     R.tried=true;
+    if(q._id) planifier(q._id, false);
     if(!R.weak.includes(R.qi)) R.weak.push(R.qi);
     openExp(false,q.no,null);
     if(isTouchDevice()){
@@ -3354,6 +3542,22 @@ function finishQ(){
 }
 
 function finishCh(){
+  /* fin de l'échauffement → on enchaîne sur le chapitre */
+  if(R.ech){
+    const a = R.apres;
+    R.ech = false;
+    const ch = CHAPITRES.find(c=>c.n===a.ch);
+    const st = DB.ch[a.ch] || {};
+    R = { ch:a.ch, card:0, qi:0, queue:pickSession(a.ch,5), first:0, total:0,
+          tried:false, mode:"card", weak:[], aides:0, defi:false, melee:false };
+    $("w-name").textContent = ch.nom;
+    if(st.done){ R.mode="q"; drawQ(); } else drawCard();
+    return;
+  }
+  return finishChReel();
+}
+
+function finishChReel(){
   const rate = R.total ? R.first/R.total : 0;
   const stars = rate===1 ? 3 : rate>=0.5 ? 2 : 1;
   const prev = DB.ch[R.ch] || {stars:0, serie:0};

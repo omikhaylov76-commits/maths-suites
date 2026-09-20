@@ -656,6 +656,34 @@ to{opacity:1;transform:translateX(0)}
   margin:22px 0 10px;padding-left:2px}
 .bloc-t:first-child{margin-top:4px}
 
+
+/* ── мостики к базе ── */
+.pt-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;
+  min-height:44px;margin-top:11px;padding:0 15px;border-radius:var(--r-pill);
+  border:1px dashed rgba(214,122,78,.45);background:none;
+  font:600 13px/1 "Inter",sans-serif;color:var(--ember);cursor:pointer;
+  transition:background .18s var(--e),transform .12s var(--e)}
+.pt-btn:active{transform:scale(.985);background:var(--warm)}
+
+.pt-wrap{margin-top:12px}
+.pt-card{background:#fff;border:1px solid var(--mist);border-radius:15px;
+  padding:16px 18px;margin-bottom:9px;
+  animation:qIn var(--t-base) var(--e)}
+.pt-h{display:flex;align-items:baseline;gap:9px;margin-bottom:11px}
+.pt-n{flex:0 0 auto;font:600 9.5px/1.6 "Inter",sans-serif;letter-spacing:.08em;
+  padding:2px 7px;border-radius:5px;background:var(--warm);color:var(--ember)}
+.pt-t{flex:1;min-width:0;font:600 14.5px/1.3 "Inter",sans-serif;color:var(--ink)}
+.pt-card p{margin:0 0 10px;font-size:14.5px;line-height:1.62;color:var(--charcoal)}
+.pt-card p:last-child{margin-bottom:0}
+.pt-card b{color:var(--ink);font-weight:600}
+.pt-f{background:var(--dust);border-radius:10px;padding:12px 14px;margin:0 0 11px;
+  text-align:center;font-family:Georgia,serif;font-size:16px;line-height:1.7}
+.pt-go{display:inline-flex;align-items:center;gap:6px;min-height:36px;
+  margin-top:4px;padding:0 13px;border-radius:18px;
+  background:var(--dust);color:var(--charcoal);text-decoration:none;border:0;
+  font:600 11.5px/1 "Inter",sans-serif;cursor:pointer}
+.pt-go:active{transform:scale(.97)}
+
 /* ── suivi parent ── */
 .pstate{display:flex;gap:14px;align-items:flex-start;background:#fff;
   border:1px solid var(--mist);border-radius:16px;padding:18px 20px}
@@ -6083,6 +6111,312 @@ Object.keys(DEFIS_TERM).forEach(k=>{
   PLUS[k].defis = (PLUS[k].defis||[]).concat(DEFIS_TERM[k]);
 });
 
+const PONTS = {
+
+/* ─────── 11 · RÉCURRENCE ─────── */
+11:[
+  { id:"notation",
+    t:{ru:"Что вообще значит uₙ", fr:"Ce que signifie uₙ"},
+    ch:1,
+    c:{ru:`<p><b>Вагоны поезда.</b> Каждый пронумерован: 0, 1, 2, 3… В каждом лежит число.</p>
+      <p>Номер вагона — это <span class="v">n</span>. Число внутри — <span class="v">u<sub>n</sub></span>.</p>
+      <div class="pt-f"><span class="v">u<sub>0</sub></span> = 2 &nbsp; <span class="v">u<sub>1</sub></span> = 5 &nbsp; <span class="v">u<sub>2</sub></span> = 8</div>
+      <p><b>Зачем это здесь.</b> В индукции всё время встречается <span class="v">u<sub>n</sub></span> и <span class="v">u<sub>n+1</sub></span>. Если не видеть за этим «текущий вагон» и «следующий вагон», доказательство превращается в бессмысленную возню с буквами.</p>`,
+      fr:`<p><b>Les wagons d'un train.</b> Chacun porte un numéro : 0, 1, 2, 3… Dans chacun, un nombre.</p>
+      <p>Le numéro du wagon, c'est <span class="v">n</span>. Le nombre dedans, c'est <span class="v">u<sub>n</sub></span>.</p>
+      <div class="pt-f"><span class="v">u<sub>0</sub></span> = 2 &nbsp; <span class="v">u<sub>1</sub></span> = 5 &nbsp; <span class="v">u<sub>2</sub></span> = 8</div>
+      <p><b>Pourquoi ici.</b> En récurrence, on manipule sans arrêt <span class="v">u<sub>n</sub></span> et <span class="v">u<sub>n+1</sub></span>. Sans voir « wagon actuel » et « wagon suivant », la démonstration devient une manipulation de lettres vide de sens.</p>`} },
+
+  { id:"suivant",
+    t:{ru:"uₙ₊₁ — это не uₙ + 1", fr:"uₙ₊₁ n'est pas uₙ + 1"},
+    ch:1,
+    c:{ru:`<p>Две записи выглядят похоже, а значат совершенно разное.</p>
+      <div class="pt-f"><span class="v">u<sub>n+1</sub></span> = следующий вагон<br><span class="v">u<sub>n</sub></span> + 1 = текущий вагон, плюс единица</div>
+      <p><b>Проверь на числах.</b> Пусть <span class="v">u<sub>n</sub></span> = 3<span class="v">n</span>.</p>
+      <p><span class="v">u<sub>2</sub></span> + 1 = 6 + 1 = <b>7</b><br><span class="v">u<sub>3</sub></span> = 9 — это <b>9</b></p>
+      <p>Разные числа. Первое меняет <b>значение</b>, второе меняет <b>место</b>.</p>
+      <p><b>Зачем это здесь.</b> Весь шаг наследственности — про переход от одного вагона к следующему. Путаница здесь ломает доказательство целиком.</p>`,
+      fr:`<p>Deux écritures qui se ressemblent et signifient tout autre chose.</p>
+      <div class="pt-f"><span class="v">u<sub>n+1</sub></span> = le wagon suivant<br><span class="v">u<sub>n</sub></span> + 1 = le wagon actuel, plus un</div>
+      <p><b>Vérifie sur des nombres.</b> Soit <span class="v">u<sub>n</sub></span> = 3<span class="v">n</span>.</p>
+      <p><span class="v">u<sub>2</sub></span> + 1 = 6 + 1 = <b>7</b><br><span class="v">u<sub>3</sub></span> = <b>9</b></p>
+      <p>Deux nombres différents. Le premier change la <b>valeur</b>, le second change la <b>place</b>.</p>
+      <p><b>Pourquoi ici.</b> Toute l'hérédité consiste à passer d'un wagon au suivant. Confondre les deux casse la démonstration.</p>`} },
+
+  { id:"substitution",
+    t:{ru:"Как подставлять n+1 в формулу", fr:"Remplacer n par n+1"},
+    ch:3,
+    c:{ru:`<p><b>Правило одно:</b> <span class="v">n</span> — это не буква, это <b>пустое место</b>. Подставлять надо везде, где оно встречается.</p>
+      <p>Пусть <span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1. Найдём <span class="v">u<sub>n+1</sub></span>.</p>
+      <p><b>Неверно:</b> 4<span class="v">n</span> + 1 + 1 = 4<span class="v">n</span> + 2</p>
+      <p><b>Верно:</b> 4(<span class="v">n</span>+1) + 1 = 4<span class="v">n</span> + 4 + 1 = 4<span class="v">n</span> + 5</p>
+      <p>Множитель 4 действует и на прибавленную единицу тоже.</p>
+      <p><b>Зачем это здесь.</b> В шаге наследственности почти всегда надо выписать формулу для ранга <span class="v">n</span>+1 и сравнить с полученным. Ошибка в подстановке — и сравнивать будет нечего.</p>`,
+      fr:`<p><b>Une seule règle :</b> <span class="v">n</span> n'est pas une lettre, c'est une <b>case vide</b>. On remplace partout où elle apparaît.</p>
+      <p>Soit <span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1. Calculons <span class="v">u<sub>n+1</sub></span>.</p>
+      <p><b>Faux :</b> 4<span class="v">n</span> + 1 + 1 = 4<span class="v">n</span> + 2</p>
+      <p><b>Juste :</b> 4(<span class="v">n</span>+1) + 1 = 4<span class="v">n</span> + 5</p>
+      <p>Le facteur 4 agit aussi sur le +1 ajouté.</p>
+      <p><b>Pourquoi ici.</b> Dans l'hérédité, il faut écrire la formule au rang <span class="v">n</span>+1 et la comparer au résultat obtenu. Une erreur de substitution et la comparaison n'a plus de sens.</p>`} }
+],
+
+/* ─────── 12 · LIMITE ─────── */
+12:[
+  { id:"variation",
+    t:{ru:"Растёт или падает — знак разности", fr:"Croissante ou décroissante"},
+    ch:2,
+    c:{ru:`<p><b>Весы каждое утро.</b> Записываешь разницу со вчерашним днём.</p>
+      <p>Всё время плюс — набираешь. Всё время минус — худеешь.</p>
+      <div class="pt-f">Смотрим знак <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span></div>
+      <p>Положителен всегда → возрастает. Отрицателен всегда → убывает.</p>
+      <p><b>Зачем это здесь.</b> Предел тесно связан с направлением. Возрастающая последовательность не может сойтись к числу меньше своего первого члена — и это часто решает задачу за секунду.</p>`,
+      fr:`<p><b>La balance chaque matin.</b> Tu notes l'écart avec la veille.</p>
+      <p>Toujours positif : tu prends du poids. Toujours négatif : tu en perds.</p>
+      <div class="pt-f">On regarde le signe de <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span></div>
+      <p>Toujours positif → croissante. Toujours négatif → décroissante.</p>
+      <p><b>Pourquoi ici.</b> La limite est liée au sens de variation. Une suite croissante ne peut pas converger vers un nombre inférieur à son premier terme — et cela règle souvent la question en une seconde.</p>`} },
+
+  { id:"bornes",
+    t:{ru:"Потолок и пол", fr:"Plafond et plancher"},
+    ch:5,
+    c:{ru:`<p><b>Комната.</b> Если последовательность никогда не поднимается выше какого-то числа — у неё есть потолок. Она <i>majorée</i>.</p>
+      <p>Если никогда не опускается ниже — есть пол. Она <i>minorée</i>.</p>
+      <div class="pt-f">Majorée: <span class="v">u<sub>n</sub></span> ⩽ <span class="v">M</span><br>Minorée: <span class="v">u<sub>n</sub></span> ⩾ <span class="v">m</span></div>
+      <p><b>Важно:</b> потолок не обязан достигаться. Последовательность <span class="v">n</span>/(<span class="v">n</span>+1) всегда меньше единицы, но никогда её не касается — и единица законный потолок.</p>
+      <p><b>Зачем это здесь.</b> Ограниченность — половина условия главной теоремы о сходимости. Без неё нельзя доказать, что предел вообще существует.</p>`,
+      fr:`<p><b>Une pièce.</b> Si la suite ne monte jamais au-dessus d'un nombre, elle a un plafond : elle est <i>majorée</i>.</p>
+      <p>Si elle ne descend jamais en dessous, elle a un plancher : elle est <i>minorée</i>.</p>
+      <div class="pt-f">Majorée : <span class="v">u<sub>n</sub></span> ⩽ <span class="v">M</span><br>Minorée : <span class="v">u<sub>n</sub></span> ⩾ <span class="v">m</span></div>
+      <p><b>Important :</b> le plafond n'est pas forcément atteint. La suite <span class="v">n</span>/(<span class="v">n</span>+1) reste toujours sous 1 sans jamais y toucher — et 1 est bien un majorant.</p>
+      <p><b>Pourquoi ici.</b> Être bornée est la moitié du théorème de convergence. Sans cela, impossible de prouver que la limite existe.</p>`} },
+
+  { id:"fractions",
+    t:{ru:"Дробь, у которой растёт знаменатель", fr:"Une fraction dont le dénominateur grandit"},
+    ch:1,
+    c:{ru:`<p><b>Торт на много человек.</b> На двоих — половина каждому. На тысячу — одна тысячная.</p>
+      <p>Чем больше знаменатель, тем меньше дробь.</p>
+      <div class="pt-f">1/10 = 0,1 &nbsp;·&nbsp; 1/1000 = 0,001 &nbsp;·&nbsp; 1/10⁶ = 0,000001</div>
+      <p>Нуля не достигнет никогда — крошка останется. Но приблизится настолько, насколько захочешь.</p>
+      <p><b>Зачем это здесь.</b> Почти все пределы, равные нулю, — это именно такая дробь. Если чувствуешь это на уровне торта, формулы становятся очевидными.</p>`,
+      fr:`<p><b>Un gâteau pour beaucoup de monde.</b> Entre deux : la moitié chacun. Entre mille : un millième.</p>
+      <p>Plus le dénominateur grandit, plus la fraction est petite.</p>
+      <div class="pt-f">1/10 = 0,1 &nbsp;·&nbsp; 1/1000 = 0,001 &nbsp;·&nbsp; 1/10⁶ = 0,000001</div>
+      <p>Elle n'atteindra jamais zéro — il reste une miette. Mais elle s'en approche autant qu'on veut.</p>
+      <p><b>Pourquoi ici.</b> Presque toutes les limites nulles sont de cette forme. Si tu le sens au niveau du gâteau, les formules deviennent évidentes.</p>`} }
+],
+
+/* ─────── 13 · OPÉRATIONS ─────── */
+13:[
+  { id:"puissances",
+    t:{ru:"Какая степень растёт быстрее", fr:"Quelle puissance croît le plus vite"},
+    ch:4,
+    c:{ru:`<p>Возьми <span class="v">n</span> = 100 и сравни:</p>
+      <div class="pt-f"><span class="v">n</span> = 100<br><span class="v">n</span>² = 10 000<br><span class="v">n</span>³ = 1 000 000</div>
+      <p>Чем выше степень, тем быстрее рост. При больших <span class="v">n</span> младшие степени становятся <b>незаметны</b>.</p>
+      <p><b>Пример:</b> в выражении <span class="v">n</span>² − 3<span class="v">n</span> при <span class="v">n</span> = 1000 получается 1 000 000 − 3 000. Вторая часть — это мелочь на фоне первой.</p>
+      <p><b>Зачем это здесь.</b> Именно на этом держатся все приёмы с неопределённостями: находим, кто растёт быстрее всех, и выносим его за скобку.</p>`,
+      fr:`<p>Prends <span class="v">n</span> = 100 et compare :</p>
+      <div class="pt-f"><span class="v">n</span> = 100<br><span class="v">n</span>² = 10 000<br><span class="v">n</span>³ = 1 000 000</div>
+      <p>Plus le degré est élevé, plus la croissance est rapide. Pour <span class="v">n</span> grand, les degrés faibles deviennent <b>invisibles</b>.</p>
+      <p><b>Exemple :</b> dans <span class="v">n</span>² − 3<span class="v">n</span> avec <span class="v">n</span> = 1000, on a 1 000 000 − 3 000. La seconde partie est négligeable.</p>
+      <p><b>Pourquoi ici.</b> Toutes les techniques de lever d'indétermination reposent là-dessus : on trouve qui croît le plus vite et on le factorise.</p>`} },
+
+  { id:"factoriser",
+    t:{ru:"Вынести общий множитель", fr:"Mettre en facteur"},
+    ch:3,
+    c:{ru:`<p>Вынести за скобку — значит найти то, что есть во всех слагаемых, и достать наружу.</p>
+      <div class="pt-f">6<span class="v">n</span> + 9 = 3(2<span class="v">n</span> + 3)<br><span class="v">n</span>² + <span class="v">n</span> = <span class="v">n</span>(<span class="v">n</span> + 1)</div>
+      <p><b>Проверка всегда одна:</b> раскрой обратно и сравни. 3 × 2<span class="v">n</span> = 6<span class="v">n</span>, 3 × 3 = 9 ✓</p>
+      <p>Со степенями так же: <span class="v">n</span>³ − <span class="v">n</span>² = <span class="v">n</span>²(<span class="v">n</span> − 1)</p>
+      <p><b>Зачем это здесь.</b> Это главный инструмент против неопределённостей. Без него форма ∞ − ∞ остаётся неразрешимой.</p>`,
+      fr:`<p>Mettre en facteur, c'est trouver ce qui est commun à tous les termes et le sortir.</p>
+      <div class="pt-f">6<span class="v">n</span> + 9 = 3(2<span class="v">n</span> + 3)<br><span class="v">n</span>² + <span class="v">n</span> = <span class="v">n</span>(<span class="v">n</span> + 1)</div>
+      <p><b>Vérification toujours la même :</b> redéveloppe et compare. 3 × 2<span class="v">n</span> = 6<span class="v">n</span>, 3 × 3 = 9 ✓</p>
+      <p>Avec des puissances, pareil : <span class="v">n</span>³ − <span class="v">n</span>² = <span class="v">n</span>²(<span class="v">n</span> − 1)</p>
+      <p><b>Pourquoi ici.</b> C'est l'outil principal contre les indéterminations. Sans lui, la forme ∞ − ∞ reste bloquée.</p>`} }
+],
+
+/* ─────── 14 · GENDARMES ─────── */
+14:[
+  { id:"inegalites",
+    t:{ru:"Что можно делать с неравенством", fr:"Ce qu'on peut faire d'une inégalité"},
+    ch:5,
+    c:{ru:`<p><b>Прибавлять и вычитать</b> — знак не меняется:</p>
+      <div class="pt-f">из 2 ⩽ 6 следует 2+4 ⩽ 6+4, то есть 6 ⩽ 10</div>
+      <p><b>Умножать и делить на положительное</b> — знак не меняется:</p>
+      <div class="pt-f">из 2 ⩽ 6 следует 2÷2 ⩽ 6÷2, то есть 1 ⩽ 3</div>
+      <p><b>Умножать на отрицательное</b> — знак <b>переворачивается</b>:</p>
+      <div class="pt-f">из 2 ⩽ 6 следует −2 ⩾ −6</div>
+      <p><b>Зачем это здесь.</b> Весь приём с жандармами — это цепочка действий над неравенством: прибавить, поделить на <span class="v">n</span>. Одна ошибка со знаком — и вывод получится обратный.</p>`,
+      fr:`<p><b>Ajouter ou retrancher</b> — le sens ne change pas :</p>
+      <div class="pt-f">de 2 ⩽ 6 on tire 2+4 ⩽ 6+4, soit 6 ⩽ 10</div>
+      <p><b>Multiplier ou diviser par un positif</b> — le sens ne change pas :</p>
+      <div class="pt-f">de 2 ⩽ 6 on tire 1 ⩽ 3</div>
+      <p><b>Multiplier par un négatif</b> — le sens <b>s'inverse</b> :</p>
+      <div class="pt-f">de 2 ⩽ 6 on tire −2 ⩾ −6</div>
+      <p><b>Pourquoi ici.</b> Toute la technique des gendarmes est une chaîne d'opérations sur une inégalité : ajouter, diviser par <span class="v">n</span>. Une erreur de signe et la conclusion s'inverse.</p>`} },
+
+  { id:"encadrer",
+    t:{ru:"Зажать величину между двумя", fr:"Encadrer une quantité"},
+    ch:5,
+    c:{ru:`<p>Зажать — значит найти число снизу и число сверху, между которыми величина всегда находится.</p>
+      <div class="pt-f">3 ⩽ <span class="v">x</span> ⩽ 7</div>
+      <p><b>Пример из жизни.</b> Рост взрослого человека: 1,40 м ⩽ рост ⩽ 2,20 м. Точное значение неизвестно, но границы надёжны.</p>
+      <p>Так же с синусом: его значение при данном <span class="v">n</span> мы не знаем, но точно знаем, что он между −1 и 1.</p>
+      <p><b>Зачем это здесь.</b> В этом весь фокус жандармов: не нужно знать точное значение. Достаточно границ — и предел находится.</p>`,
+      fr:`<p>Encadrer, c'est trouver un nombre en dessous et un au-dessus entre lesquels la quantité reste toujours.</p>
+      <div class="pt-f">3 ⩽ <span class="v">x</span> ⩽ 7</div>
+      <p><b>Exemple concret.</b> La taille d'un adulte : 1,40 m ⩽ taille ⩽ 2,20 m. La valeur exacte est inconnue, mais les bornes sont sûres.</p>
+      <p>Pareil pour le sinus : on ignore sa valeur pour un <span class="v">n</span> donné, mais on sait qu'il est entre −1 et 1.</p>
+      <p><b>Pourquoi ici.</b> Toute l'astuce des gendarmes est là : pas besoin de la valeur exacte. Les bornes suffisent pour conclure.</p>`} }
+],
+
+/* ─────── 15 · qⁿ ─────── */
+15:[
+  { id:"geom",
+    t:{ru:"Геометрическая — умножаем на одно и то же", fr:"Géométrique : on multiplie"},
+    ch:4,
+    c:{ru:`<p><b>Лист бумаги, который складывают пополам.</b> Толщина каждый раз удваивается: 1 → 2 → 4 → 8 → 16…</p>
+      <p>Здесь ничего не прибавляют. Здесь <b>умножают</b> — всегда на одно и то же число.</p>
+      <div class="pt-f"><span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> × <span class="v">q</span><br><span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup></div>
+      <p>Число <span class="v">q</span> называется <i>raison</i>. Оно всегда стоит <b>основанием степени</b>.</p>
+      <p><b>Зачем это здесь.</b> Вся глава — про поведение <span class="v">q</span><sup><span class="v">n</span></sup>. Если не видеть, что <span class="v">q</span> — это множитель на каждом шаге, таблица с четырьмя случаями останется набором правил без смысла.</p>`,
+      fr:`<p><b>Une feuille pliée en deux.</b> L'épaisseur double à chaque fois : 1 → 2 → 4 → 8 → 16…</p>
+      <p>Ici on n'ajoute rien. On <b>multiplie</b> — toujours par le même nombre.</p>
+      <div class="pt-f"><span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> × <span class="v">q</span><br><span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup></div>
+      <p>Le nombre <span class="v">q</span> s'appelle la <i>raison</i>. C'est toujours la <b>base de la puissance</b>.</p>
+      <p><b>Pourquoi ici.</b> Tout le chapitre porte sur le comportement de <span class="v">q</span><sup><span class="v">n</span></sup>. Sans voir que <span class="v">q</span> est le multiplicateur de chaque pas, le tableau des quatre cas reste une liste de règles sans sens.</p>`} },
+
+  { id:"pourcent",
+    t:{ru:"Процент — это множитель", fr:"Un pourcentage est un coefficient"},
+    ch:4,
+    c:{ru:`<p>Проценты нельзя складывать. Их надо превращать в множитель.</p>
+      <div class="pt-f">+5 % → ×1,05<br>+20 % → ×1,2<br>−10 % → ×0,9<br>−25 % → ×0,75</div>
+      <p><b>Логика:</b> было 100 %. Добавили 5 % → стало 105 %, то есть 1,05. Убрали 10 % → осталось 90 %, то есть 0,9.</p>
+      <p><b>Ловушка.</b> Цена упала на 30 %, потом выросла на 30 %. Вернулась? Нет: 0,7 × 1,3 = 0,91. Не хватает 9 %.</p>
+      <p><b>Зачем это здесь.</b> Почти все задачи про <span class="v">q</span><sup><span class="v">n</span></sup> — это вклады, население, лекарства. Всё в процентах.</p>`,
+      fr:`<p>Les pourcentages ne s'additionnent pas. Il faut les convertir en coefficient.</p>
+      <div class="pt-f">+5 % → ×1,05<br>+20 % → ×1,2<br>−10 % → ×0,9<br>−25 % → ×0,75</div>
+      <p><b>La logique :</b> on part de 100 %. On ajoute 5 % → 105 %, soit 1,05. On enlève 10 % → il reste 90 %, soit 0,9.</p>
+      <p><b>Le piège.</b> Un prix baisse de 30 %, puis remonte de 30 %. Revient-il ? Non : 0,7 × 1,3 = 0,91. Il manque 9 %.</p>
+      <p><b>Pourquoi ici.</b> Presque tous les problèmes sur <span class="v">q</span><sup><span class="v">n</span></sup> parlent de placements, de populations, de médicaments. Tout est en pourcentages.</p>`} },
+
+  { id:"seuil",
+    t:{ru:"Задача о пороге", fr:"Le problème du seuil"},
+    ch:7,
+    c:{ru:`<p><b>Лестница с отметкой на стене.</b> Шагаешь вверх и после каждой ступеньки смотришь: достал или нет?</p>
+      <p>Не достал — шагаешь ещё. Достал — останавливаешься и считаешь шаги.</p>
+      <div class="pt-f">Вопрос «начиная с какого ранга <span class="v">u<sub>n</sub></span> превысит <span class="v">A</span>»</div>
+      <p><b>Два способа.</b> Перебирать степени по порядку — надёжно. Или решать неравенство, если последовательность простая.</p>
+      <p><b>Частая ошибка:</b> назвать последний ранг, который <i>не</i> дошёл. Ищут первый, который <b>превысил</b>.</p>
+      <p><b>Зачем это здесь.</b> Для геометрических последовательностей это стандартный вопрос экзамена.</p>`,
+      fr:`<p><b>Un escalier avec un repère sur le mur.</b> Tu montes et après chaque marche tu regardes : as-tu atteint le repère ?</p>
+      <p>Non — tu montes encore. Oui — tu t'arrêtes et tu comptes tes pas.</p>
+      <div class="pt-f">« À partir de quel rang <span class="v">u<sub>n</sub></span> dépasse-t-il <span class="v">A</span> ? »</div>
+      <p><b>Deux façons.</b> Énumérer les puissances — sûr. Ou résoudre une inéquation si la suite est simple.</p>
+      <p><b>Erreur fréquente :</b> donner le dernier rang qui <i>n'a pas</i> atteint. On cherche le premier qui <b>dépasse</b>.</p>
+      <p><b>Pourquoi ici.</b> Pour les suites géométriques, c'est une question type au bac.</p>`} }
+],
+
+/* ─────── 16 · CONVERGENCE MONOTONE ─────── */
+16:[
+  { id:"monotone",
+    t:{ru:"Монотонность — доказательство, а не наблюдение", fr:"La monotonie se démontre"},
+    ch:2,
+    c:{ru:`<p>Посчитать первые три члена и увидеть рост — это <b>не доказательство</b>.</p>
+      <p>Возьми 1; 3; 7; 2. Первые три растут, четвёртый падает. Три члена не говорят ни о чём.</p>
+      <div class="pt-f">Надо показать знак <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span> для <b>любого</b> <span class="v">n</span></div>
+      <p><b>Два метода.</b> Разность — работает всегда. Частное — только если все члены строго положительны.</p>
+      <p><b>Зачем это здесь.</b> Монотонность — одно из двух условий теоремы о сходимости. Проверяющий ждёт именно доказательства, а не наблюдения.</p>`,
+      fr:`<p>Calculer trois termes et voir une hausse n'est <b>pas une démonstration</b>.</p>
+      <p>Prends 1 ; 3 ; 7 ; 2. Les trois premiers montent, le quatrième descend. Trois termes ne disent rien.</p>
+      <div class="pt-f">Il faut le signe de <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span> pour <b>tout</b> <span class="v">n</span></div>
+      <p><b>Deux méthodes.</b> La différence — toujours valable. Le quotient — seulement si tous les termes sont strictement positifs.</p>
+      <p><b>Pourquoi ici.</b> La monotonie est l'une des deux hypothèses du théorème. Le correcteur attend une démonstration, pas une observation.</p>`} },
+
+  { id:"majorant",
+    t:{ru:"Мажоранта — это барьер, а не цель", fr:"Le majorant est une barrière"},
+    ch:5,
+    c:{ru:`<p>Мажоранта — любое число, которое последовательность не превышает.</p>
+      <p><b>Их всегда много.</b> Если <span class="v">u<sub>n</sub></span> ⩽ 5, то она и ⩽ 10, и ⩽ 100, и ⩽ миллиона. Все они законные мажоранты.</p>
+      <p>Поэтому мажоранта <b>не может быть пределом</b> — предел один, а мажорант бесконечно много.</p>
+      <div class="pt-f">Возрастающая + мажорированная <span class="v">M</span> → сходится к <span class="v">ℓ</span> ⩽ <span class="v">M</span></div>
+      <p><b>Зачем это здесь.</b> Самая частая ошибка в этой главе — написать «мажорирована десяткой, значит сходится к десяти». Теорема даёт существование, не значение.</p>`,
+      fr:`<p>Un majorant est n'importe quel nombre que la suite ne dépasse pas.</p>
+      <p><b>Il y en a toujours beaucoup.</b> Si <span class="v">u<sub>n</sub></span> ⩽ 5, alors elle est aussi ⩽ 10, ⩽ 100, ⩽ un million. Tous sont des majorants valables.</p>
+      <p>Donc un majorant <b>ne peut pas être la limite</b> — la limite est unique, les majorants sont infinis.</p>
+      <div class="pt-f">Croissante + majorée par <span class="v">M</span> → converge vers <span class="v">ℓ</span> ⩽ <span class="v">M</span></div>
+      <p><b>Pourquoi ici.</b> L'erreur la plus fréquente du chapitre : écrire « majorée par 10 donc converge vers 10 ». Le théorème donne l'existence, pas la valeur.</p>`} }
+],
+
+/* ─────── 17 · RÉCURRENTES ─────── */
+17:[
+  { id:"recurrence-def",
+    t:{ru:"Рекуррентная запись", fr:"Définition par récurrence"},
+    ch:1,
+    c:{ru:`<p>Два способа задать последовательность.</p>
+      <p><b>Явно</b> — формула сразу даёт любой член:</p>
+      <div class="pt-f"><span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 3 → <span class="v">u<sub>100</sub></span> = 403 за секунду</div>
+      <p><b>Рекуррентно</b> — рецепт, как из текущего получить следующий:</p>
+      <div class="pt-f"><span class="v">u<sub>0</sub></span> = 3 и <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 4</div>
+      <p>Чтобы узнать <span class="v">u<sub>100</sub></span>, придётся пройти сто шагов. Короткого пути нет.</p>
+      <p><b>Как различить за секунду:</b> стоит ли справа <span class="v">u<sub>n</sub></span>. Стоит — рекуррентная.</p>
+      <p><b>Зачем это здесь.</b> Вся глава про рекуррентные записи. Именно потому, что посчитать напрямую нельзя, и нужна вся эта гимнастика с границами и монотонностью.</p>`,
+      fr:`<p>Deux façons de définir une suite.</p>
+      <p><b>Explicite</b> — la formule donne directement n'importe quel terme :</p>
+      <div class="pt-f"><span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 3 → <span class="v">u<sub>100</sub></span> = 403 en une seconde</div>
+      <p><b>Par récurrence</b> — une recette pour passer d'un terme au suivant :</p>
+      <div class="pt-f"><span class="v">u<sub>0</sub></span> = 3 et <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 4</div>
+      <p>Pour connaître <span class="v">u<sub>100</sub></span>, il faut cent étapes. Aucun raccourci.</p>
+      <p><b>Reconnaître en une seconde :</b> <span class="v">u<sub>n</sub></span> apparaît-il à droite ? Oui → récurrence.</p>
+      <p><b>Pourquoi ici.</b> Tout le chapitre porte sur les définitions par récurrence. C'est justement parce qu'on ne peut pas calculer directement qu'il faut toute cette gymnastique.</p>`} },
+
+  { id:"equation",
+    t:{ru:"Решить уравнение с неизвестной", fr:"Résoudre une équation"},
+    ch:3,
+    c:{ru:`<p>Неподвижная точка находится решением уравнения. Напоминание, как это делается.</p>
+      <p><b>Пример:</b> <span class="v">x</span> = 0,5<span class="v">x</span> + 3</p>
+      <p><b>Шаг 1.</b> Собираем <span class="v">x</span> в одной части:<br><span class="v">x</span> − 0,5<span class="v">x</span> = 3</p>
+      <p><b>Шаг 2.</b> Складываем:<br>0,5<span class="v">x</span> = 3</p>
+      <p><b>Шаг 3.</b> Делим:<br><span class="v">x</span> = 6</p>
+      <p><b>Проверка обязательна:</b> 0,5 × 6 + 3 = 6 ✓</p>
+      <p><b>Зачем это здесь.</b> Последний шаг любой задачи этой главы — решить <span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>). Если тут спотыкаешься, вся проделанная работа теряется на финише.</p>`,
+      fr:`<p>Le point fixe se trouve en résolvant une équation. Rappel de la méthode.</p>
+      <p><b>Exemple :</b> <span class="v">x</span> = 0,5<span class="v">x</span> + 3</p>
+      <p><b>Étape 1.</b> On regroupe les <span class="v">x</span> d'un côté :<br><span class="v">x</span> − 0,5<span class="v">x</span> = 3</p>
+      <p><b>Étape 2.</b> On réduit :<br>0,5<span class="v">x</span> = 3</p>
+      <p><b>Étape 3.</b> On divise :<br><span class="v">x</span> = 6</p>
+      <p><b>Vérification obligatoire :</b> 0,5 × 6 + 3 = 6 ✓</p>
+      <p><b>Pourquoi ici.</b> La dernière étape de tout exercice du chapitre est de résoudre <span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>). Un blocage ici fait perdre tout le travail précédent.</p>`} }
+],
+
+/* ─────── 18 · BAC ─────── */
+18:[
+  { id:"tout",
+    t:{ru:"Всё вместе — короткая карта", fr:"Tout ensemble, la carte courte"},
+    ch:1,
+    c:{ru:`<p>В задании бака обычно надо вспомнить несколько вещей сразу. Вот они одной страницей.</p>
+      <p><b>Арифметическая:</b> прибавляем <span class="v">r</span>. <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">nr</span></p>
+      <p><b>Геометрическая:</b> умножаем на <span class="v">q</span>. <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup></p>
+      <p><b>Монотонность:</b> знак <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span></p>
+      <p><b>Ограниченность:</b> знак <span class="v">u<sub>n</sub></span> − <span class="v">M</span></p>
+      <p><b>Сходимость:</b> монотонная + ограниченная → сходится</p>
+      <p><b>Предел рекуррентной:</b> <span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>)</p>
+      <p><b>Проценты:</b> +5 % → ×1,05 · −10 % → ×0,9</p>
+      <p><b>Зачем это здесь.</b> Задание бака проверяет всё сразу. Полезно один раз увидеть весь набор рядом.</p>`,
+      fr:`<p>Un exercice de bac demande souvent de mobiliser plusieurs choses. Les voici sur une page.</p>
+      <p><b>Arithmétique :</b> on ajoute <span class="v">r</span>. <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">nr</span></p>
+      <p><b>Géométrique :</b> on multiplie par <span class="v">q</span>. <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup></p>
+      <p><b>Monotonie :</b> signe de <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span></p>
+      <p><b>Bornes :</b> signe de <span class="v">u<sub>n</sub></span> − <span class="v">M</span></p>
+      <p><b>Convergence :</b> monotone + bornée → converge</p>
+      <p><b>Limite d'une récurrente :</b> <span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>)</p>
+      <p><b>Pourcentages :</b> +5 % → ×1,05 · −10 % → ×0,9</p>
+      <p><b>Pourquoi ici.</b> L'exercice de bac teste tout à la fois. Il est utile de voir l'ensemble une fois côte à côte.</p>`} }
+]
+
+};
+
 const METH_CH = {
   1:"notation", 2:"variation", 3:"arith", 4:"geom",
   5:"bornes",   6:"somme",     7:"algo",  8:"mixte",
@@ -6591,6 +6925,23 @@ function retour(){
     case "s-home":  show("s-home");  drawHome();  break;
     case "s-done":   show("s-done");   redrawDone(); break;
     case "s-parent": show("s-parent"); drawParent(); break;
+    case "s-retour":
+      if(RETOUR_EX){
+        const r = RETOUR_EX;
+        ANNEE = r.annee;
+        try{ localStorage.setItem("suites.annee", ANNEE); }catch(e){}
+        const m = modulesAnnee().find(x=>x.pret);
+        if(m) MOD = m;
+        R = { ch:r.ch, card:0, qi:r.qi, queue:r.queue, first:r.first, total:r.total,
+              tried:false, mode:"q", weak:r.weak, aides:r.aides,
+              defi:false, melee:false };
+        const ch = CHAPITRES.find(c=>c.n===r.ch);
+        $("w-name").textContent = ch ? ch.nom : "";
+        RETOUR_EX = null;
+        show("s-work");
+        drawQ();
+      } else { show("s-mods"); drawMods(); }
+      break;
     case "s-rap":    show("s-rap");    drawRappels(); break;
     case "s-sync":   show("s-sync");   drawSync(); break;
     default:        show("s-mods");  drawMods();
@@ -6933,6 +7284,75 @@ function finirBilan(){
   $("bl-go").onclick = ()=>{ PILE=[{ecran:"s-home"}]; startCh(depart.c.n); };
 
   show("s-bilan");
+}
+
+
+/* ═══════════ PONTS VERS LES BASES ═══════════ */
+
+let PT_OUVERT = false;
+let RETOUR_EX = null;
+
+function pontsDe(ch){ return PONTS[ch] || []; }
+
+function drawPonts(ch){
+  const box = $("ponts");
+  if(!box) return;
+  const liste = pontsDe(ch);
+  if(!liste.length){ box.innerHTML = ""; return; }
+
+  if(!PT_OUVERT){
+    box.innerHTML = `<button class="pt-btn" id="pt-open">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 8v5M12 16.5v.01"/><circle cx="12" cy="12" r="9"/>
+      </svg>
+      Je ne comprends rien
+    </button>`;
+    $("pt-open").onclick = ()=>{
+      PT_OUVERT = true;
+      DB.aides = (DB.aides||0) + 1; save();
+      drawPonts(ch);
+    };
+    return;
+  }
+
+  box.innerHTML = `<div class="pt-wrap">` +
+    liste.map((p,i)=>`
+      <div class="pt-card">
+        <div class="pt-h">
+          <span class="pt-n">BASE ${i+1}</span>
+          <span class="pt-t">${txtP(p.t)}</span>
+        </div>
+        ${txtP(p.c)}
+        <button class="pt-go" data-ch="${p.ch}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Reprendre ce chapitre
+        </button>
+      </div>`).join("") +
+    `<button class="pt-btn" id="pt-close">Masquer les bases</button></div>`;
+
+  box.querySelectorAll(".pt-go").forEach(b=>{
+    b.onclick = ()=>{
+      const n = parseInt(b.dataset.ch);
+      /* on mémorise l'exercice quitté pour y revenir exactement */
+      RETOUR_EX = { ch:R.ch, qi:R.qi, queue:R.queue, first:R.first,
+                    total:R.total, weak:R.weak, aides:R.aides, annee:ANNEE };
+      PILE.push({ ecran:"s-retour" });
+      ANNEE = "prem";
+      try{ localStorage.setItem("suites.annee","prem"); }catch(e){}
+      const m = MODULES.find(x=>x.id === "suites");
+      if(m) MOD = m;
+      startCh(n);
+    };
+  });
+  $("pt-close").onclick = ()=>{ PT_OUVERT = false; drawPonts(ch); };
+}
+
+/* le texte des ponts suit la langue du cours */
+function txtP(o){
+  if(!o || typeof o !== "object") return o || "";
+  let l = "fr";
+  try{ l = localStorage.getItem("suites.cours.lang") || "fr"; }catch(e){}
+  return o[l] || o.fr || o.ru || "";
 }
 
 /* ═══════════ SUIVI PARENT ═══════════ */
@@ -7750,10 +8170,14 @@ function drawQ(){
       ${q.sub?`<p class="q-sub">${q.sub}</p>`:``}
       ${inner}
       <div class="aid" id="aid"></div>
+      <div id="ponts"></div>
       <div class="exp" id="exp"><div class="exp-in" id="expin"></div></div>
     </div>`;
 
   drawAid(0);
+  /* pont vers les bases : uniquement pour les chapitres de terminale */
+  PT_OUVERT = false;
+  drawPonts(R.ch);
   $("dock").classList.remove("up");
   $("go").textContent="Suivant";
 

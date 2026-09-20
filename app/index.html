@@ -458,6 +458,32 @@ to{opacity:1;transform:translateX(0)}
   background:var(--ember);border:2px solid #fff;display:none}
 .bell-dot.on{display:block}
 
+.dprog{background:#fff;border:1px solid var(--mist);border-radius:16px;
+  padding:16px 18px;margin:20px 0 4px;text-align:left}
+.dprog-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.dprog-n{font:600 14px/1.2 "Inter",sans-serif;color:var(--ink)}
+.dprog-v{font-size:12.5px;color:var(--soft)}
+.dprog-bar{position:relative;height:6px;border-radius:3px;background:#ece3d7;overflow:hidden}
+.dprog-vu,.dprog-acq{position:absolute;left:0;top:0;height:100%;border-radius:3px;width:0;
+  transition:width .9s cubic-bezier(.215,.61,.355,1)}
+.dprog-vu{background:#f7bfa6}
+.dprog-acq{background:var(--ember)}
+.dprog-d{margin-top:9px;font:600 12.5px/1.3 "Inter",sans-serif;color:var(--ember)}
+
+.meter-bar{position:relative;overflow:hidden}
+.ch-bar{position:relative;display:block;height:4px;border-radius:2px;
+  background:#ece3d7;margin-top:8px;overflow:hidden}
+.ch-vu,.ch-acq{position:absolute;left:0;top:0;height:100%;border-radius:2px;
+  transition:width .5s cubic-bezier(.215,.61,.355,1)}
+.ch-vu{background:#f7bfa6}
+.ch-acq{background:var(--ember)}
+.meter-fill{background:#f7bfa6}
+.meter-acq{position:absolute;left:0;top:0;height:100%;width:0;
+  background:var(--ember);border-radius:inherit;
+  transition:width .6s cubic-bezier(.215,.61,.355,1)}
+.meter-week{margin-top:9px;font-size:12.5px;color:var(--ember);font-weight:600}
+.meter-tot{display:block;margin-top:4px;font-size:11.5px;color:var(--soft);font-weight:400}
+
 /* ── rappels ── */
 .rinstall{background:var(--warm);border-radius:16px;padding:18px 20px;margin-bottom:22px}
 .rinstall b{display:block;font:600 15.5px/1.3 "Inter",sans-serif;color:var(--ink);margin-bottom:7px}
@@ -649,7 +675,7 @@ to{opacity:1;transform:translateX(0)}
       </div>
       <div class="meter">
         <div class="meter-top">
-          <span class="meter-lbl">PROGRESSION</span>
+          <span class="meter-lbl" id="m-lbl2">PROGRESSION</span>
           <span class="meter-val" id="mm-val">0 / 8</span>
         </div>
         <div class="meter-bar"><div class="meter-fill" id="mm-fill"></div></div>
@@ -680,10 +706,14 @@ to{opacity:1;transform:translateX(0)}
           </div>
           <div class="meter">
             <div class="meter-top">
-              <span class="meter-lbl">PROGRESSION</span>
+              <span class="meter-lbl" id="m-lbl2">PROGRESSION</span>
               <span class="meter-val" id="m-val">0 / 6</span>
             </div>
-            <div class="meter-bar"><div class="meter-fill" id="m-fill"></div></div>
+            <div class="meter-bar">
+          <div class="meter-fill" id="m-fill"></div>
+          <div class="meter-acq" id="m-acq"></div>
+        </div>
+        <div class="meter-week" id="m-semaine" style="display:none"></div>
           </div>
           <div class="streak" id="streak" style="display:none">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5.5-2.5S6 10 6 14a6 6 0 0 0 12 0c0-6-6-12-6-12z"/></svg>
@@ -840,6 +870,18 @@ to{opacity:1;transform:translateX(0)}
           <div class="big-stars" id="bstars"></div>
           <h2 class="done-h" id="d-h">Chapitre terminé</h2>
           <p class="done-s" id="d-s"></p>
+          <div class="dprog" id="d-prog" style="display:none">
+            <div class="dprog-top">
+              <span class="dprog-n" id="dp-nom"></span>
+              <span class="dprog-v" id="dp-val"></span>
+            </div>
+            <div class="dprog-bar">
+              <span class="dprog-vu"  id="dp-vu"></span>
+              <span class="dprog-acq" id="dp-acq"></span>
+            </div>
+            <div class="dprog-d" id="dp-delta"></div>
+          </div>
+
           <div class="tip" id="d-tip" style="display:none"></div>
           <div class="done-btns">
             <button class="pri" id="d-more">Encore des exercices</button>
@@ -3822,6 +3864,43 @@ function tirerRappelForce(){
   }
 }
 
+
+/* ═══════════ AVANCEMENT ═══════════ */
+/* deux niveaux : vu (touché au moins une fois) et acquis (boîte ⩾ 2) */
+
+function avanceCh(n){
+  const pre = n + ":e";
+  let vus = 0, acq = 0;
+  const f = DB.fiches || {};
+  for(const id in f){
+    if(id.indexOf(pre) !== 0) continue;
+    vus++;
+    if((f[id].b || 0) >= 2) acq++;
+  }
+  const tot = poolOf(n).length || 1;
+  return { vus, acq, tot,
+           pv: Math.min(100, Math.round(vus/tot*100)),
+           pa: Math.min(100, Math.round(acq/tot*100)) };
+}
+
+function avanceModule(m){
+  const chs = (m || MOD).chapitres.map(n=>CHAPITRES.find(c=>c.n===n)).filter(c=>c&&c.pret);
+  let vus=0, acq=0, tot=0;
+  chs.forEach(c=>{ const a = avanceCh(c.n); vus+=a.vus; acq+=a.acq; tot+=a.tot; });
+  return { vus, acq, tot,
+           pv: tot ? Math.min(100, Math.round(vus/tot*100)) : 0,
+           pa: tot ? Math.min(100, Math.round(acq/tot*100)) : 0 };
+}
+
+/* ce qui a bougé sur les 7 derniers jours */
+function bougeSemaine(){
+  const js = derniersJours(7);
+  return {
+    ex:    js.reduce((a,j)=>a+j.ex,0),
+    jours: js.filter(j=>j.ex>0).length
+  };
+}
+
 /* ═══════════ SUIVI PARENT ═══════════ */
 
 function drawParent(){
@@ -4000,8 +4079,53 @@ function drawHome(){
   const total = chs.length;
   const done = chs.filter(c=>DB.ch[c.n] && DB.ch[c.n].done).length;
 
-  $("m-val").textContent = done + " / " + total + (done>0 ? "  ·  " + Math.round(done/total*100) + "%" : "");
-  setTimeout(()=>{ $("m-fill").style.width = (done/total*100)+"%"; }, 60);
+  /* le compteur principal suit le chapitre en cours : un total de 327
+     écraserait l'effort d'une séance (5/327 = 2 %, décourageant) */
+  /* priorité au chapitre réellement travaillé en dernier : sinon on affiche
+     0/39 du suivant juste après une bonne séance */
+  let encours = null;
+  const av7 = derniersJours(7);
+  for(let i=av7.length-1; i>=0 && !encours; i--){
+    const dern = (av7[i].ch || []);
+    for(let k=dern.length-1; k>=0; k--){
+      const c = chs.find(x=>x.n === dern[k] && x.pret);
+      if(c){ encours = c; break; }
+    }
+  }
+  /* s'il n'est pas encore fini, on reste dessus ; sinon on passe au suivant */
+  if(encours && DB.ch[encours.n] && DB.ch[encours.n].done){
+    const a = avanceCh(encours.n);
+    if(a.pv >= 85){
+      const suiv = chs.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
+      if(suiv) encours = suiv;
+    }
+  }
+  if(!encours)
+    encours = chs.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done)) || chs.find(x=>x.pret);
+
+  const av = encours ? avanceCh(encours.n) : { vus:0, tot:1, pv:0, pa:0 };
+  $("m-lbl2") && ($("m-lbl2").textContent = encours ? encours.nom.toUpperCase() : "PROGRESSION");
+  $("m-val").textContent = av.vus + " / " + av.tot;
+  setTimeout(()=>{
+    $("m-fill").style.width = av.pv + "%";
+    const solide = $("m-acq");
+    if(solide) solide.style.width = av.pa + "%";
+  }, 60);
+
+  const sem = bougeSemaine();
+  const sl = $("m-semaine");
+  if(sl){
+    const glob = avanceModule(MOD);
+    if(sem.ex > 0){
+      sl.style.display = "block";
+      sl.innerHTML = "Cette semaine : +" + sem.ex + " exercice" + (sem.ex>1?"s":"") +
+                     " · " + sem.jours + (sem.jours>1?" jours":" jour") +
+                     `<span class="meter-tot">${glob.vus} exercices en tout · ${done}/${total} chapitres</span>`;
+    } else if(glob.vus > 0){
+      sl.style.display = "block";
+      sl.innerHTML = `<span class="meter-tot" style="margin:0">${glob.vus} exercices en tout · ${done}/${total} chapitres</span>`;
+    } else sl.style.display = "none";
+  }
 
   if(DB.streak>0){
     $("streak").style.display="inline-flex";
@@ -4061,15 +4185,22 @@ function drawHome(){
     const d = DB.ch[c.n];
     const b=document.createElement("button");
     b.className="ch"+(d&&d.done?" done":"")+(firstTodo&&firstTodo.n===c.n?" next":"")+(!c.pret?" lock":"");
-    const np = poolOf(c.n).length, nd = defisOf(c.n).length;
-    const meta = c.pret
-      ? (d&&d.done ? np + " exercices · " + nd + " défis" : c.sous)
-      : "bientôt";
+    const a = c.pret ? avanceCh(c.n) : null;
+    const meta = !c.pret ? "bientôt"
+      : (a && a.vus > 0)
+        ? a.vus + " / " + a.tot + " exercices" + (a.acq ? "  ·  " + a.acq + " acquis" : "")
+        : c.sous;
+
+    const barre = (c.pret && a && a.vus > 0)
+      ? `<span class="ch-bar"><span class="ch-vu" style="width:${a.pv}%"></span><span class="ch-acq" style="width:${a.pa}%"></span></span>`
+      : ``;
+
     b.innerHTML=`
       <span class="ch-num">${idx+1}</span>
       <span class="ch-body">
         <span class="ch-name">${c.nom}${c.ds?`<span class="ds-tag">DS</span>`:``}</span>
         <span class="ch-meta">${meta}</span>
+        ${barre}
       </span>
       <span class="stars">${[1,2,3].map(i=>starSVG(d&&d.stars>=i)).join("")}</span>`;
     if(c.pret) b.onclick=()=>startCh(c.n);
@@ -4099,10 +4230,11 @@ function startCh(n, mode){
     show("s-work"); drawQ(); return;
   }
 
+  const avant = avanceCh(n);
   const queue = defi ? shuffle(defisOf(n)).slice(0,5) : pickSession(n, 5);
 
   R = { ch:n, card:0, qi:0, queue, first:0, total:0,
-        tried:false, mode:"card", weak:[], aides:0, defi, melee:false };
+        tried:false, mode:"card", weak:[], aides:0, defi, melee:false, avant };
 
   $("w-name").textContent = ch.nom + (defi ? " · défis" : "");
 
@@ -4679,6 +4811,38 @@ function finishChReel(){
     tip.style.display="block";
     tip.innerHTML=`<b>BON RÉFLEXE</b>Tu as utilisé les indices — c'est fait pour ça. Refais la série demain sans les ouvrir.`;
   } else { tip.style.display="none"; }
+
+  /* ── barre qui bouge sous ses yeux ── */
+  const pr = $("d-prog");
+  if(pr && !R.melee){
+    const apres = avanceCh(R.ch);
+    const av = R.avant || { vus:0, acq:0, pv:0, pa:0 };
+    pr.style.display = "block";
+    $("dp-nom").textContent = ch.nom;
+    $("dp-val").textContent = apres.vus + " / " + apres.tot;
+
+    /* on part de l'ancienne position, puis on glisse vers la nouvelle */
+    $("dp-vu").style.transition  = "none";
+    $("dp-acq").style.transition = "none";
+    $("dp-vu").style.width  = av.pv + "%";
+    $("dp-acq").style.width = av.pa + "%";
+
+    const dv = apres.vus - av.vus;
+    const da = apres.acq - av.acq;
+    const bits = [];
+    if(dv > 0) bits.push("+" + dv + " exercice" + (dv>1?"s":""));
+    if(da > 0) bits.push("+" + da + " acquis");
+    $("dp-delta").textContent = bits.length
+      ? bits.join("  ·  ")
+      : (apres.acq ? apres.acq + " exercices acquis" : "");
+
+    setTimeout(()=>{
+      $("dp-vu").style.transition  = "width .9s cubic-bezier(.215,.61,.355,1)";
+      $("dp-acq").style.transition = "width .9s cubic-bezier(.215,.61,.355,1)";
+      $("dp-vu").style.width  = apres.pv + "%";
+      $("dp-acq").style.width = apres.pa + "%";
+    }, 420);
+  } else if(pr) pr.style.display = "none";
 
   $("d-more").textContent = R.defi ? "Encore des défis" : "Série " + nextSerie;
 

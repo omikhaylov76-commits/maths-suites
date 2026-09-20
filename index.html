@@ -181,12 +181,13 @@ tr:last-child td{border-bottom:0}
 
 /* ── назад к оглавлению ── */
 .up{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:9px 16px;border-radius:20px;
-  background:var(--dust);color:var(--charcoal);
-  text-decoration:none;font:600 12.5px/1 "Inter",sans-serif;
-  transition:background .18s var(--e),transform .12s var(--e);
+  display:inline-flex;align-items:center;gap:6px;
+  min-height:38px;padding:0 15px;border-radius:19px;
+  background:var(--dust);color:var(--soft);
+  text-decoration:none;font:600 12px/1 "Inter",sans-serif;
+  transition:background .18s var(--e),color .18s var(--e),transform .12s var(--e);
 }
+.up:hover{background:var(--mist);color:var(--charcoal)}
 .up:hover{background:var(--mist)}
 .up:active{transform:scale(.97)}
 
@@ -215,29 +216,7 @@ tr:last-child td{border-bottom:0}
 .fab.on{opacity:1; transform:none; pointer-events:auto}
 .fab:active{transform:scale(.93)}
 
-/* ── навигация в конце раздела ── */
-.nav{
-  display:flex; gap:9px; align-items:center;
-  margin-top:8px; flex-wrap:wrap;
-}
-.nav a{
-  display:inline-flex; align-items:center; gap:7px;
-  min-height:44px; padding:0 17px; border-radius:23px;
-  text-decoration:none; font:600 13px/1 "Inter",sans-serif;
-  transition:background .18s var(--e), transform .12s var(--e);
-}
-.nav a:active{transform:scale(.97)}
-.nav .toc-b{background:var(--ember); color:#fff}
-.nav .toc-b:active{background:var(--ember-d)}
-.nav .sib{background:var(--dust); color:var(--charcoal)}
-.nav .sib:hover{background:var(--mist)}
-.nav .sib.off{opacity:.35; pointer-events:none}
-.nav .ex-b{background:var(--ok-soft); color:var(--ok); border:1px solid var(--ok-line)}
-.nav .ex-b:hover{background:#e3f2e9}
-
 @media (max-width:560px){
-  .nav a{padding:0 14px; font-size:12.5px}
-  .nav .sib span{display:none}
   .fab{right:15px; width:50px; height:50px}
 }
 
@@ -1115,24 +1094,10 @@ function dessine(){
       <h2>${txt(s.t)}</h2>
       ${s.st ? `<p class="sec-s">${txt(s.st)}</p>` : ""}
       ${(s.b||[]).map(bloc).join("")}
-      <div class="nav">
-        <a class="sib${s.n===1?" off":""}" href="#s${s.n-1}" title="${T[L].prev}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          <span>${T[L].prev}</span>
-        </a>
-        <a class="toc-b" href="#toc">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-          ${T[L].up}
-        </a>
-        <a class="ex-b" href="app/">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 5-6"/><rect x="3" y="4" width="18" height="16" rx="2.5"/></svg>
-          ${T[L].exo}
-        </a>
-        <a class="sib${s.n===COURS.length?" off":""}" href="#s${s.n+1}" title="${T[L].next}">
-          <span>${T[L].next}</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-        </a>
-      </div>
+      <a class="up" href="#toc">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+        ${T[L].up}
+      </a>
     </section>`).join("");
 }
 

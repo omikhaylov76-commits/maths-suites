@@ -327,337 +327,969 @@ tr:last-child td{border-bottom:0}
 /* ═══════════ СОДЕРЖИМОЕ ═══════════ */
 /* вставляется сборкой */
 const COURS = [
-
-/* ══════════ 1 ══════════ */
-{ n:1,
-  t:{ru:"Доказательство по индукции", fr:"Raisonnement par récurrence"},
-  st:{ru:"Как доказать бесконечно много утверждений сразу", fr:"Démontrer une infinité de cas d'un coup"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Иногда надо доказать, что свойство верно для <b>всех</b> <span class=\"v\">n</span> — а их бесконечно много. Проверить каждое невозможно. Индукция решает это двумя фразами. Без неё нельзя обосновать ни одну формулу для рекуррентной последовательности, а это половина заданий бака.",
-    fr:"<b>À quoi ça sert.</b> Il faut parfois prouver qu'une propriété est vraie pour <b>tout</b> <span class=\"v\">n</span> — et il y en a une infinité. Les vérifier une par une est impossible. La récurrence règle cela en deux phrases. Sans elle, impossible de justifier une formule pour une suite récurrente — et c'est la moitié des sujets du bac."}},
-
-  {k:"image", h:{
-    ru:"<p><b>Бесконечный ряд домино.</b> Как доказать, что упадут все?</p><p>Нужны ровно две вещи:</p><p><b>1.</b> Толкнуть первую — она точно упадёт.<br><b>2.</b> Убедиться, что <i>любая</i> падающая костяшка валит следующую.</p><p>Всё. Если оба пункта верны — упадёт весь ряд, сколько бы костяшек ни было.</p><p>В математике: пункт 1 — <b>инициализация</b>, пункт 2 — <b>наследственность</b>.</p>",
-    fr:"<p><b>Une rangée infinie de dominos.</b> Comment prouver qu'ils tombent tous ?</p><p>Il faut exactement deux choses :</p><p><b>1.</b> Pousser le premier — il tombe.<br><b>2.</b> S'assurer que <i>n'importe quel</i> domino qui tombe fait tomber le suivant.</p><p>C'est tout. Si les deux sont vrais, toute la rangée tombe.</p><p>En maths : le point 1 est <b>l'initialisation</b>, le point 2 est <b>l'hérédité</b>.</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Три обязательных шага.</b> Порядок и формулировки строго фиксированы — на контрольной за каждый дают баллы отдельно.",
-    fr:"<b>Trois étapes obligatoires.</b> L'ordre et les formulations sont stricts — chacune rapporte des points."}},
-
-  {k:"ol", items:[
-    {ru:"<b>Initialisation</b> — проверяем свойство при первом <span class=\"v\">n</span> (обычно 0 или 1)",
-     fr:"<b>Initialisation</b> — on vérifie la propriété au premier rang (souvent 0 ou 1)"},
-    {ru:"<b>Hérédité</b> — предполагаем верным для некоторого фиксированного <span class=\"v\">n</span>, доказываем для <span class=\"v\">n</span>+1",
-     fr:"<b>Hérédité</b> — on suppose vrai à un rang <span class=\"v\">n</span> fixé, on démontre au rang <span class=\"v\">n</span>+1"},
-    {ru:"<b>Conclusion</b> — ссылаемся на принцип индукции",
-     fr:"<b>Conclusion</b> — on invoque le principe de récurrence"}
-  ]},
-
-  {k:"piege", n:{ru:"Главная логическая ошибка", fr:"L'erreur de logique principale"}, h:{
-    ru:"<p>На шаге наследственности пишут: <i>«Supposons que <b>pour tout</b> n, P(n) soit vraie»</i>.</p><p>Это <b>неверно</b>. Если предположить, что свойство верно для всех — доказывать нечего, ты предположил то, что требуется доказать.</p><p>Правильно: <i>«Supposons que pour un entier n <b>fixé</b>, P(n) soit vraie»</i>.</p><p>Предполагаем для <b>одной</b> костяшки, а не для всего ряда.</p><p><b>Проверяющий смотрит именно на эту фразу.</b> По ней видно, понял человек механизм или заучил.</p>",
-    fr:"<p>À l'hérédité, certains écrivent : <i>« Supposons que <b>pour tout</b> n, P(n) soit vraie »</i>.</p><p>C'est <b>faux</b>. Si on suppose la propriété vraie partout, il n'y a plus rien à démontrer.</p><p>La bonne formulation : <i>« Supposons que pour un entier n <b>fixé</b>, P(n) soit vraie »</i>.</p><p>On suppose pour <b>un seul</b> domino, pas pour toute la rangée.</p><p><b>Le correcteur regarde cette phrase.</b> Elle montre si tu as compris ou récité.</p>"}},
-
-  {k:"ex", n:{ru:"Разбор целиком", fr:"Démonstration rédigée"}, h:{
-    ru:"<p>Дано <span class=\"v\">u<sub>0</sub></span> = 1 и <span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> + 1.<br>Доказать: <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1.</p><p><b>Инициализация.</b> При <span class=\"v\">n</span> = 0 формула даёт 2¹ − 1 = 1, и <span class=\"v\">u<sub>0</sub></span> = 1 ✓</p><p><b>Наследственность.</b> Пусть для фиксированного <span class=\"v\">n</span> верно <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1. Тогда:</p><p><span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> + 1 = 2(2<sup><span class=\"v\">n</span>+1</sup> − 1) + 1 = 2<sup><span class=\"v\">n</span>+2</sup> − 2 + 1 = 2<sup><span class=\"v\">n</span>+2</sup> − 1</p><p>А это ровно формула для ранга <span class=\"v\">n</span>+1 ✓</p><p><b>Вывод.</b> По принципу индукции формула верна для всех натуральных <span class=\"v\">n</span>.</p>",
-    fr:"<p>On donne <span class=\"v\">u<sub>0</sub></span> = 1 et <span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> + 1.<br>Montrer : <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1.</p><p><b>Initialisation.</b> Pour <span class=\"v\">n</span> = 0 : 2¹ − 1 = 1 = <span class=\"v\">u<sub>0</sub></span> ✓</p><p><b>Hérédité.</b> Supposons que pour un entier <span class=\"v\">n</span> fixé, <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1. Alors :</p><p><span class=\"v\">u<sub>n+1</sub></span> = 2(2<sup><span class=\"v\">n</span>+1</sup> − 1) + 1 = 2<sup><span class=\"v\">n</span>+2</sup> − 1</p><p>C'est exactement la formule au rang <span class=\"v\">n</span>+1 ✓</p><p><b>Conclusion.</b> Par récurrence, la formule est vraie pour tout entier naturel <span class=\"v\">n</span>.</p>"}},
-
-  {k:"ds", h:{
-    ru:"<p>Готовый скелет — запомнить дословно:</p><p><i>Montrons par récurrence que pour tout entier naturel n, P(n) est vraie.</i></p><p><i><b>Initialisation.</b> Pour n = 0, … Donc P(0) est vraie.</i></p><p><i><b>Hérédité.</b> Supposons que pour un entier naturel n fixé, P(n) soit vraie. Montrons que P(n+1) est vraie. …</i></p><p><i><b>Conclusion.</b> D'après le principe de récurrence, P(n) est vraie pour tout entier naturel n.</i></p>",
-    fr:"<p>Le squelette à connaître par cœur :</p><p><i>Montrons par récurrence que pour tout entier naturel n, P(n) est vraie.</i></p><p><i><b>Initialisation.</b> Pour n = 0, … Donc P(0) est vraie.</i></p><p><i><b>Hérédité.</b> Supposons que pour un entier naturel n fixé, P(n) soit vraie. Montrons que P(n+1) est vraie. …</i></p><p><i><b>Conclusion.</b> D'après le principe de récurrence, P(n) est vraie pour tout entier naturel n.</i></p>"}}
-]},
-
-/* ══════════ 2 ══════════ */
-{ n:2,
-  t:{ru:"Предел последовательности", fr:"Limite d'une suite"},
-  st:{ru:"Куда уходит последовательность очень далеко", fr:"Vers quoi tend la suite, très loin"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Весь Terminale строится на понятии предела. Вопрос «что будет через миллион шагов» появляется в задачах про население, вклады, лекарства в крови. И это первое, что спрашивают на баке по последовательностям.",
-    fr:"<b>À quoi ça sert.</b> Tout le programme de terminale repose sur la limite. La question « que se passe-t-il après un million d'étapes » apparaît dans les problèmes de population, de placements, de concentration d'un médicament. Et c'est la première chose demandée au bac."}},
-
-  {k:"image", h:{
-    ru:"<p><b>Три судьбы последовательности.</b></p><p><b>Сходится</b> — мяч отскакивает всё ниже и ниже. В конце концов ложится. Высота стремится к нулю.</p><p><b>Уходит в бесконечность</b> — лестница без конца. Идёшь вверх, ничто не останавливает.</p><p><b>Болтается</b> — маятник, который не замедляется. Туда-сюда, вечно, никуда не приходит.</p><p>Пример болтанки: <span class=\"v\">u<sub>n</sub></span> = (−1)<sup><span class=\"v\">n</span></sup> даёт 1, −1, 1, −1… Ни к чему не приближается.</p>",
-    fr:"<p><b>Trois destins, trois images.</b></p><p><b>Converger</b> — une balle qui rebondit de moins en moins haut. Elle finit par se poser. La hauteur tend vers 0.</p><p><b>Diverger vers +∞</b> — un escalier sans fin. Rien ne t'arrête.</p><p><b>Osciller</b> — un pendule qui ne ralentit pas. Il ne se pose nulle part.</p><p>Exemple : <span class=\"v\">u<sub>n</sub></span> = (−1)<sup><span class=\"v\">n</span></sup> donne 1, −1, 1, −1… Elle ne s'approche d'aucun nombre.</p>"}},
-
-  {k:"piege", n:{ru:"Расходится ≠ уходит в бесконечность", fr:"Diverger ≠ tendre vers l'infini"}, h:{
-    ru:"<p>Слово <b>diverger</b> означает только одно: <b>нет конечного предела</b>.</p><p>Два совершенно разных случая:</p><p>(−1)<sup><span class=\"v\">n</span></sup> — болтается между −1 и 1<br><span class=\"v\">n</span>² — уходит в +∞</p><p>Обе расходятся. Но первая <b>полностью ограничена</b> — она никогда не выходит за −1 и 1.</p><p><b>На контрольной</b> нельзя писать «расходится, значит стремится к бесконечности». Надо уточнять, какой именно случай.</p>",
-    fr:"<p>Le mot <b>diverger</b> signifie seulement : <b>pas de limite finie</b>.</p><p>Deux cas très différents :</p><p>(−1)<sup><span class=\"v\">n</span></sup> — oscille entre −1 et 1<br><span class=\"v\">n</span>² — part vers +∞</p><p>Les deux divergent. Mais la première est <b>parfaitement bornée</b>.</p><p><b>En devoir</b>, on ne peut pas écrire « elle diverge donc elle tend vers l'infini ». Il faut préciser lequel des deux cas.</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Пределы, которые надо знать наизусть.</b> Они встречаются почти в каждом задании.",
-    fr:"<b>Les limites de référence à connaître par cœur.</b> Elles servent dans presque tous les exercices."}},
-
-  {k:"f", h:{
-    ru:"<span class=\"v\">n</span> → +∞ &nbsp;·&nbsp; <span class=\"v\">n</span>² → +∞ &nbsp;·&nbsp; √<span class=\"v\">n</span> → +∞<br>1/<span class=\"v\">n</span> → 0 &nbsp;·&nbsp; 1/<span class=\"v\">n</span>² → 0 &nbsp;·&nbsp; 1/√<span class=\"v\">n</span> → 0",
-    fr:"<span class=\"v\">n</span> → +∞ &nbsp;·&nbsp; <span class=\"v\">n</span>² → +∞ &nbsp;·&nbsp; √<span class=\"v\">n</span> → +∞<br>1/<span class=\"v\">n</span> → 0 &nbsp;·&nbsp; 1/<span class=\"v\">n</span>² → 0 &nbsp;·&nbsp; 1/√<span class=\"v\">n</span> → 0"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Почему 1/<span class=\"v\">n</span> стремится к нулю.</b></p><p>Представь торт, который делишь.</p><p>На двоих — каждому половина. На десятерых — одна десятая. На тысячу — одна тысячная.</p><p>Чем больше народу, тем меньше кусок. На миллион человек кусок почти не виден.</p><p>Нуля он никогда не достигнет — крошка всё равно останется. Но приблизится настолько, насколько захочешь.</p><p><b>Это и есть предел ноль.</b> Не «равно нулю», а «становится сколь угодно близко к нулю».</p>",
-    fr:"<p><b>Pourquoi 1/<span class=\"v\">n</span> tend vers 0.</b></p><p>Imagine un gâteau que tu partages.</p><p>Entre 2 personnes : 1/2 chacun. Entre 10 : 1/10. Entre 1000 : 1/1000.</p><p>Plus il y a de monde, plus la part est petite. Avec un million, la part est presque invisible.</p><p>Elle n'atteint jamais zéro — il reste toujours une miette. Mais elle s'en approche autant qu'on veut.</p><p><b>C'est cela, une limite nulle.</b> Pas « ça vaut zéro », mais « ça devient aussi proche de zéro qu'on le souhaite ».</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Частное многочленов</b> — самый частый случай. Правило простое: сравниваем старшие степени.",
-    fr:"<b>Le quotient de polynômes</b> — le cas le plus fréquent. La règle : on compare les degrés dominants."}},
-
-  {k:"tab", h:{
-    ru:"<table><tr><th>Ситуация</th><th>Предел</th><th>Почему</th></tr><tr><td>степень сверху меньше</td><td>0</td><td>знаменатель побеждает</td></tr><tr><td>степени равны</td><td>отношение коэффициентов</td><td>растут одинаково</td></tr><tr><td>степень сверху больше</td><td>±∞</td><td>числитель побеждает</td></tr></table>",
-    fr:"<table><tr><th>Situation</th><th>Limite</th><th>Pourquoi</th></tr><tr><td>degré du haut plus petit</td><td>0</td><td>le dénominateur gagne</td></tr><tr><td>degrés égaux</td><td>rapport des coefficients</td><td>même vitesse</td></tr><tr><td>degré du haut plus grand</td><td>±∞</td><td>le numérateur gagne</td></tr></table>"}},
-
-  {k:"ex", h:{
-    ru:"<p>(3<span class=\"v\">n</span> + 1) ÷ (<span class=\"v\">n</span>² + 5)</p><p>Сверху степень 1, снизу 2. Снизу больше → предел <b>0</b>.</p><p>Проверим: при <span class=\"v\">n</span> = 1000 сверху ≈ 3 000, снизу ≈ 1 000 000. Отношение ≈ 0,003.</p><p>При <span class=\"v\">n</span> = миллион отношение станет совсем крошечным.</p>",
-    fr:"<p>(3<span class=\"v\">n</span> + 1) ÷ (<span class=\"v\">n</span>² + 5)</p><p>Degré 1 en haut, 2 en bas. Le bas gagne → limite <b>0</b>.</p><p>Vérifions : pour <span class=\"v\">n</span> = 1000, le haut vaut ≈ 3 000, le bas ≈ 1 000 000. Le rapport ≈ 0,003.</p><p>Pour <span class=\"v\">n</span> = un million, le rapport devient minuscule.</p>"}},
-
-  {k:"ds", h:{
-    ru:"<p><i>Pour tout n ⩾ 1, u<sub>n</sub> = (3n+1)/(n²+5).<br>Le degré du dénominateur est supérieur à celui du numérateur.<br>Donc lim<sub>n→+∞</sub> u<sub>n</sub> = 0.</i></p>",
-    fr:"<p><i>Pour tout n ⩾ 1, u<sub>n</sub> = (3n+1)/(n²+5).<br>Le degré du dénominateur est supérieur à celui du numérateur.<br>Donc lim<sub>n→+∞</sub> u<sub>n</sub> = 0.</i></p>"}}
-]},
-
-/* ══════════ 3 ══════════ */
-{ n:3,
-  t:{ru:"Операции и неопределённости", fr:"Opérations et formes indéterminées"},
-  st:{ru:"Четыре случая, когда правило не работает", fr:"Les quatre cas où la règle ne suffit pas"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Обычно пределы складываются и умножаются как обычные числа. Но в четырёх случаях так делать нельзя — и именно эти случаи ставят на контрольных, потому что они отличают понимание от механики.",
-    fr:"<b>À quoi ça sert.</b> D'ordinaire les limites s'additionnent et se multiplient comme des nombres. Sauf dans quatre cas — et ce sont précisément ceux qu'on met en devoir, parce qu'ils séparent la compréhension du mécanisme."}},
-
-  {k:"p", h:{
-    ru:"Если у двух последовательностей есть конечные пределы, их можно складывать, умножать и делить (если знаменатель не стремится к нулю).",
-    fr:"Si deux suites ont des limites finies, on peut les additionner, les multiplier et les diviser (si le dénominateur ne tend pas vers 0)."}},
-
-  {k:"f", h:{
-    ru:"Четыре неопределённости:<br>∞ − ∞ &nbsp;·&nbsp; 0 × ∞ &nbsp;·&nbsp; ∞ / ∞ &nbsp;·&nbsp; 0 / 0",
-    fr:"Les quatre formes indéterminées :<br>∞ − ∞ &nbsp;·&nbsp; 0 × ∞ &nbsp;·&nbsp; ∞ / ∞ &nbsp;·&nbsp; 0 / 0"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Почему «неопределённость», а не «невозможно».</b></p><p>Неопределённость не значит «предела нет». Значит: <b>общего правила не хватает, чтобы решить</b>.</p><p>Смотри на ∞ − ∞ в трёх примерах:</p><p>(<span class=\"v\">n</span>+1) − <span class=\"v\">n</span> = 1 → предел <b>1</b></p><p><span class=\"v\">n</span>² − <span class=\"v\">n</span> → предел <b>+∞</b></p><p><span class=\"v\">n</span> − <span class=\"v\">n</span>² → предел <b>−∞</b></p><p>Одна и та же форма, три разных ответа.</p><p><b>Отсюда и слово:</b> форма сама по себе ничего не определяет. Надо смотреть на детали.</p>",
-    fr:"<p><b>Pourquoi « indéterminé » et non « impossible ».</b></p><p>Indéterminé ne veut pas dire « pas de limite ». Cela veut dire : <b>la règle générale ne suffit pas à trancher</b>.</p><p>Regarde ∞ − ∞ sur trois exemples :</p><p>(<span class=\"v\">n</span>+1) − <span class=\"v\">n</span> = 1 → limite <b>1</b></p><p><span class=\"v\">n</span>² − <span class=\"v\">n</span> → limite <b>+∞</b></p><p><span class=\"v\">n</span> − <span class=\"v\">n</span>² → limite <b>−∞</b></p><p>Trois fois la même forme, trois résultats.</p><p><b>D'où le mot :</b> la forme seule ne détermine rien.</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Главный приём — вынести старшую степень за скобку.</b>",
-    fr:"<b>La technique principale : factoriser le terme dominant.</b>"}},
-
-  {k:"ex", h:{
-    ru:"<p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> — это форма ∞ − ∞.</p><p>Выносим <span class=\"v\">n</span>²:</p><p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> = <span class=\"v\">n</span>²(1 − 3/<span class=\"v\">n</span>)</p><p>Теперь <span class=\"v\">n</span>² → +∞, а скобка → 1.</p><p>Значит произведение → <b>+∞</b>.</p>",
-    fr:"<p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> donne la forme ∞ − ∞.</p><p>On factorise par <span class=\"v\">n</span>² :</p><p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> = <span class=\"v\">n</span>²(1 − 3/<span class=\"v\">n</span>)</p><p>Or <span class=\"v\">n</span>² → +∞ et la parenthèse → 1.</p><p>Donc le produit tend vers <b>+∞</b>.</p>"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Идея, стоящая за вынесением.</b></p><p>В <span class=\"v\">n</span>² − 3<span class=\"v\">n</span> оба слагаемых растут. Но <b>с разной скоростью</b>.</p><p>При <span class=\"v\">n</span> = 1000: <span class=\"v\">n</span>² = 1 000 000, а 3<span class=\"v\">n</span> = 3 000.</p><p>Первое полностью подавляет второе. Отнять три тысячи от миллиона — почти ничего не изменить.</p><p><b>Вынесение делает это видимым:</b> в скобке остаётся 1 − 3/<span class=\"v\">n</span>, а 3/<span class=\"v\">n</span> стремится к нулю.</p><p><b>Одной фразой:</b> определяем, кто командует, и показываем, что остальное больше не считается.</p>",
-    fr:"<p><b>L'idée derrière la factorisation.</b></p><p>Dans <span class=\"v\">n</span>² − 3<span class=\"v\">n</span>, les deux termes grandissent. Mais <b>pas à la même vitesse</b>.</p><p>Pour <span class=\"v\">n</span> = 1000 : <span class=\"v\">n</span>² = 1 000 000 et 3<span class=\"v\">n</span> = 3 000.</p><p>Le premier écrase le second. Retirer 3 000 à un million ne change presque rien.</p><p><b>La factorisation rend cela visible :</b> il reste 1 − 3/<span class=\"v\">n</span>, et 3/<span class=\"v\">n</span> tend vers 0.</p><p><b>En une phrase :</b> on identifie qui commande, et on montre que le reste ne compte plus.</p>"}},
-
-  {k:"piege", n:{ru:"Сначала упрости", fr:"Simplifier d'abord"}, h:{
-    ru:"<p>Иногда неопределённость исчезает сама после упрощения.</p><p><span class=\"v\">n</span> × (1/<span class=\"v\">n</span>) на вид — форма ∞ × 0.</p><p>Но это просто <b>1</b> при любом <span class=\"v\">n</span>. Последовательность постоянна.</p><p><b>Правило:</b> увидел неопределённость — сначала попробуй упростить выражение, и только потом ищи приёмы.</p>",
-    fr:"<p>Parfois l'indétermination disparaît d'elle-même après simplification.</p><p><span class=\"v\">n</span> × (1/<span class=\"v\">n</span>) ressemble à la forme ∞ × 0.</p><p>Mais cela vaut <b>1</b> pour tout <span class=\"v\">n</span>. La suite est constante.</p><p><b>Règle :</b> face à une FI, commence par simplifier l'expression, puis seulement cherche une technique.</p>"}},
-
-  {k:"ds", h:{
-    ru:"<p><i>Pour tout n ⩾ 1, n² − 3n = n²(1 − 3/n).<br>Or lim n² = +∞ et lim (1 − 3/n) = 1.<br>Donc par produit, lim (n² − 3n) = +∞.</i></p><p>Слово <b>par produit</b> важно — оно показывает, каким правилом ты воспользовался.</p>",
-    fr:"<p><i>Pour tout n ⩾ 1, n² − 3n = n²(1 − 3/n).<br>Or lim n² = +∞ et lim (1 − 3/n) = 1.<br>Donc par produit, lim (n² − 3n) = +∞.</i></p><p>Le mot <b>par produit</b> compte : il indique la règle utilisée.</p>"}}
-]},
-
-/* ══════════ 4 ══════════ */
-{ n:4,
-  t:{ru:"Сравнение и теорема о жандармах", fr:"Comparaison et théorème des gendarmes"},
-  st:{ru:"Найти предел, не вычисляя выражение", fr:"Trouver une limite sans calculer l'expression"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Иногда выражение слишком сложное — например, содержит синус, у которого вообще нет предела. Жандармы позволяют найти ответ, не трогая само выражение. На баке это стандартный приём.",
-    fr:"<b>À quoi ça sert.</b> Parfois l'expression est trop compliquée — par exemple avec un sinus, qui n'a aucune limite. Les gendarmes permettent de conclure sans y toucher. C'est un réflexe attendu au bac."}},
-
-  {k:"image", h:{
-    ru:"<p><b>Откуда такое странное название.</b></p><p>Двое жандармов ведут арестанта — один слева, другой справа.</p><p>Оба идут в участок. Арестант, зажатый между ними, <b>никуда деться не может</b>.</p><p>Он приходит в участок, обязательно.</p><p><b>В математике:</b> если <span class=\"v\">u<sub>n</sub></span> зажата между двумя последовательностями, идущими к <span class=\"v\">ℓ</span>, у неё нет выбора. Она идёт к <span class=\"v\">ℓ</span>.</p>",
-    fr:"<p><b>D'où vient ce nom.</b></p><p>Deux gendarmes encadrent un prisonnier — un à gauche, un à droite.</p><p>Les deux vont au commissariat. Le prisonnier, coincé entre eux, <b>ne peut aller nulle part ailleurs</b>.</p><p>Il arrive au commissariat, forcément.</p><p><b>En maths :</b> si <span class=\"v\">u<sub>n</sub></span> est coincée entre deux suites qui vont vers <span class=\"v\">ℓ</span>, elle n'a pas le choix.</p>"}},
-
-  {k:"f", h:{
-    ru:"Если <span class=\"v\">a<sub>n</sub></span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">b<sub>n</sub></span><br>и <span class=\"v\">a<sub>n</sub></span> → <span class=\"v\">ℓ</span>, <span class=\"v\">b<sub>n</sub></span> → <span class=\"v\">ℓ</span><br>то <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>",
-    fr:"Si <span class=\"v\">a<sub>n</sub></span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">b<sub>n</sub></span><br>et <span class=\"v\">a<sub>n</sub></span> → <span class=\"v\">ℓ</span>, <span class=\"v\">b<sub>n</sub></span> → <span class=\"v\">ℓ</span><br>alors <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>"}},
-
-  {k:"ex", n:{ru:"Классический пример", fr:"L'exemple classique"}, h:{
-    ru:"<p>Найти предел sin(<span class=\"v\">n</span>) ÷ <span class=\"v\">n</span>.</p><p><b>Шаг 1.</b> Всегда начинаем с одного и того же:<br>−1 ⩽ sin(<span class=\"v\">n</span>) ⩽ 1</p><p><b>Шаг 2.</b> Делим всё на <span class=\"v\">n</span> (оно положительно):<br>−1/<span class=\"v\">n</span> ⩽ sin(<span class=\"v\">n</span>)/<span class=\"v\">n</span> ⩽ 1/<span class=\"v\">n</span></p><p><b>Шаг 3.</b> Оба края стремятся к 0.</p><p><b>Вывод.</b> По теореме о жандармах предел равен <b>0</b>.</p>",
-    fr:"<p>Trouver la limite de sin(<span class=\"v\">n</span>) ÷ <span class=\"v\">n</span>.</p><p><b>Étape 1.</b> On part toujours du même encadrement :<br>−1 ⩽ sin(<span class=\"v\">n</span>) ⩽ 1</p><p><b>Étape 2.</b> On divise par <span class=\"v\">n</span> (positif) :<br>−1/<span class=\"v\">n</span> ⩽ sin(<span class=\"v\">n</span>)/<span class=\"v\">n</span> ⩽ 1/<span class=\"v\">n</span></p><p><b>Étape 3.</b> Les deux bords tendent vers 0.</p><p><b>Conclusion.</b> Par le théorème des gendarmes, la limite vaut <b>0</b>.</p>"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Почему иначе никак.</b></p><p>У sin(<span class=\"v\">n</span>) <b>нет предела</b> — он вечно болтается между −1 и 1, не оседая.</p><p>Значит написать «lim sin(<span class=\"v\">n</span>) = что-то» нельзя.</p><p><b>Но</b> одно мы знаем точно: он всегда между −1 и 1. Никогда больше, никогда меньше.</p><p>Делим всё на <span class=\"v\">n</span>. Числитель остаётся ограниченным, знаменатель взрывается.</p><p>Число, зажатое между −1 и 1, поделить на миллион — получится что-то крошечное, каким бы это число ни было.</p><p><b>В этом весь фокус:</b> не нужно знать, чему равен синус. Достаточно знать, что он ограничен.</p>",
-    fr:"<p><b>Pourquoi on ne peut pas faire autrement.</b></p><p>sin(<span class=\"v\">n</span>) n'a <b>aucune limite</b> : il oscille sans fin entre −1 et 1.</p><p>Impossible donc d'écrire « lim sin(<span class=\"v\">n</span>) = quelque chose ».</p><p><b>Mais</b> on sait une chose : il reste toujours entre −1 et 1.</p><p>On divise par <span class=\"v\">n</span>. Le numérateur reste borné, le dénominateur explose.</p><p>Un nombre coincé entre −1 et 1, divisé par un million, donne quelque chose de minuscule — quel que soit ce nombre.</p><p><b>Toute l'astuce est là :</b> pas besoin de connaître sin(<span class=\"v\">n</span>). Il suffit qu'il soit borné.</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Упрощённая версия для бесконечности.</b> Когда предел бесконечный, хватает одного жандарма.",
-    fr:"<b>Version simplifiée pour l'infini.</b> Quand la limite est infinie, un seul gendarme suffit."}},
-
-  {k:"f", s:true, h:{
-    ru:"Если <span class=\"v\">u<sub>n</sub></span> ⩾ <span class=\"v\">v<sub>n</sub></span> и <span class=\"v\">v<sub>n</sub></span> → +∞<br>то <span class=\"v\">u<sub>n</sub></span> → +∞",
-    fr:"Si <span class=\"v\">u<sub>n</sub></span> ⩾ <span class=\"v\">v<sub>n</sub></span> et <span class=\"v\">v<sub>n</sub></span> → +∞<br>alors <span class=\"v\">u<sub>n</sub></span> → +∞"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Почему здесь хватает одного.</b></p><p>Чтобы сойтись к конкретному числу, надо быть зажатым <b>с двух сторон</b>. Иначе последовательность может уйти куда угодно.</p><p>Но чтобы уйти в +∞, потолка не существует. Выше бесконечности ничего нет.</p><p>Значит быть <b>выше</b> последовательности, уходящей в бесконечность, достаточно — тебя неизбежно вытолкнет вверх.</p>",
-    fr:"<p><b>Pourquoi un seul suffit ici.</b></p><p>Pour converger vers un nombre précis, il faut être coincé <b>des deux côtés</b>.</p><p>Mais pour partir à +∞, il n'y a pas de plafond. Rien au-dessus de l'infini.</p><p>Être <b>au-dessus</b> d'une suite qui part à l'infini suffit donc : on est forcément poussé vers le haut.</p>"}},
-
-  {k:"ds", h:{
-    ru:"<p><i>Pour tout n ⩾ 1, −1 ⩽ sin(n) ⩽ 1.<br>Donc −1/n ⩽ sin(n)/n ⩽ 1/n.<br>Or lim (−1/n) = lim (1/n) = 0.<br>Donc, d'après le théorème des gendarmes, lim sin(n)/n = 0.</i></p><p>Обрати внимание на слова <b>d'après le théorème des gendarmes</b> — без ссылки на теорему рассуждение считается неполным.</p>",
-    fr:"<p><i>Pour tout n ⩾ 1, −1 ⩽ sin(n) ⩽ 1.<br>Donc −1/n ⩽ sin(n)/n ⩽ 1/n.<br>Or lim (−1/n) = lim (1/n) = 0.<br>Donc, d'après le théorème des gendarmes, lim sin(n)/n = 0.</i></p><p>La mention <b>d'après le théorème des gendarmes</b> est obligatoire : sans elle, le raisonnement est jugé incomplet.</p>"}}
-]},
-
-/* ══════════ 5 ══════════ */
-{ n:5,
-  t:{ru:"Поведение qⁿ", fr:"Comportement de qⁿ"},
-  st:{ru:"Самый частый случай на экзамене", fr:"Le cas le plus fréquent au bac"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Любые проценты — это геометрическая последовательность. Вклад, инфляция, вывод лекарства из крови, рост населения. Вопрос «что будет через много лет» сводится к поведению <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup>.",
-    fr:"<b>À quoi ça sert.</b> Tout pourcentage est une suite géométrique : placement, inflation, élimination d'un médicament, croissance d'une population. La question « que se passe-t-il à long terme » revient au comportement de <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup>."}},
-
-  {k:"tab", h:{
-    ru:"<table><tr><th>Значение <span class=\"v\">q</span></th><th>Предел</th><th>Смысл</th></tr><tr><td><span class=\"v\">q</span> > 1</td><td>+∞</td><td>взрывной рост</td></tr><tr><td><span class=\"v\">q</span> = 1</td><td>1</td><td>стоит на месте</td></tr><tr><td>−1 < <span class=\"v\">q</span> < 1</td><td>0</td><td>затухает</td></tr><tr><td><span class=\"v\">q</span> ⩽ −1</td><td>нет предела</td><td>болтается</td></tr></table>",
-    fr:"<table><tr><th>Valeur de <span class=\"v\">q</span></th><th>Limite</th><th>Sens</th></tr><tr><td><span class=\"v\">q</span> > 1</td><td>+∞</td><td>explosion</td></tr><tr><td><span class=\"v\">q</span> = 1</td><td>1</td><td>immobile</td></tr><tr><td>−1 < <span class=\"v\">q</span> < 1</td><td>0</td><td>extinction</td></tr><tr><td><span class=\"v\">q</span> ⩽ −1</td><td>pas de limite</td><td>oscillation</td></tr></table>"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Два очень конкретных действия.</b></p><p><b>Умножать на 2:</b> 1 → 2 → 4 → 8 → 16 → 32…</p><p>Через 30 шагов перевалишь за миллиард. Это <span class=\"v\">q</span> > 1 — взрыв.</p><p><b>Умножать на 0,5:</b> 1 → 0,5 → 0,25 → 0,125…</p><p>Через 30 шагов окажешься меньше миллиардной доли. Это |<span class=\"v\">q</span>| < 1 — затухание.</p><p><b>А отрицательный случай?</b> При <span class=\"v\">q</span> = −2: 1 → −2 → 4 → −8 → 16…</p><p>Величина растёт, но знак скачет. Последовательность никуда не идёт: <b>предела нет</b>.</p>",
-    fr:"<p><b>Deux gestes très concrets.</b></p><p><b>Multiplier par 2 :</b> 1 → 2 → 4 → 8 → 16 → 32…</p><p>Après 30 étapes, tu dépasses le milliard. C'est <span class=\"v\">q</span> > 1 : ça explose.</p><p><b>Multiplier par 0,5 :</b> 1 → 0,5 → 0,25 → 0,125…</p><p>Après 30 étapes, moins d'un milliardième. C'est |<span class=\"v\">q</span>| < 1 : ça s'éteint.</p><p><b>Et le cas négatif ?</b> Avec <span class=\"v\">q</span> = −2 : 1 → −2 → 4 → −8 → 16…</p><p>La valeur grandit, mais le signe saute. La suite ne va nulle part : <b>pas de limite</b>.</p>"}},
-
-  {k:"piege", n:{ru:"Знак важен не меньше величины", fr:"Le signe compte autant que la taille"}, h:{
-    ru:"<p>Сравни <span class=\"v\">q</span> = 2 и <span class=\"v\">q</span> = −2.</p><p>2<sup><span class=\"v\">n</span></sup>: 1, 2, 4, 8, 16 → +∞<br>(−2)<sup><span class=\"v\">n</span></sup>: 1, −2, 4, −8, 16 → предела нет</p><p>Одинаковая величина, совершенно разное поведение.</p><p><b>Но:</b> при <span class=\"v\">q</span> = −0,5 получается 1; −0,5; 0,25; −0,125… Знак тоже скачет, но всё сжимается к нулю. Предел есть и равен <b>0</b>.</p><p><b>Правило:</b> знак чередуется + величина растёт → предела нет. Знак чередуется + величина убывает → предел 0.</p>",
-    fr:"<p>Compare <span class=\"v\">q</span> = 2 et <span class=\"v\">q</span> = −2.</p><p>2<sup><span class=\"v\">n</span></sup> : 1, 2, 4, 8, 16 → +∞<br>(−2)<sup><span class=\"v\">n</span></sup> : 1, −2, 4, −8, 16 → pas de limite</p><p>Même taille, comportement opposé.</p><p><b>Mais</b> avec <span class=\"v\">q</span> = −0,5 : 1 ; −0,5 ; 0,25 ; −0,125… Le signe alterne aussi, mais tout se rapproche de zéro. La limite existe et vaut <b>0</b>.</p><p><b>Règle :</b> alternance + croissance → pas de limite. Alternance + décroissance → limite 0.</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Задача о пороге.</b> «Начиная с какого года превысит 1000?» — её решают либо перебором степеней, либо алгоритмом.",
-    fr:"<b>Le problème du seuil.</b> « À partir de quelle année dépasse-t-on 1000 ? » — par essais successifs ou par algorithme."}},
-
-  {k:"ex", h:{
-    ru:"<p><span class=\"v\">u<sub>n</sub></span> = 3<sup><span class=\"v\">n</span></sup>. С какого ранга превысит 500?</p><p>3¹ = 3 · 3² = 9 · 3³ = 27 · 3⁴ = 81 · 3⁵ = 243 · 3⁶ = 729</p><p>На ранге 5 — 243, ещё не хватает. На ранге 6 — 729, превысили.</p><p><b>Ответ: ранг 6.</b></p><p>Частая ошибка — ответить 5, потому что это «последнее посчитанное». Нет: ищем первый ранг, который <b>превышает</b>.</p>",
-    fr:"<p><span class=\"v\">u<sub>n</sub></span> = 3<sup><span class=\"v\">n</span></sup>. À partir de quel rang dépasse-t-on 500 ?</p><p>3¹ = 3 · 3² = 9 · 3³ = 27 · 3⁴ = 81 · 3⁵ = 243 · 3⁶ = 729</p><p>Au rang 5 : 243, pas encore. Au rang 6 : 729, dépassé.</p><p><b>Réponse : rang 6.</b></p><p>Piège habituel : répondre 5 parce que c'est « le dernier calculé ». Non — on cherche le premier rang qui <b>dépasse</b>.</p>"}},
-
-  {k:"ds", h:{
-    ru:"<p><i>Comme −1 &lt; 0,8 &lt; 1, on a lim<sub>n→+∞</sub> 0,8<sup>n</sup> = 0.<br>Donc la suite (u<sub>n</sub>) converge vers 0.</i></p><p>Слово <b>comme</b> в начале показывает, что ты проверил условие теоремы, а не просто назвал ответ.</p>",
-    fr:"<p><i>Comme −1 &lt; 0,8 &lt; 1, on a lim<sub>n→+∞</sub> 0,8<sup>n</sup> = 0.<br>Donc la suite (u<sub>n</sub>) converge vers 0.</i></p><p>Le mot <b>comme</b> montre que tu as vérifié la condition du théorème, pas seulement donné le résultat.</p>"}}
-]},
-
-/* ══════════ 6 ══════════ */
-{ n:6,
-  t:{ru:"Монотонная ограниченная", fr:"Convergence monotone"},
-  st:{ru:"Теорема, доказывающая существование предела", fr:"Le théorème d'existence"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Иногда предел нельзя вычислить напрямую — формулы просто нет. Эта теорема доказывает, что предел <b>существует</b>, даже если мы не знаем его значения. На баке это самый используемый инструмент для рекуррентных последовательностей.",
-    fr:"<b>À quoi ça sert.</b> Parfois on ne peut pas calculer la limite directement — il n'y a pas de formule. Ce théorème prouve que la limite <b>existe</b>, même sans en connaître la valeur. C'est l'outil le plus utilisé au bac pour les suites récurrentes."}},
-
-  {k:"f", h:{
-    ru:"Возрастающая и мажорированная → сходится<br>Убывающая и минорированная → сходится",
-    fr:"Croissante et majorée → converge<br>Décroissante et minorée → converge"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Лифт и потолок.</b></p><p>Лифт едет вверх. Едет ещё. Но у здания есть крыша.</p><p>Сквозь крышу он пройти не может. Значит, поднимаясь, он обязательно <b>где-то остановится</b>.</p><p>Где именно? Неизвестно. Может, на восьмом этаже, может, прямо под крышей.</p><p><b>Но что остановится — точно.</b></p><p>Вот и вся теорема: подниматься бесконечно невозможно, если сверху что-то мешает.</p><p><b>А если крыши нет?</b> Тогда лифт едет бесконечно — последовательность уходит в +∞.</p>",
-    fr:"<p><b>L'ascenseur et le plafond.</b></p><p>Un ascenseur monte. Il monte encore. Mais l'immeuble a un toit.</p><p>Il ne peut pas le traverser. Donc il finit forcément par <b>s'arrêter quelque part</b>.</p><p>Où exactement ? On ne sait pas.</p><p><b>Mais qu'il s'arrête, c'est certain.</b></p><p>C'est tout le théorème : monter sans fin est impossible si quelque chose bloque au-dessus.</p><p><b>Et sans toit ?</b> L'ascenseur monte indéfiniment : la suite tend vers +∞.</p>"}},
-
-  {k:"piege", n:{ru:"Предел ≠ мажоранта", fr:"La limite n'est pas le majorant"}, h:{
-    ru:"<p>Последовательность возрастает и мажорирована десяткой. Это <b>не значит</b>, что она стремится к десяти.</p><p>Возьми <span class=\"v\">u<sub>n</sub></span> = 1 − 1/(<span class=\"v\">n</span>+1): 0; 0,5; 0,67; 0,75…</p><p>Она возрастает. Она мажорирована сотней — это правда, она никогда не превысит 100.</p><p>Стремится ли она к ста? Очевидно нет. Она стремится к <b>1</b>.</p><p><b>Мажоранта — это просто барьер</b>, а не цель. Их можно выбрать тысячу разных: 2, 10, 100. Все годятся.</p><p>Предел же один. И теорема его не даёт — она лишь говорит, что он есть.</p>",
-    fr:"<p>Une suite croissante majorée par 10 ne tend <b>pas forcément</b> vers 10.</p><p>Prends <span class=\"v\">u<sub>n</sub></span> = 1 − 1/(<span class=\"v\">n</span>+1) : 0 ; 0,5 ; 0,67 ; 0,75…</p><p>Elle est croissante. Elle est majorée par <b>100</b> — c'est vrai, elle ne dépasse jamais 100.</p><p>Tend-elle vers 100 ? Non. Elle tend vers <b>1</b>.</p><p><b>Le majorant est une barrière</b>, pas une destination. On peut en choisir mille : 2, 10, 100.</p><p>La limite, elle, est unique. Et le théorème ne la donne pas.</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Почему нужны оба условия.</b>",
-    fr:"<b>Pourquoi les deux hypothèses sont indispensables.</b>"}},
-
-  {k:"ul", items:[
-    {ru:"<b>Монотонность без границы:</b> последовательность <span class=\"v\">n</span> возрастает, но уходит в +∞. Не хватает потолка.",
-     fr:"<b>Monotonie sans borne :</b> la suite <span class=\"v\">n</span> est croissante mais part à +∞. Il manque le plafond."},
-    {ru:"<b>Граница без монотонности:</b> (−1)<sup><span class=\"v\">n</span></sup> ограничена, но болтается. Не хватает монотонности.",
-     fr:"<b>Borne sans monotonie :</b> (−1)<sup><span class=\"v\">n</span></sup> est bornée mais oscille. Il manque la monotonie."},
-    {ru:"<b>Вместе:</b> болтаться нельзя (монотонна), улететь нельзя (ограничена). Остаётся только сойтись.",
-     fr:"<b>Les deux ensemble :</b> impossible d'osciller (monotone), impossible de fuir (bornée). Il ne reste qu'à converger."}
-  ]},
-
-  {k:"ds", h:{
-    ru:"<p>Рассуждение в три такта:</p><p><i>1. Pour tout n, u<sub>n+1</sub> − u<sub>n</sub> ⩾ 0 : la suite est croissante.<br>2. Par récurrence, u<sub>n</sub> ⩽ 5 pour tout n : la suite est majorée.<br>3. La suite (u<sub>n</sub>) est croissante et majorée, donc elle converge.</i></p><p>Заметь: в конце пишут просто <b>elle converge</b>, без указания значения.</p>",
-    fr:"<p>Rédaction en trois temps :</p><p><i>1. Pour tout n, u<sub>n+1</sub> − u<sub>n</sub> ⩾ 0 : la suite est croissante.<br>2. Par récurrence, u<sub>n</sub> ⩽ 5 pour tout n : la suite est majorée.<br>3. La suite (u<sub>n</sub>) est croissante et majorée, donc elle converge.</i></p><p>Remarque : on écrit simplement <b>elle converge</b>, sans valeur.</p>"}}
-]},
-
-/* ══════════ 7 ══════════ */
-{ n:7,
-  t:{ru:"Рекуррентные последовательности", fr:"Suites uₙ₊₁ = f(uₙ)"},
-  st:{ru:"Главное задание бака целиком", fr:"L'exercice complet du bac"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Это самый частый большой пример на баке. Дают <span class=\"v\">u<sub>0</sub></span> и правило, спрашивают предел. Формулы нет, посчитать напрямую нельзя — и в этом весь смысл задания.",
-    fr:"<b>À quoi ça sert.</b> C'est le grand exercice type du bac. On donne <span class=\"v\">u<sub>0</sub></span> et une relation, on demande la limite. Sans forme explicite, impossible de calculer directement — et c'est tout l'intérêt."}},
-
-  {k:"image", h:{
-    ru:"<p><b>Почему нужна вся эта гимнастика.</b></p><p>Дано <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>). Как вычислить <span class=\"v\">u<sub>1000</sub></span>?</p><p>Пришлось бы взять тысячу корней подряд. Вручную невозможно.</p><p><b>Но точное значение и не нужно.</b> Нужно знать, куда она идёт.</p><p>Поэтому действуют иначе: показывают, что последовательность не может сбежать (ограничена) и всегда идёт в одну сторону (монотонна).</p><p>Эти два факта <b>гарантируют</b>, что она где-то осядет — это теорема из прошлого раздела.</p><p>И только потом ищут, где именно.</p>",
-    fr:"<p><b>Pourquoi cette gymnastique.</b></p><p>Avec <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>), comment calculer <span class=\"v\">u<sub>1000</sub></span> ?</p><p>Il faudrait mille racines carrées. Impossible à la main.</p><p><b>Mais on n'a pas besoin de la valeur exacte.</b> On veut savoir où ça va.</p><p>Alors on montre que la suite ne peut pas s'échapper (bornée) et qu'elle va toujours dans le même sens (monotone).</p><p>Ces deux faits <b>garantissent</b> qu'elle se pose quelque part.</p><p>Ensuite seulement, on cherche où.</p>"}},
-
-  {k:"ol", items:[
-    {ru:"Показать, что последовательность <b>ограничена</b> — обычно по индукции",
-     fr:"Montrer que la suite est <b>bornée</b> — souvent par récurrence"},
-    {ru:"Показать, что она <b>монотонна</b>",
-     fr:"Montrer qu'elle est <b>monotone</b>"},
-    {ru:"Заключить: монотонная и ограниченная → <b>сходится</b>",
-     fr:"Conclure : monotone et bornée → <b>converge</b>"},
-    {ru:"Найти предел через <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)",
-     fr:"Trouver la limite par <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)"}
-  ]},
-
-  {k:"p", h:{
-    ru:"<b>Ключевой момент — переход к пределу.</b> Если <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>, то и <span class=\"v\">u<sub>n+1</sub></span> → <span class=\"v\">ℓ</span> — это та же последовательность, просто сдвинутая.",
-    fr:"<b>L'étape clé : le passage à la limite.</b> Si <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>, alors <span class=\"v\">u<sub>n+1</sub></span> → <span class=\"v\">ℓ</span> aussi — c'est la même suite, décalée."}},
-
-  {k:"f", h:{
-    ru:"<span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">f</span>(<span class=\"v\">u<sub>n</sub></span>) &nbsp;→&nbsp; <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)",
-    fr:"<span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">f</span>(<span class=\"v\">u<sub>n</sub></span>) &nbsp;→&nbsp; <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)"}},
-
-  {k:"image", h:{
-    ru:"<p><b>Почему у <span class=\"v\">u<sub>n+1</sub></span> тот же предел.</b></p><p>Представь очередь людей, идущих к двери.</p><p>Последовательность <span class=\"v\">u<sub>n</sub></span> — положение <span class=\"v\">n</span>-го. Последовательность <span class=\"v\">u<sub>n+1</sub></span> — положение следующего.</p><p>Все идут к одной двери. Смотреть на «следующего» не меняет пункт назначения — только точку начала наблюдения.</p><p><b>Условие:</b> функция <span class=\"v\">f</span> должна быть непрерывной. На баке она всегда такая.</p>",
-    fr:"<p><b>Pourquoi <span class=\"v\">u<sub>n+1</sub></span> a la même limite.</b></p><p>Imagine une file de gens qui avancent vers une porte.</p><p>La suite <span class=\"v\">u<sub>n</sub></span>, c'est la position du <span class=\"v\">n</span>-ième. <span class=\"v\">u<sub>n+1</sub></span>, celle du suivant.</p><p>Tout le monde va vers la même porte. Regarder « le suivant » ne change pas la destination.</p><p><b>Condition :</b> <span class=\"v\">f</span> doit être continue. Au bac, elle l'est toujours.</p>"}},
-
-  {k:"ex", n:{ru:"Задача целиком", fr:"Exercice mené jusqu'au bout"}, h:{
-    ru:"<p><span class=\"v\">u<sub>0</sub></span> = 0 и <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>).</p><p><b>Ограничена:</b> по индукции 0 ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ 2.</p><p><b>Монотонна:</b> показываем, что возрастает.</p><p><b>Вывод:</b> возрастающая и мажорированная → сходится к <span class=\"v\">ℓ</span>.</p><p><b>Значение:</b> <span class=\"v\">ℓ</span> = √(2 + <span class=\"v\">ℓ</span>), значит <span class=\"v\">ℓ</span>² = 2 + <span class=\"v\">ℓ</span>.</p><p><span class=\"v\">ℓ</span>² − <span class=\"v\">ℓ</span> − 2 = 0 → <span class=\"v\">ℓ</span> = 2 или <span class=\"v\">ℓ</span> = −1</p><p>Отбрасываем −1, потому что все члены положительны. <b><span class=\"v\">ℓ</span> = 2</b>.</p>",
-    fr:"<p><span class=\"v\">u<sub>0</sub></span> = 0 et <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>).</p><p><b>Bornée :</b> par récurrence, 0 ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ 2.</p><p><b>Monotone :</b> on montre qu'elle est croissante.</p><p><b>Conclusion :</b> croissante et majorée → converge vers <span class=\"v\">ℓ</span>.</p><p><b>Valeur :</b> <span class=\"v\">ℓ</span> = √(2 + <span class=\"v\">ℓ</span>), donc <span class=\"v\">ℓ</span>² = 2 + <span class=\"v\">ℓ</span>.</p><p><span class=\"v\">ℓ</span>² − <span class=\"v\">ℓ</span> − 2 = 0 → <span class=\"v\">ℓ</span> = 2 ou <span class=\"v\">ℓ</span> = −1</p><p>On rejette −1 car la suite est positive. <b><span class=\"v\">ℓ</span> = 2</b>.</p>"}},
-
-  {k:"piege", n:{ru:"Последний шаг, который забывают", fr:"Le dernier réflexe, souvent oublié"}, h:{
-    ru:"<p>Уравнение даёт <b>два</b> решения: 2 и −1. Какое верное? Само уравнение не отвечает.</p><p><b>Надо вернуться к последовательности.</b> Все её члены положительны — это же квадратный корень. Предел положительных чисел не может быть отрицательным.</p><p>Значит −1 отпадает.</p><p><b>На контрольной эта фраза приносит балл.</b> Написать «ℓ = 2 или ℓ = −1» и остановиться — значит не доделать.</p><p>Нужная формулировка: <i>« Comme u<sub>n</sub> ⩾ 0 pour tout n, la limite est positive. On rejette donc −1 et ℓ = 2. »</i></p>",
-    fr:"<p>L'équation donne <b>deux</b> solutions : 2 et −1. Laquelle ? L'équation seule ne le dit pas.</p><p><b>Il faut revenir à la suite.</b> Tous ses termes sont positifs — c'est une racine carrée. Une limite de nombres positifs ne peut être négative.</p><p>Donc −1 est impossible.</p><p><b>En devoir, cette phrase vaut des points.</b> Écrire « ℓ = 2 ou ℓ = −1 » sans trancher laisse le travail inachevé.</p><p>Formulation attendue : <i>« Comme u<sub>n</sub> ⩾ 0 pour tout n, la limite est positive. On rejette donc −1 et ℓ = 2. »</i></p>"}}
-]},
-
-/* ══════════ 8 ══════════ */
-{ n:8,
-  t:{ru:"Как устроено задание бака", fr:"L'exercice de bac, structure et rédaction"},
-  st:{ru:"Порядок вопросов и что приносит баллы", fr:"L'ordre des questions et ce qui rapporte"},
-  b:[
-  {k:"pourquoi", h:{
-    ru:"<b>Зачем это нужно.</b> Знать методы мало — на экзамене надо собрать их в связное решение и оформить так, как ждёт проверяющий. Половина потерянных баллов уходит не на ошибки, а на отсутствие нужных фраз.",
-    fr:"<b>À quoi ça sert.</b> Connaître les méthodes ne suffit pas : il faut les enchaîner et rédiger comme le correcteur l'attend. La moitié des points perdus ne vient pas d'erreurs, mais de phrases manquantes."}},
-
-  {k:"p", h:{
-    ru:"<b>Типичный порядок вопросов.</b> Он почти всегда один и тот же.",
-    fr:"<b>L'ordre habituel des questions.</b> Il varie peu."}},
-
-  {k:"ol", items:[
-    {ru:"Вычислить первые члены", fr:"Calculer les premiers termes"},
-    {ru:"Предположить поведение (<i>conjecturer</i>)", fr:"Conjecturer le comportement"},
-    {ru:"Доказать по индукции", fr:"Démontrer par récurrence"},
-    {ru:"Изучить монотонность", fr:"Étudier la monotonie"},
-    {ru:"Заключить о сходимости", fr:"Conclure sur la convergence"},
-    {ru:"Определить предел", fr:"Déterminer la limite"}
-  ]},
-
-  {k:"image", h:{
-    ru:"<p><b>Стратегия, которая спасает баллы.</b></p><p>Если застрял на третьем вопросе — <b>не останавливайся</b>. Следующие часто не зависят от точного вычисления.</p><p>Можно написать: «<i>on admet le résultat de la question 3</i>» и двигаться дальше.</p><p>Проверяющие это принимают. Ты теряешь баллы за третий вопрос, но сохраняешь за четвёртый, пятый и шестой.</p><p><b>Дорогая ошибка:</b> двадцать минут сидеть над одним вопросом и оставить остальное пустым.</p><p><b>Ещё совет:</b> первые два вопроса почти всегда лёгкие — несколько вычислений и наблюдение. Это гарантированные баллы, не пропускай их.</p>",
-    fr:"<p><b>Une stratégie qui rapporte.</b></p><p>Si tu bloques sur la question 3, <b>ne t'arrête pas</b>. Les suivantes sont souvent indépendantes.</p><p>Écris : « <i>on admet le résultat de la question 3</i> » et continue.</p><p>Les correcteurs l'acceptent. Tu perds les points de Q3 mais gardes ceux de Q4, Q5, Q6.</p><p><b>L'erreur coûteuse :</b> passer vingt minutes sur une question et laisser le reste vide.</p><p><b>Autre conseil :</b> Q1 et Q2 sont presque toujours faciles. Ce sont des points sûrs.</p>"}},
-
-  {k:"piege", n:{ru:"Conjecturer ≠ démontrer", fr:"Conjecturer n'est pas démontrer"}, h:{
-    ru:"<p>Эти два слова требуют разного.</p><p><b>Conjecturer</b> — посчитать несколько членов и высказать предположение. Достаточно наблюдения.</p><p><b>Démontrer</b> — доказать для <b>всех</b> <span class=\"v\">n</span>. Нужна индукция или общая формула.</p><p>Ответить на «démontrer» тремя примерами — потерять весь балл за вопрос.</p>",
-    fr:"<p>Ces deux mots demandent des choses différentes.</p><p><b>Conjecturer</b> — calculer quelques termes et émettre une hypothèse. L'observation suffit.</p><p><b>Démontrer</b> — prouver pour <b>tout</b> <span class=\"v\">n</span>. Il faut une récurrence ou une formule générale.</p><p>Répondre à « démontrer » par trois exemples fait perdre tout le point.</p>"}},
-
-  {k:"p", h:{
-    ru:"<b>Что реально приносит баллы.</b> Голый ответ почти ничего не стоит — ценится путь.",
-    fr:"<b>Ce qui rapporte vraiment.</b> Un résultat nu ne vaut presque rien — c'est la démarche qui compte."}},
-
-  {k:"ex", n:{ru:"Две работы с одним ответом", fr:"Deux copies, même résultat"}, h:{
-    ru:"<p><b>Работа А:</b> «ℓ = 2»</p><p><b>Работа Б:</b> «La suite est croissante et majorée par 2, donc elle converge vers une limite ℓ. En passant à la limite dans la relation, on obtient ℓ = √(2+ℓ), soit ℓ² − ℓ − 2 = 0. Les solutions sont 2 et −1. Comme tous les termes sont positifs, on rejette −1. <b>Donc la suite converge vers 2.</b>»</p><p>Один и тот же результат. Но работа А получает один балл из пяти, работа Б — все пять.</p><p><b>Это не украшательство.</b> Проверяющий ставит балл за то, что может проследить. Ответ без обоснования мог быть угадан или списан.</p>",
-    fr:"<p><b>Copie A :</b> « ℓ = 2 »</p><p><b>Copie B :</b> « La suite est croissante et majorée par 2, donc elle converge vers une limite ℓ. En passant à la limite dans la relation, on obtient ℓ = √(2+ℓ), soit ℓ² − ℓ − 2 = 0. Les solutions sont 2 et −1. Comme tous les termes sont positifs, on rejette −1. <b>Donc la suite converge vers 2.</b> »</p><p>Même résultat. La copie A récolte un point sur cinq, la copie B les cinq.</p><p><b>Ce n'est pas de la décoration.</b> Le correcteur note ce qu'il peut suivre.</p>"}},
-
-  {k:"ds", h:{
-    ru:"<p><b>Три фразы, которые должны быть всегда:</b></p><p><i>Pour tout entier naturel n…</i> — в начале общего вычисления</p><p><i>Donc…</i> — перед каждым выводом</p><p><i>Donc la suite converge vers 2.</i> — финальная фраза по-французски</p><p>Без последней решение считается незавершённым, даже если всё посчитано верно.</p>",
-    fr:"<p><b>Trois phrases toujours nécessaires :</b></p><p><i>Pour tout entier naturel n…</i> — au début d'un calcul général</p><p><i>Donc…</i> — avant chaque conclusion</p><p><i>Donc la suite converge vers 2.</i> — la phrase finale</p><p>Sans la dernière, la réponse est jugée incomplète, même si tout est juste.</p>"}}
-]}
-
+ {
+  "n": 1,
+  "t": {
+   "ru": "Доказательство по индукции",
+   "fr": "Raisonnement par récurrence"
+  },
+  "st": {
+   "ru": "Как доказать бесконечно много утверждений сразу",
+   "fr": "Démontrer une infinité de cas d'un coup"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Иногда надо доказать, что свойство верно для <b>всех</b> <span class=\"v\">n</span> — а их бесконечно много. Проверить каждое невозможно. Индукция решает это двумя фразами. Без неё нельзя обосновать ни одну формулу для рекуррентной последовательности, а это половина заданий бака.",
+     "fr": "<b>À quoi ça sert.</b> Il faut parfois prouver qu'une propriété est vraie pour <b>tout</b> <span class=\"v\">n</span> — et il y en a une infinité. Les vérifier une par une est impossible. La récurrence règle cela en deux phrases. Sans elle, impossible de justifier une formule pour une suite récurrente — et c'est la moitié des sujets du bac."
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Бесконечный ряд домино.</b> Как доказать, что упадут все?</p><p>Нужны ровно две вещи:</p><p><b>1.</b> Толкнуть первую — она точно упадёт.<br><b>2.</b> Убедиться, что <i>любая</i> падающая костяшка валит следующую.</p><p>Всё. Если оба пункта верны — упадёт весь ряд, сколько бы костяшек ни было.</p><p>В математике: пункт 1 — <b>инициализация</b>, пункт 2 — <b>наследственность</b>.</p>",
+     "fr": "<p><b>Une rangée infinie de dominos.</b> Comment prouver qu'ils tombent tous ?</p><p>Il faut exactement deux choses :</p><p><b>1.</b> Pousser le premier — il tombe.<br><b>2.</b> S'assurer que <i>n'importe quel</i> domino qui tombe fait tomber le suivant.</p><p>C'est tout. Si les deux sont vrais, toute la rangée tombe.</p><p>En maths : le point 1 est <b>l'initialisation</b>, le point 2 est <b>l'hérédité</b>.</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Три обязательных шага.</b> Порядок и формулировки строго фиксированы — на контрольной за каждый дают баллы отдельно.",
+     "fr": "<b>Trois étapes obligatoires.</b> L'ordre et les formulations sont stricts — chacune rapporte des points."
+    }
+   },
+   {
+    "k": "ol",
+    "items": [
+     {
+      "ru": "<b>Initialisation</b> — проверяем свойство при первом <span class=\"v\">n</span> (обычно 0 или 1)",
+      "fr": "<b>Initialisation</b> — on vérifie la propriété au premier rang (souvent 0 ou 1)"
+     },
+     {
+      "ru": "<b>Hérédité</b> — предполагаем верным для некоторого фиксированного <span class=\"v\">n</span>, доказываем для <span class=\"v\">n</span>+1",
+      "fr": "<b>Hérédité</b> — on suppose vrai à un rang <span class=\"v\">n</span> fixé, on démontre au rang <span class=\"v\">n</span>+1"
+     },
+     {
+      "ru": "<b>Conclusion</b> — ссылаемся на принцип индукции",
+      "fr": "<b>Conclusion</b> — on invoque le principe de récurrence"
+     }
+    ]
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Главная логическая ошибка",
+     "fr": "L'erreur de logique principale"
+    },
+    "h": {
+     "ru": "<p>На шаге наследственности пишут: <i>«Supposons que <b>pour tout</b> n, P(n) soit vraie»</i>.</p><p>Это <b>неверно</b>. Если предположить, что свойство верно для всех — доказывать нечего, ты предположил то, что требуется доказать.</p><p>Правильно: <i>«Supposons que pour un entier n <b>fixé</b>, P(n) soit vraie»</i>.</p><p>Предполагаем для <b>одной</b> костяшки, а не для всего ряда.</p><p><b>Проверяющий смотрит именно на эту фразу.</b> По ней видно, понял человек механизм или заучил.</p>",
+     "fr": "<p>À l'hérédité, certains écrivent : <i>« Supposons que <b>pour tout</b> n, P(n) soit vraie »</i>.</p><p>C'est <b>faux</b>. Si on suppose la propriété vraie partout, il n'y a plus rien à démontrer.</p><p>La bonne formulation : <i>« Supposons que pour un entier n <b>fixé</b>, P(n) soit vraie »</i>.</p><p>On suppose pour <b>un seul</b> domino, pas pour toute la rangée.</p><p><b>Le correcteur regarde cette phrase.</b> Elle montre si tu as compris ou récité.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Разбор целиком",
+     "fr": "Démonstration rédigée"
+    },
+    "h": {
+     "ru": "<p>Дано <span class=\"v\">u<sub>0</sub></span> = 1 и <span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> + 1.<br>Доказать: <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1.</p><p><b>Инициализация.</b> При <span class=\"v\">n</span> = 0 формула даёт 2¹ − 1 = 1, и <span class=\"v\">u<sub>0</sub></span> = 1 ✓</p><p><b>Наследственность.</b> Пусть для фиксированного <span class=\"v\">n</span> верно <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1. Тогда:</p><p><span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> + 1 = 2(2<sup><span class=\"v\">n</span>+1</sup> − 1) + 1 = 2<sup><span class=\"v\">n</span>+2</sup> − 2 + 1 = 2<sup><span class=\"v\">n</span>+2</sup> − 1</p><p>А это ровно формула для ранга <span class=\"v\">n</span>+1 ✓</p><p><b>Вывод.</b> По принципу индукции формула верна для всех натуральных <span class=\"v\">n</span>.</p>",
+     "fr": "<p>On donne <span class=\"v\">u<sub>0</sub></span> = 1 et <span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> + 1.<br>Montrer : <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1.</p><p><b>Initialisation.</b> Pour <span class=\"v\">n</span> = 0 : 2¹ − 1 = 1 = <span class=\"v\">u<sub>0</sub></span> ✓</p><p><b>Hérédité.</b> Supposons que pour un entier <span class=\"v\">n</span> fixé, <span class=\"v\">u<sub>n</sub></span> = 2<sup><span class=\"v\">n</span>+1</sup> − 1. Alors :</p><p><span class=\"v\">u<sub>n+1</sub></span> = 2(2<sup><span class=\"v\">n</span>+1</sup> − 1) + 1 = 2<sup><span class=\"v\">n</span>+2</sup> − 1</p><p>C'est exactement la formule au rang <span class=\"v\">n</span>+1 ✓</p><p><b>Conclusion.</b> Par récurrence, la formule est vraie pour tout entier naturel <span class=\"v\">n</span>.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Совсем простой пример — для начала",
+     "fr": "Un exemple très simple pour commencer"
+    },
+    "h": {
+     "ru": "<p>Дано <span class=\"v\">u<sub>0</sub></span> = 2 и <span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span> + 3.<br>Доказать, что <span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span> + 2.</p><p><b>Шаг 1. Инициализация.</b><br>Берём <span class=\"v\">n</span> = 0 и подставляем в формулу:<br>3 × 0 + 2 = 0 + 2 = <b>2</b></p><p>А по условию <span class=\"v\">u<sub>0</sub></span> = 2. Совпало ✓</p><p><b>Шаг 2. Наследственность.</b><br>Пусть для какого-то одного <span class=\"v\">n</span> верно: <span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span> + 2.</p><p>Смотрим на следующий член. По условию:<br><span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span> + 3</p><p>Вместо <span class=\"v\">u<sub>n</sub></span> подставляем то, что предположили:<br><span class=\"v\">u<sub>n+1</sub></span> = (3<span class=\"v\">n</span> + 2) + 3 = 3<span class=\"v\">n</span> + 5</p><p><b>Шаг 3. Сравниваем.</b><br>А что должна давать формула на ранге <span class=\"v\">n</span>+1? Подставим <span class=\"v\">n</span>+1 вместо <span class=\"v\">n</span>:<br>3(<span class=\"v\">n</span>+1) + 2 = 3<span class=\"v\">n</span> + 3 + 2 = 3<span class=\"v\">n</span> + 5</p><p>Одно и то же ✓ Наследственность доказана.</p>",
+     "fr": "<p>On donne <span class=\"v\">u<sub>0</sub></span> = 2 et <span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span> + 3.<br>Montrer que <span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span> + 2.</p><p><b>Étape 1. Initialisation.</b><br>On prend <span class=\"v\">n</span> = 0 dans la formule :<br>3 × 0 + 2 = <b>2</b></p><p>Or <span class=\"v\">u<sub>0</sub></span> = 2. C'est identique ✓</p><p><b>Étape 2. Hérédité.</b><br>Supposons que pour un <span class=\"v\">n</span> fixé : <span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span> + 2.</p><p>On regarde le terme suivant. Par définition :<br><span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span> + 3</p><p>On remplace <span class=\"v\">u<sub>n</sub></span> par ce qu'on a supposé :<br><span class=\"v\">u<sub>n+1</sub></span> = (3<span class=\"v\">n</span> + 2) + 3 = 3<span class=\"v\">n</span> + 5</p><p><b>Étape 3. On compare.</b><br>Que devrait donner la formule au rang <span class=\"v\">n</span>+1 ?<br>3(<span class=\"v\">n</span>+1) + 2 = 3<span class=\"v\">n</span> + 5</p><p>Identique ✓ L'hérédité est prouvée.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Гипотезу обязательно надо использовать",
+     "fr": "L'hypothèse doit être utilisée"
+    },
+    "h": {
+     "ru": "<p>Если в шаге наследственности ты нигде не подставил то, что предположил — значит ты не сделал индукцию.</p><p>Смысл шага именно в этом: взять предположение про ранг <span class=\"v\">n</span> и с его помощью получить ранг <span class=\"v\">n</span>+1.</p><p><b>Как проверить себя:</b> найди в своём решении место, где написано «подставляем гипотезу». Если такого места нет — что-то не так.</p>",
+     "fr": "<p>Si dans l'hérédité tu n'as utilisé nulle part ce que tu as supposé, alors tu n'as pas fait de récurrence.</p><p>Tout le sens de l'étape est là : prendre l'hypothèse au rang <span class=\"v\">n</span> pour en déduire le rang <span class=\"v\">n</span>+1.</p><p><b>Auto-contrôle :</b> cherche dans ta copie l'endroit où tu remplaces en utilisant l'hypothèse. S'il n'existe pas, quelque chose manque.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Начинать не всегда с нуля",
+     "fr": "On ne démarre pas toujours à zéro"
+    },
+    "h": {
+     "ru": "<p>Иногда в условии написано «для всех <span class=\"v\">n</span> ⩾ 1» или «для всех <span class=\"v\">n</span> ⩾ 2».</p><p>Тогда инициализацию делают <b>именно с этого ранга</b>, а не с нуля.</p><p>Причина: свойство может быть неверным для маленьких рангов. Например, 2<sup><span class=\"v\">n</span></sup> > <span class=\"v\">n</span>² верно начиная с <span class=\"v\">n</span> = 5, но неверно при <span class=\"v\">n</span> = 3 (8 против 9).</p><p><b>Практика:</b> первое, что делаешь — находишь в условии, с какого ранга надо доказывать. Это и есть твой первый домино.</p>",
+     "fr": "<p>Parfois l'énoncé dit « pour tout <span class=\"v\">n</span> ⩾ 1 » ou « pour tout <span class=\"v\">n</span> ⩾ 2 ».</p><p>On initialise alors <b>à ce rang</b>, pas à zéro.</p><p>Raison : la propriété peut être fausse aux petits rangs. Par exemple 2<sup><span class=\"v\">n</span></sup> > <span class=\"v\">n</span>² est vrai à partir de <span class=\"v\">n</span> = 5, mais faux pour <span class=\"v\">n</span> = 3 (8 contre 9).</p><p><b>En pratique :</b> la première chose à faire est de repérer dans l'énoncé le rang de départ. C'est ton premier domino.</p>"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему это не «доказательство по кругу».</b></p><p>Многим кажется подозрительным: мы предполагаем то, что доказываем. Разве так можно?</p><p>Можно, потому что предполагаем <b>не то же самое</b>.</p><p>Предполагаем: «верно на ранге 7».<br>Доказываем: «значит верно на ранге 8».</p><p>Это не круг, это <b>шаг</b>. Как в лестнице: «если я стою на седьмой ступеньке, я могу шагнуть на восьмую». И отдельно: «на первую ступеньку я точно встал».</p><p>Из этих двух вещей следует, что дойдёшь до любой ступеньки.</p>",
+     "fr": "<p><b>Pourquoi ce n'est pas un raisonnement circulaire.</b></p><p>Beaucoup trouvent cela suspect : on suppose ce qu'on démontre. Est-ce permis ?</p><p>Oui, car on ne suppose <b>pas la même chose</b>.</p><p>On suppose : « c'est vrai au rang 7 ».<br>On démontre : « donc c'est vrai au rang 8 ».</p><p>Ce n'est pas un cercle, c'est un <b>pas</b>. Comme dans un escalier : « si je suis sur la 7<sup>e</sup> marche, je peux monter sur la 8<sup>e</sup> ». Et séparément : « je suis bien monté sur la 1<sup>re</sup> ».</p><p>De ces deux faits découle qu'on atteint n'importe quelle marche.</p>"
+    }
+   },
+   {
+    "k": "ds",
+    "h": {
+     "ru": "<p>Готовый скелет — запомнить дословно:</p><p><i>Montrons par récurrence que pour tout entier naturel n, P(n) est vraie.</i></p><p><i><b>Initialisation.</b> Pour n = 0, … Donc P(0) est vraie.</i></p><p><i><b>Hérédité.</b> Supposons que pour un entier naturel n fixé, P(n) soit vraie. Montrons que P(n+1) est vraie. …</i></p><p><i><b>Conclusion.</b> D'après le principe de récurrence, P(n) est vraie pour tout entier naturel n.</i></p>",
+     "fr": "<p>Le squelette à connaître par cœur :</p><p><i>Montrons par récurrence que pour tout entier naturel n, P(n) est vraie.</i></p><p><i><b>Initialisation.</b> Pour n = 0, … Donc P(0) est vraie.</i></p><p><i><b>Hérédité.</b> Supposons que pour un entier naturel n fixé, P(n) soit vraie. Montrons que P(n+1) est vraie. …</i></p><p><i><b>Conclusion.</b> D'après le principe de récurrence, P(n) est vraie pour tout entier naturel n.</i></p>"
+    }
+   }
+  ]
+ },
+ {
+  "n": 2,
+  "t": {
+   "ru": "Предел последовательности",
+   "fr": "Limite d'une suite"
+  },
+  "st": {
+   "ru": "Куда уходит последовательность очень далеко",
+   "fr": "Vers quoi tend la suite, très loin"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Весь Terminale строится на понятии предела. Вопрос «что будет через миллион шагов» появляется в задачах про население, вклады, лекарства в крови. И это первое, что спрашивают на баке по последовательностям.",
+     "fr": "<b>À quoi ça sert.</b> Tout le programme de terminale repose sur la limite. La question « que se passe-t-il après un million d'étapes » apparaît dans les problèmes de population, de placements, de concentration d'un médicament. Et c'est la première chose demandée au bac."
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Три судьбы последовательности.</b></p><p><b>Сходится</b> — мяч отскакивает всё ниже и ниже. В конце концов ложится. Высота стремится к нулю.</p><p><b>Уходит в бесконечность</b> — лестница без конца. Идёшь вверх, ничто не останавливает.</p><p><b>Болтается</b> — маятник, который не замедляется. Туда-сюда, вечно, никуда не приходит.</p><p>Пример болтанки: <span class=\"v\">u<sub>n</sub></span> = (−1)<sup><span class=\"v\">n</span></sup> даёт 1, −1, 1, −1… Ни к чему не приближается.</p>",
+     "fr": "<p><b>Trois destins, trois images.</b></p><p><b>Converger</b> — une balle qui rebondit de moins en moins haut. Elle finit par se poser. La hauteur tend vers 0.</p><p><b>Diverger vers +∞</b> — un escalier sans fin. Rien ne t'arrête.</p><p><b>Osciller</b> — un pendule qui ne ralentit pas. Il ne se pose nulle part.</p><p>Exemple : <span class=\"v\">u<sub>n</sub></span> = (−1)<sup><span class=\"v\">n</span></sup> donne 1, −1, 1, −1… Elle ne s'approche d'aucun nombre.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Расходится ≠ уходит в бесконечность",
+     "fr": "Diverger ≠ tendre vers l'infini"
+    },
+    "h": {
+     "ru": "<p>Слово <b>diverger</b> означает только одно: <b>нет конечного предела</b>.</p><p>Два совершенно разных случая:</p><p>(−1)<sup><span class=\"v\">n</span></sup> — болтается между −1 и 1<br><span class=\"v\">n</span>² — уходит в +∞</p><p>Обе расходятся. Но первая <b>полностью ограничена</b> — она никогда не выходит за −1 и 1.</p><p><b>На контрольной</b> нельзя писать «расходится, значит стремится к бесконечности». Надо уточнять, какой именно случай.</p>",
+     "fr": "<p>Le mot <b>diverger</b> signifie seulement : <b>pas de limite finie</b>.</p><p>Deux cas très différents :</p><p>(−1)<sup><span class=\"v\">n</span></sup> — oscille entre −1 et 1<br><span class=\"v\">n</span>² — part vers +∞</p><p>Les deux divergent. Mais la première est <b>parfaitement bornée</b>.</p><p><b>En devoir</b>, on ne peut pas écrire « elle diverge donc elle tend vers l'infini ». Il faut préciser lequel des deux cas.</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Пределы, которые надо знать наизусть.</b> Они встречаются почти в каждом задании.",
+     "fr": "<b>Les limites de référence à connaître par cœur.</b> Elles servent dans presque tous les exercices."
+    }
+   },
+   {
+    "k": "f",
+    "h": {
+     "ru": "<span class=\"v\">n</span> → +∞ &nbsp;·&nbsp; <span class=\"v\">n</span>² → +∞ &nbsp;·&nbsp; √<span class=\"v\">n</span> → +∞<br>1/<span class=\"v\">n</span> → 0 &nbsp;·&nbsp; 1/<span class=\"v\">n</span>² → 0 &nbsp;·&nbsp; 1/√<span class=\"v\">n</span> → 0",
+     "fr": "<span class=\"v\">n</span> → +∞ &nbsp;·&nbsp; <span class=\"v\">n</span>² → +∞ &nbsp;·&nbsp; √<span class=\"v\">n</span> → +∞<br>1/<span class=\"v\">n</span> → 0 &nbsp;·&nbsp; 1/<span class=\"v\">n</span>² → 0 &nbsp;·&nbsp; 1/√<span class=\"v\">n</span> → 0"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему 1/<span class=\"v\">n</span> стремится к нулю.</b></p><p>Представь торт, который делишь.</p><p>На двоих — каждому половина. На десятерых — одна десятая. На тысячу — одна тысячная.</p><p>Чем больше народу, тем меньше кусок. На миллион человек кусок почти не виден.</p><p>Нуля он никогда не достигнет — крошка всё равно останется. Но приблизится настолько, насколько захочешь.</p><p><b>Это и есть предел ноль.</b> Не «равно нулю», а «становится сколь угодно близко к нулю».</p>",
+     "fr": "<p><b>Pourquoi 1/<span class=\"v\">n</span> tend vers 0.</b></p><p>Imagine un gâteau que tu partages.</p><p>Entre 2 personnes : 1/2 chacun. Entre 10 : 1/10. Entre 1000 : 1/1000.</p><p>Plus il y a de monde, plus la part est petite. Avec un million, la part est presque invisible.</p><p>Elle n'atteint jamais zéro — il reste toujours une miette. Mais elle s'en approche autant qu'on veut.</p><p><b>C'est cela, une limite nulle.</b> Pas « ça vaut zéro », mais « ça devient aussi proche de zéro qu'on le souhaite ».</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Частное многочленов</b> — самый частый случай. Правило простое: сравниваем старшие степени.",
+     "fr": "<b>Le quotient de polynômes</b> — le cas le plus fréquent. La règle : on compare les degrés dominants."
+    }
+   },
+   {
+    "k": "tab",
+    "h": {
+     "ru": "<table><tr><th>Ситуация</th><th>Предел</th><th>Почему</th></tr><tr><td>степень сверху меньше</td><td>0</td><td>знаменатель побеждает</td></tr><tr><td>степени равны</td><td>отношение коэффициентов</td><td>растут одинаково</td></tr><tr><td>степень сверху больше</td><td>±∞</td><td>числитель побеждает</td></tr></table>",
+     "fr": "<table><tr><th>Situation</th><th>Limite</th><th>Pourquoi</th></tr><tr><td>degré du haut plus petit</td><td>0</td><td>le dénominateur gagne</td></tr><tr><td>degrés égaux</td><td>rapport des coefficients</td><td>même vitesse</td></tr><tr><td>degré du haut plus grand</td><td>±∞</td><td>le numérateur gagne</td></tr></table>"
+    }
+   },
+   {
+    "k": "ex",
+    "h": {
+     "ru": "<p>(3<span class=\"v\">n</span> + 1) ÷ (<span class=\"v\">n</span>² + 5)</p><p>Сверху степень 1, снизу 2. Снизу больше → предел <b>0</b>.</p><p>Проверим: при <span class=\"v\">n</span> = 1000 сверху ≈ 3 000, снизу ≈ 1 000 000. Отношение ≈ 0,003.</p><p>При <span class=\"v\">n</span> = миллион отношение станет совсем крошечным.</p>",
+     "fr": "<p>(3<span class=\"v\">n</span> + 1) ÷ (<span class=\"v\">n</span>² + 5)</p><p>Degré 1 en haut, 2 en bas. Le bas gagne → limite <b>0</b>.</p><p>Vérifions : pour <span class=\"v\">n</span> = 1000, le haut vaut ≈ 3 000, le bas ≈ 1 000 000. Le rapport ≈ 0,003.</p><p>Pour <span class=\"v\">n</span> = un million, le rapport devient minuscule.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Частное многочленов — разбор до конца",
+     "fr": "Quotient de polynômes, pas à pas"
+    },
+    "h": {
+     "ru": "<p>Найти предел <span class=\"v\">u<sub>n</sub></span> = (2<span class=\"v\">n</span>² + 5<span class=\"v\">n</span>) ÷ (3<span class=\"v\">n</span>² − 1).</p><p><b>Шаг 1. Смотрим на степени.</b><br>Сверху старшая степень — <span class=\"v\">n</span>². Снизу тоже <span class=\"v\">n</span>².<br>Степени равны → предел равен отношению коэффициентов.</p><p><b>Шаг 2. Берём коэффициенты при старших степенях.</b><br>Сверху перед <span class=\"v\">n</span>² стоит 2.<br>Снизу перед <span class=\"v\">n</span>² стоит 3.</p><p><b>Шаг 3. Делим.</b><br>Предел = 2/3 ≈ 0,67</p><p><b>Проверим на числах.</b> При <span class=\"v\">n</span> = 100:<br>сверху 2×10000 + 500 = 20 500<br>снизу 3×10000 − 1 = 29 999<br>отношение ≈ 0,683</p><p>При <span class=\"v\">n</span> = 10 000 получится ещё ближе к 0,667. Формула работает.</p>",
+     "fr": "<p>Trouver la limite de <span class=\"v\">u<sub>n</sub></span> = (2<span class=\"v\">n</span>² + 5<span class=\"v\">n</span>) ÷ (3<span class=\"v\">n</span>² − 1).</p><p><b>Étape 1. On regarde les degrés.</b><br>En haut, le degré dominant est <span class=\"v\">n</span>². En bas aussi.<br>Degrés égaux → la limite est le rapport des coefficients.</p><p><b>Étape 2. On prend les coefficients dominants.</b><br>En haut : 2. En bas : 3.</p><p><b>Étape 3. On divise.</b><br>Limite = 2/3 ≈ 0,67</p><p><b>Vérifions avec des nombres.</b> Pour <span class=\"v\">n</span> = 100 :<br>haut : 2×10000 + 500 = 20 500<br>bas : 3×10000 − 1 = 29 999<br>rapport ≈ 0,683</p><p>Pour <span class=\"v\">n</span> = 10 000, on approche encore 0,667. La règle fonctionne.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Предел не обязан достигаться",
+     "fr": "La limite n'est pas forcément atteinte"
+    },
+    "h": {
+     "ru": "<p>Возьми <span class=\"v\">u<sub>n</sub></span> = 1/<span class=\"v\">n</span>: получается 1; 0,5; 0,33; 0,25…</p><p>Предел равен нулю. Но <b>ни один член не равен нулю</b>. Никогда.</p><p>Сходимость — это не «дойти», а «подойти сколь угодно близко».</p><p><b>Почему это важно на контрольной:</b> вопрос «существует ли <span class=\"v\">n</span>, при котором <span class=\"v\">u<sub>n</sub></span> = 0» и вопрос «каков предел» — разные вопросы. Ответы могут быть «нет» и «ноль» одновременно.</p>",
+     "fr": "<p>Prends <span class=\"v\">u<sub>n</sub></span> = 1/<span class=\"v\">n</span> : 1 ; 0,5 ; 0,33 ; 0,25…</p><p>La limite vaut 0. Mais <b>aucun terme ne vaut 0</b>. Jamais.</p><p>Converger, ce n'est pas « atteindre », c'est « s'approcher autant qu'on veut ».</p><p><b>Pourquoi ça compte en devoir :</b> « existe-t-il un <span class=\"v\">n</span> tel que <span class=\"v\">u<sub>n</sub></span> = 0 » et « quelle est la limite » sont deux questions différentes. Les réponses peuvent être « non » et « zéro » en même temps.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Первые члены не влияют",
+     "fr": "Les premiers termes ne comptent pas"
+    },
+    "h": {
+     "ru": "<p>Последовательность может начинаться как угодно: 100, −50, 7, потом успокоиться и сойтись к трём.</p><p>Предел описывает поведение <b>очень далеко</b>, при огромных <span class=\"v\">n</span>. Что было в начале — неважно.</p><p><b>Отсюда вывод:</b> посчитать первые пять членов и увидеть рост — это не доказательство предела. Это только conjecture.</p>",
+     "fr": "<p>Une suite peut commencer n'importe comment : 100, −50, 7, puis se calmer et converger vers 3.</p><p>La limite décrit le comportement <b>très loin</b>, pour <span class=\"v\">n</span> énorme. Le début ne compte pas.</p><p><b>Conséquence :</b> calculer cinq termes et voir une tendance n'est pas une démonstration. C'est seulement une conjecture.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Когда числитель проще знаменателя",
+     "fr": "Quand le haut est plus simple que le bas"
+    },
+    "h": {
+     "ru": "<p><span class=\"v\">u<sub>n</sub></span> = 7 ÷ (<span class=\"v\">n</span> + 3)</p><p>Сверху просто число 7 — оно не растёт. Снизу растёт без предела.</p><p>Представь: 7 евро делим на растущее число людей. При тысяче человек каждому достанется 0,007 евро.</p><p><b>Предел = 0.</b></p><p><b>Общее правило:</b> постоянное число, делённое на растущее, всегда даёт ноль. Совершенно неважно, насколько большое это постоянное число — хоть миллион.</p>",
+     "fr": "<p><span class=\"v\">u<sub>n</sub></span> = 7 ÷ (<span class=\"v\">n</span> + 3)</p><p>En haut, juste le nombre 7 — il ne grandit pas. En bas, ça croît sans fin.</p><p>Imagine : 7 euros partagés entre un nombre croissant de personnes. À mille personnes, chacun reçoit 0,007 €.</p><p><b>Limite = 0.</b></p><p><b>Règle générale :</b> une constante divisée par une quantité qui explose donne toujours zéro. Peu importe la taille de la constante — même un million.</p>"
+    }
+   },
+   {
+    "k": "ds",
+    "h": {
+     "ru": "<p><i>Pour tout n ⩾ 1, u<sub>n</sub> = (3n+1)/(n²+5).<br>Le degré du dénominateur est supérieur à celui du numérateur.<br>Donc lim<sub>n→+∞</sub> u<sub>n</sub> = 0.</i></p>",
+     "fr": "<p><i>Pour tout n ⩾ 1, u<sub>n</sub> = (3n+1)/(n²+5).<br>Le degré du dénominateur est supérieur à celui du numérateur.<br>Donc lim<sub>n→+∞</sub> u<sub>n</sub> = 0.</i></p>"
+    }
+   }
+  ]
+ },
+ {
+  "n": 3,
+  "t": {
+   "ru": "Операции и неопределённости",
+   "fr": "Opérations et formes indéterminées"
+  },
+  "st": {
+   "ru": "Четыре случая, когда правило не работает",
+   "fr": "Les quatre cas où la règle ne suffit pas"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Обычно пределы складываются и умножаются как обычные числа. Но в четырёх случаях так делать нельзя — и именно эти случаи ставят на контрольных, потому что они отличают понимание от механики.",
+     "fr": "<b>À quoi ça sert.</b> D'ordinaire les limites s'additionnent et se multiplient comme des nombres. Sauf dans quatre cas — et ce sont précisément ceux qu'on met en devoir, parce qu'ils séparent la compréhension du mécanisme."
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "Если у двух последовательностей есть конечные пределы, их можно складывать, умножать и делить (если знаменатель не стремится к нулю).",
+     "fr": "Si deux suites ont des limites finies, on peut les additionner, les multiplier et les diviser (si le dénominateur ne tend pas vers 0)."
+    }
+   },
+   {
+    "k": "f",
+    "h": {
+     "ru": "Четыре неопределённости:<br>∞ − ∞ &nbsp;·&nbsp; 0 × ∞ &nbsp;·&nbsp; ∞ / ∞ &nbsp;·&nbsp; 0 / 0",
+     "fr": "Les quatre formes indéterminées :<br>∞ − ∞ &nbsp;·&nbsp; 0 × ∞ &nbsp;·&nbsp; ∞ / ∞ &nbsp;·&nbsp; 0 / 0"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему «неопределённость», а не «невозможно».</b></p><p>Неопределённость не значит «предела нет». Значит: <b>общего правила не хватает, чтобы решить</b>.</p><p>Смотри на ∞ − ∞ в трёх примерах:</p><p>(<span class=\"v\">n</span>+1) − <span class=\"v\">n</span> = 1 → предел <b>1</b></p><p><span class=\"v\">n</span>² − <span class=\"v\">n</span> → предел <b>+∞</b></p><p><span class=\"v\">n</span> − <span class=\"v\">n</span>² → предел <b>−∞</b></p><p>Одна и та же форма, три разных ответа.</p><p><b>Отсюда и слово:</b> форма сама по себе ничего не определяет. Надо смотреть на детали.</p>",
+     "fr": "<p><b>Pourquoi « indéterminé » et non « impossible ».</b></p><p>Indéterminé ne veut pas dire « pas de limite ». Cela veut dire : <b>la règle générale ne suffit pas à trancher</b>.</p><p>Regarde ∞ − ∞ sur trois exemples :</p><p>(<span class=\"v\">n</span>+1) − <span class=\"v\">n</span> = 1 → limite <b>1</b></p><p><span class=\"v\">n</span>² − <span class=\"v\">n</span> → limite <b>+∞</b></p><p><span class=\"v\">n</span> − <span class=\"v\">n</span>² → limite <b>−∞</b></p><p>Trois fois la même forme, trois résultats.</p><p><b>D'où le mot :</b> la forme seule ne détermine rien.</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Главный приём — вынести старшую степень за скобку.</b>",
+     "fr": "<b>La technique principale : factoriser le terme dominant.</b>"
+    }
+   },
+   {
+    "k": "ex",
+    "h": {
+     "ru": "<p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> — это форма ∞ − ∞.</p><p>Выносим <span class=\"v\">n</span>²:</p><p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> = <span class=\"v\">n</span>²(1 − 3/<span class=\"v\">n</span>)</p><p>Теперь <span class=\"v\">n</span>² → +∞, а скобка → 1.</p><p>Значит произведение → <b>+∞</b>.</p>",
+     "fr": "<p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> donne la forme ∞ − ∞.</p><p>On factorise par <span class=\"v\">n</span>² :</p><p><span class=\"v\">n</span>² − 3<span class=\"v\">n</span> = <span class=\"v\">n</span>²(1 − 3/<span class=\"v\">n</span>)</p><p>Or <span class=\"v\">n</span>² → +∞ et la parenthèse → 1.</p><p>Donc le produit tend vers <b>+∞</b>.</p>"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Идея, стоящая за вынесением.</b></p><p>В <span class=\"v\">n</span>² − 3<span class=\"v\">n</span> оба слагаемых растут. Но <b>с разной скоростью</b>.</p><p>При <span class=\"v\">n</span> = 1000: <span class=\"v\">n</span>² = 1 000 000, а 3<span class=\"v\">n</span> = 3 000.</p><p>Первое полностью подавляет второе. Отнять три тысячи от миллиона — почти ничего не изменить.</p><p><b>Вынесение делает это видимым:</b> в скобке остаётся 1 − 3/<span class=\"v\">n</span>, а 3/<span class=\"v\">n</span> стремится к нулю.</p><p><b>Одной фразой:</b> определяем, кто командует, и показываем, что остальное больше не считается.</p>",
+     "fr": "<p><b>L'idée derrière la factorisation.</b></p><p>Dans <span class=\"v\">n</span>² − 3<span class=\"v\">n</span>, les deux termes grandissent. Mais <b>pas à la même vitesse</b>.</p><p>Pour <span class=\"v\">n</span> = 1000 : <span class=\"v\">n</span>² = 1 000 000 et 3<span class=\"v\">n</span> = 3 000.</p><p>Le premier écrase le second. Retirer 3 000 à un million ne change presque rien.</p><p><b>La factorisation rend cela visible :</b> il reste 1 − 3/<span class=\"v\">n</span>, et 3/<span class=\"v\">n</span> tend vers 0.</p><p><b>En une phrase :</b> on identifie qui commande, et on montre que le reste ne compte plus.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Сначала упрости",
+     "fr": "Simplifier d'abord"
+    },
+    "h": {
+     "ru": "<p>Иногда неопределённость исчезает сама после упрощения.</p><p><span class=\"v\">n</span> × (1/<span class=\"v\">n</span>) на вид — форма ∞ × 0.</p><p>Но это просто <b>1</b> при любом <span class=\"v\">n</span>. Последовательность постоянна.</p><p><b>Правило:</b> увидел неопределённость — сначала попробуй упростить выражение, и только потом ищи приёмы.</p>",
+     "fr": "<p>Parfois l'indétermination disparaît d'elle-même après simplification.</p><p><span class=\"v\">n</span> × (1/<span class=\"v\">n</span>) ressemble à la forme ∞ × 0.</p><p>Mais cela vaut <b>1</b> pour tout <span class=\"v\">n</span>. La suite est constante.</p><p><b>Règle :</b> face à une FI, commence par simplifier l'expression, puis seulement cherche une technique.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Форма 0 × ∞ — два разных исхода",
+     "fr": "La forme 0 × ∞, deux résultats opposés"
+    },
+    "h": {
+     "ru": "<p><b>Случай первый.</b> <span class=\"v\">u<sub>n</sub></span> = (1/<span class=\"v\">n</span>) × <span class=\"v\">n</span>²</p><p>Сначала форма: 1/<span class=\"v\">n</span> → 0, а <span class=\"v\">n</span>² → ∞. Значит 0 × ∞ — неопределённость.</p><p>Упрощаем: <span class=\"v\">n</span>² ÷ <span class=\"v\">n</span> = <span class=\"v\">n</span>. Предел = <b>+∞</b>.</p><p><b>Случай второй.</b> <span class=\"v\">u<sub>n</sub></span> = (1/<span class=\"v\">n</span>²) × <span class=\"v\">n</span></p><p>Форма та же: 0 × ∞.</p><p>Упрощаем: <span class=\"v\">n</span> ÷ <span class=\"v\">n</span>² = 1/<span class=\"v\">n</span>. Предел = <b>0</b>.</p><p><b>Вот почему это называется неопределённостью.</b> Форма одна, ответы прямо противоположные. Решает не форма, а кто растёт быстрее.</p>",
+     "fr": "<p><b>Premier cas.</b> <span class=\"v\">u<sub>n</sub></span> = (1/<span class=\"v\">n</span>) × <span class=\"v\">n</span>²</p><p>La forme : 1/<span class=\"v\">n</span> → 0 et <span class=\"v\">n</span>² → ∞. Donc 0 × ∞, indéterminé.</p><p>On simplifie : <span class=\"v\">n</span>² ÷ <span class=\"v\">n</span> = <span class=\"v\">n</span>. Limite = <b>+∞</b>.</p><p><b>Deuxième cas.</b> <span class=\"v\">u<sub>n</sub></span> = (1/<span class=\"v\">n</span>²) × <span class=\"v\">n</span></p><p>Même forme : 0 × ∞.</p><p>On simplifie : <span class=\"v\">n</span> ÷ <span class=\"v\">n</span>² = 1/<span class=\"v\">n</span>. Limite = <b>0</b>.</p><p><b>Voilà pourquoi on dit indéterminé.</b> Même forme, résultats opposés. Ce n'est pas la forme qui décide, mais qui croît le plus vite.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Не всё с бесконечностью — неопределённость",
+     "fr": "Tout ce qui contient l'infini n'est pas indéterminé"
+    },
+    "h": {
+     "ru": "<p>Бывает путаница: увидел ∞ — решил, что неопределённость. Нет.</p><p><b>Спокойные случаи:</b><br>∞ + ∞ = +∞<br>∞ + 5 = +∞<br>∞ × 3 = +∞<br>5 ÷ ∞ = 0</p><p><b>Проблемные — только четыре:</b><br>∞ − ∞ · 0 × ∞ · ∞/∞ · 0/0</p><p><b>Как запомнить:</b> проблема там, где две тенденции <b>тянут в разные стороны</b>. Сложение двух бесконечностей — обе тянут в одну сторону, спорить не о чем.</p>",
+     "fr": "<p>Confusion fréquente : on voit ∞ et on croit à une indétermination. Non.</p><p><b>Cas tranquilles :</b><br>∞ + ∞ = +∞<br>∞ + 5 = +∞<br>∞ × 3 = +∞<br>5 ÷ ∞ = 0</p><p><b>Les problèmes sont au nombre de quatre :</b><br>∞ − ∞ · 0 × ∞ · ∞/∞ · 0/0</p><p><b>Moyen mnémotechnique :</b> le problème apparaît quand deux tendances <b>tirent en sens contraire</b>. Additionner deux infinis, c'est tirer du même côté : rien à débattre.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Сокращение дроби спасает",
+     "fr": "Simplifier avant tout"
+    },
+    "h": {
+     "ru": "<p><span class=\"v\">u<sub>n</sub></span> = (<span class=\"v\">n</span>² − 25) ÷ (<span class=\"v\">n</span> − 5), при <span class=\"v\">n</span> > 5.</p><p><b>Шаг 1.</b> Узнаём разность квадратов:<br><span class=\"v\">n</span>² − 25 = <span class=\"v\">n</span>² − 5² = (<span class=\"v\">n</span> − 5)(<span class=\"v\">n</span> + 5)</p><p><b>Шаг 2.</b> Подставляем:<br>(<span class=\"v\">n</span> − 5)(<span class=\"v\">n</span> + 5) ÷ (<span class=\"v\">n</span> − 5)</p><p><b>Шаг 3.</b> Сокращаем (<span class=\"v\">n</span> − 5) — можно, потому что <span class=\"v\">n</span> > 5, значит не ноль:<br>остаётся <span class=\"v\">n</span> + 5</p><p><b>Предел = +∞.</b></p><p>Без сокращения была бы форма ∞/∞ и пришлось бы возиться. Всегда сначала смотри, не сокращается ли.</p>",
+     "fr": "<p><span class=\"v\">u<sub>n</sub></span> = (<span class=\"v\">n</span>² − 25) ÷ (<span class=\"v\">n</span> − 5), pour <span class=\"v\">n</span> > 5.</p><p><b>Étape 1.</b> On reconnaît une différence de carrés :<br><span class=\"v\">n</span>² − 25 = (<span class=\"v\">n</span> − 5)(<span class=\"v\">n</span> + 5)</p><p><b>Étape 2.</b> On remplace :<br>(<span class=\"v\">n</span> − 5)(<span class=\"v\">n</span> + 5) ÷ (<span class=\"v\">n</span> − 5)</p><p><b>Étape 3.</b> On simplifie par (<span class=\"v\">n</span> − 5) — c'est permis car <span class=\"v\">n</span> > 5, donc non nul :<br>il reste <span class=\"v\">n</span> + 5</p><p><b>Limite = +∞.</b></p><p>Sans simplification, on aurait la forme ∞/∞. Regarde toujours d'abord si ça se simplifie.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Знак у бесконечности",
+     "fr": "Le signe de l'infini"
+    },
+    "h": {
+     "ru": "<p><span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span> − <span class=\"v\">n</span>² уходит в <b>минус</b> бесконечность, а не в плюс.</p><p>Почему: командует старшая степень, а перед <span class=\"v\">n</span>² стоит минус.</p><p><b>Проверка на числах:</b> при <span class=\"v\">n</span> = 100 получаем 300 − 10 000 = −9 700. Отрицательно и растёт по модулю.</p><p><b>Правило:</b> найди старшую степень, посмотри на её знак. Он и определяет, куда уходит последовательность.</p>",
+     "fr": "<p><span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span> − <span class=\"v\">n</span>² part vers <b>moins</b> l'infini, pas vers plus.</p><p>Pourquoi : c'est le degré dominant qui commande, et <span class=\"v\">n</span>² porte un signe moins.</p><p><b>Vérification :</b> pour <span class=\"v\">n</span> = 100, on a 300 − 10 000 = −9 700. Négatif et de plus en plus grand en valeur absolue.</p><p><b>Règle :</b> repère le degré dominant, regarde son signe. C'est lui qui décide de la direction.</p>"
+    }
+   },
+   {
+    "k": "ds",
+    "h": {
+     "ru": "<p><i>Pour tout n ⩾ 1, n² − 3n = n²(1 − 3/n).<br>Or lim n² = +∞ et lim (1 − 3/n) = 1.<br>Donc par produit, lim (n² − 3n) = +∞.</i></p><p>Слово <b>par produit</b> важно — оно показывает, каким правилом ты воспользовался.</p>",
+     "fr": "<p><i>Pour tout n ⩾ 1, n² − 3n = n²(1 − 3/n).<br>Or lim n² = +∞ et lim (1 − 3/n) = 1.<br>Donc par produit, lim (n² − 3n) = +∞.</i></p><p>Le mot <b>par produit</b> compte : il indique la règle utilisée.</p>"
+    }
+   }
+  ]
+ },
+ {
+  "n": 4,
+  "t": {
+   "ru": "Сравнение и теорема о жандармах",
+   "fr": "Comparaison et théorème des gendarmes"
+  },
+  "st": {
+   "ru": "Найти предел, не вычисляя выражение",
+   "fr": "Trouver une limite sans calculer l'expression"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Иногда выражение слишком сложное — например, содержит синус, у которого вообще нет предела. Жандармы позволяют найти ответ, не трогая само выражение. На баке это стандартный приём.",
+     "fr": "<b>À quoi ça sert.</b> Parfois l'expression est trop compliquée — par exemple avec un sinus, qui n'a aucune limite. Les gendarmes permettent de conclure sans y toucher. C'est un réflexe attendu au bac."
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Откуда такое странное название.</b></p><p>Двое жандармов ведут арестанта — один слева, другой справа.</p><p>Оба идут в участок. Арестант, зажатый между ними, <b>никуда деться не может</b>.</p><p>Он приходит в участок, обязательно.</p><p><b>В математике:</b> если <span class=\"v\">u<sub>n</sub></span> зажата между двумя последовательностями, идущими к <span class=\"v\">ℓ</span>, у неё нет выбора. Она идёт к <span class=\"v\">ℓ</span>.</p>",
+     "fr": "<p><b>D'où vient ce nom.</b></p><p>Deux gendarmes encadrent un prisonnier — un à gauche, un à droite.</p><p>Les deux vont au commissariat. Le prisonnier, coincé entre eux, <b>ne peut aller nulle part ailleurs</b>.</p><p>Il arrive au commissariat, forcément.</p><p><b>En maths :</b> si <span class=\"v\">u<sub>n</sub></span> est coincée entre deux suites qui vont vers <span class=\"v\">ℓ</span>, elle n'a pas le choix.</p>"
+    }
+   },
+   {
+    "k": "f",
+    "h": {
+     "ru": "Если <span class=\"v\">a<sub>n</sub></span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">b<sub>n</sub></span><br>и <span class=\"v\">a<sub>n</sub></span> → <span class=\"v\">ℓ</span>, <span class=\"v\">b<sub>n</sub></span> → <span class=\"v\">ℓ</span><br>то <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>",
+     "fr": "Si <span class=\"v\">a<sub>n</sub></span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">b<sub>n</sub></span><br>et <span class=\"v\">a<sub>n</sub></span> → <span class=\"v\">ℓ</span>, <span class=\"v\">b<sub>n</sub></span> → <span class=\"v\">ℓ</span><br>alors <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Классический пример",
+     "fr": "L'exemple classique"
+    },
+    "h": {
+     "ru": "<p>Найти предел sin(<span class=\"v\">n</span>) ÷ <span class=\"v\">n</span>.</p><p><b>Шаг 1.</b> Всегда начинаем с одного и того же:<br>−1 ⩽ sin(<span class=\"v\">n</span>) ⩽ 1</p><p><b>Шаг 2.</b> Делим всё на <span class=\"v\">n</span> (оно положительно):<br>−1/<span class=\"v\">n</span> ⩽ sin(<span class=\"v\">n</span>)/<span class=\"v\">n</span> ⩽ 1/<span class=\"v\">n</span></p><p><b>Шаг 3.</b> Оба края стремятся к 0.</p><p><b>Вывод.</b> По теореме о жандармах предел равен <b>0</b>.</p>",
+     "fr": "<p>Trouver la limite de sin(<span class=\"v\">n</span>) ÷ <span class=\"v\">n</span>.</p><p><b>Étape 1.</b> On part toujours du même encadrement :<br>−1 ⩽ sin(<span class=\"v\">n</span>) ⩽ 1</p><p><b>Étape 2.</b> On divise par <span class=\"v\">n</span> (positif) :<br>−1/<span class=\"v\">n</span> ⩽ sin(<span class=\"v\">n</span>)/<span class=\"v\">n</span> ⩽ 1/<span class=\"v\">n</span></p><p><b>Étape 3.</b> Les deux bords tendent vers 0.</p><p><b>Conclusion.</b> Par le théorème des gendarmes, la limite vaut <b>0</b>.</p>"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему иначе никак.</b></p><p>У sin(<span class=\"v\">n</span>) <b>нет предела</b> — он вечно болтается между −1 и 1, не оседая.</p><p>Значит написать «lim sin(<span class=\"v\">n</span>) = что-то» нельзя.</p><p><b>Но</b> одно мы знаем точно: он всегда между −1 и 1. Никогда больше, никогда меньше.</p><p>Делим всё на <span class=\"v\">n</span>. Числитель остаётся ограниченным, знаменатель взрывается.</p><p>Число, зажатое между −1 и 1, поделить на миллион — получится что-то крошечное, каким бы это число ни было.</p><p><b>В этом весь фокус:</b> не нужно знать, чему равен синус. Достаточно знать, что он ограничен.</p>",
+     "fr": "<p><b>Pourquoi on ne peut pas faire autrement.</b></p><p>sin(<span class=\"v\">n</span>) n'a <b>aucune limite</b> : il oscille sans fin entre −1 et 1.</p><p>Impossible donc d'écrire « lim sin(<span class=\"v\">n</span>) = quelque chose ».</p><p><b>Mais</b> on sait une chose : il reste toujours entre −1 et 1.</p><p>On divise par <span class=\"v\">n</span>. Le numérateur reste borné, le dénominateur explose.</p><p>Un nombre coincé entre −1 et 1, divisé par un million, donne quelque chose de minuscule — quel que soit ce nombre.</p><p><b>Toute l'astuce est là :</b> pas besoin de connaître sin(<span class=\"v\">n</span>). Il suffit qu'il soit borné.</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Упрощённая версия для бесконечности.</b> Когда предел бесконечный, хватает одного жандарма.",
+     "fr": "<b>Version simplifiée pour l'infini.</b> Quand la limite est infinie, un seul gendarme suffit."
+    }
+   },
+   {
+    "k": "f",
+    "s": true,
+    "h": {
+     "ru": "Если <span class=\"v\">u<sub>n</sub></span> ⩾ <span class=\"v\">v<sub>n</sub></span> и <span class=\"v\">v<sub>n</sub></span> → +∞<br>то <span class=\"v\">u<sub>n</sub></span> → +∞",
+     "fr": "Si <span class=\"v\">u<sub>n</sub></span> ⩾ <span class=\"v\">v<sub>n</sub></span> et <span class=\"v\">v<sub>n</sub></span> → +∞<br>alors <span class=\"v\">u<sub>n</sub></span> → +∞"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему здесь хватает одного.</b></p><p>Чтобы сойтись к конкретному числу, надо быть зажатым <b>с двух сторон</b>. Иначе последовательность может уйти куда угодно.</p><p>Но чтобы уйти в +∞, потолка не существует. Выше бесконечности ничего нет.</p><p>Значит быть <b>выше</b> последовательности, уходящей в бесконечность, достаточно — тебя неизбежно вытолкнет вверх.</p>",
+     "fr": "<p><b>Pourquoi un seul suffit ici.</b></p><p>Pour converger vers un nombre précis, il faut être coincé <b>des deux côtés</b>.</p><p>Mais pour partir à +∞, il n'y a pas de plafond. Rien au-dessus de l'infini.</p><p>Être <b>au-dessus</b> d'une suite qui part à l'infini suffit donc : on est forcément poussé vers le haut.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "С косинусом — полностью",
+     "fr": "Avec un cosinus, entièrement"
+    },
+    "h": {
+     "ru": "<p>Найти предел <span class=\"v\">u<sub>n</sub></span> = (4 + cos(<span class=\"v\">n</span>)) ÷ <span class=\"v\">n</span>.</p><p><b>Шаг 1. Границы косинуса.</b><br>Всегда: −1 ⩽ cos(<span class=\"v\">n</span>) ⩽ 1</p><p><b>Шаг 2. Прибавляем 4 ко всем трём частям.</b><br>4 − 1 ⩽ 4 + cos(<span class=\"v\">n</span>) ⩽ 4 + 1<br>то есть 3 ⩽ числитель ⩽ 5</p><p><b>Шаг 3. Делим всё на <span class=\"v\">n</span></b> — знак неравенства не меняется, потому что <span class=\"v\">n</span> > 0:<br>3/<span class=\"v\">n</span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ 5/<span class=\"v\">n</span></p><p><b>Шаг 4. Смотрим на края.</b><br>3/<span class=\"v\">n</span> → 0 и 5/<span class=\"v\">n</span> → 0</p><p><b>Вывод.</b> Оба жандарма идут в ноль. Значит и <span class=\"v\">u<sub>n</sub></span> → <b>0</b>.</p>",
+     "fr": "<p>Trouver la limite de <span class=\"v\">u<sub>n</sub></span> = (4 + cos(<span class=\"v\">n</span>)) ÷ <span class=\"v\">n</span>.</p><p><b>Étape 1. Bornes du cosinus.</b><br>Toujours : −1 ⩽ cos(<span class=\"v\">n</span>) ⩽ 1</p><p><b>Étape 2. On ajoute 4 aux trois membres.</b><br>3 ⩽ 4 + cos(<span class=\"v\">n</span>) ⩽ 5</p><p><b>Étape 3. On divise par <span class=\"v\">n</span></b> — le sens ne change pas car <span class=\"v\">n</span> > 0 :<br>3/<span class=\"v\">n</span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ 5/<span class=\"v\">n</span></p><p><b>Étape 4. On regarde les bords.</b><br>3/<span class=\"v\">n</span> → 0 et 5/<span class=\"v\">n</span> → 0</p><p><b>Conclusion.</b> Les deux gendarmes vont vers 0. Donc <span class=\"v\">u<sub>n</sub></span> → <b>0</b>.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Нельзя делить пределы, если одного нет",
+     "fr": "On ne divise pas des limites qui n'existent pas"
+    },
+    "h": {
+     "ru": "<p>Соблазн написать:<br>lim sin(<span class=\"v\">n</span>)/<span class=\"v\">n</span> = (lim sin(<span class=\"v\">n</span>)) ÷ (lim <span class=\"v\">n</span>)</p><p>Так <b>нельзя</b>. Правило деления пределов работает только если <b>оба</b> предела существуют.</p><p>А у sin(<span class=\"v\">n</span>) предела нет — он вечно болтается.</p><p><b>Поэтому и нужны жандармы.</b> Это единственный законный путь для выражений с синусом или косинусом.</p>",
+     "fr": "<p>Tentation d'écrire :<br>lim sin(<span class=\"v\">n</span>)/<span class=\"v\">n</span> = (lim sin(<span class=\"v\">n</span>)) ÷ (lim <span class=\"v\">n</span>)</p><p>C'est <b>interdit</b>. La règle du quotient n'est valable que si les <b>deux</b> limites existent.</p><p>Or sin(<span class=\"v\">n</span>) n'a pas de limite — il oscille sans fin.</p><p><b>D'où les gendarmes.</b> C'est la seule voie licite pour les expressions avec sinus ou cosinus.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Осторожно с делением на отрицательное",
+     "fr": "Attention en divisant par un négatif"
+    },
+    "h": {
+     "ru": "<p>Когда делишь неравенство на <b>положительное</b> число — знаки остаются:<br>из 2 ⩽ 6 следует 1 ⩽ 3</p><p>Когда делишь на <b>отрицательное</b> — знаки <b>переворачиваются</b>:<br>из 2 ⩽ 6 следует −2 ⩾ −6</p><p><b>В задачах с жандармами</b> обычно делят на <span class=\"v\">n</span>, а оно положительно — поэтому проблем нет. Но если вдруг встретится деление на отрицательную величину, не забудь перевернуть.</p>",
+     "fr": "<p>Quand on divise une inégalité par un nombre <b>positif</b>, le sens reste :<br>de 2 ⩽ 6 on tire 1 ⩽ 3</p><p>Par un nombre <b>négatif</b>, le sens <b>s'inverse</b> :<br>de 2 ⩽ 6 on tire −2 ⩾ −6</p><p><b>Dans les exercices de gendarmes</b>, on divise en général par <span class=\"v\">n</span>, qui est positif — donc pas de souci. Mais si tu divises par une quantité négative, pense à inverser.</p>"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему годится «любой» ограниченный числитель.</b></p><p>Возьми что угодно, что не выходит за пределы, скажем, от −10 до 10. Хоть синус, хоть косинус, хоть (−1)<sup><span class=\"v\">n</span></sup>.</p><p>Раздели на миллион. Получишь число между −0,00001 и 0,00001. Мелочь.</p><p>Раздели на миллиард — станет ещё мельче.</p><p><b>Точное значение числителя не важно.</b> Важно только то, что он не убегает. Вот и вся идея этого раздела.</p>",
+     "fr": "<p><b>Pourquoi « n'importe quel » numérateur borné convient.</b></p><p>Prends n'importe quoi qui reste entre, disons, −10 et 10. Sinus, cosinus, (−1)<sup><span class=\"v\">n</span></sup>.</p><p>Divise par un million. Tu obtiens un nombre entre −0,00001 et 0,00001. Une broutille.</p><p>Divise par un milliard : encore plus petit.</p><p><b>La valeur exacte du numérateur n'importe pas.</b> Seul compte le fait qu'il ne s'échappe pas. Voilà toute l'idée de cette partie.</p>"
+    }
+   },
+   {
+    "k": "ds",
+    "h": {
+     "ru": "<p><i>Pour tout n ⩾ 1, −1 ⩽ sin(n) ⩽ 1.<br>Donc −1/n ⩽ sin(n)/n ⩽ 1/n.<br>Or lim (−1/n) = lim (1/n) = 0.<br>Donc, d'après le théorème des gendarmes, lim sin(n)/n = 0.</i></p><p>Обрати внимание на слова <b>d'après le théorème des gendarmes</b> — без ссылки на теорему рассуждение считается неполным.</p>",
+     "fr": "<p><i>Pour tout n ⩾ 1, −1 ⩽ sin(n) ⩽ 1.<br>Donc −1/n ⩽ sin(n)/n ⩽ 1/n.<br>Or lim (−1/n) = lim (1/n) = 0.<br>Donc, d'après le théorème des gendarmes, lim sin(n)/n = 0.</i></p><p>La mention <b>d'après le théorème des gendarmes</b> est obligatoire : sans elle, le raisonnement est jugé incomplet.</p>"
+    }
+   }
+  ]
+ },
+ {
+  "n": 5,
+  "t": {
+   "ru": "Поведение qⁿ",
+   "fr": "Comportement de qⁿ"
+  },
+  "st": {
+   "ru": "Самый частый случай на экзамене",
+   "fr": "Le cas le plus fréquent au bac"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Любые проценты — это геометрическая последовательность. Вклад, инфляция, вывод лекарства из крови, рост населения. Вопрос «что будет через много лет» сводится к поведению <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup>.",
+     "fr": "<b>À quoi ça sert.</b> Tout pourcentage est une suite géométrique : placement, inflation, élimination d'un médicament, croissance d'une population. La question « que se passe-t-il à long terme » revient au comportement de <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup>."
+    }
+   },
+   {
+    "k": "tab",
+    "h": {
+     "ru": "<table><tr><th>Значение <span class=\"v\">q</span></th><th>Предел</th><th>Смысл</th></tr><tr><td><span class=\"v\">q</span> > 1</td><td>+∞</td><td>взрывной рост</td></tr><tr><td><span class=\"v\">q</span> = 1</td><td>1</td><td>стоит на месте</td></tr><tr><td>−1 < <span class=\"v\">q</span> < 1</td><td>0</td><td>затухает</td></tr><tr><td><span class=\"v\">q</span> ⩽ −1</td><td>нет предела</td><td>болтается</td></tr></table>",
+     "fr": "<table><tr><th>Valeur de <span class=\"v\">q</span></th><th>Limite</th><th>Sens</th></tr><tr><td><span class=\"v\">q</span> > 1</td><td>+∞</td><td>explosion</td></tr><tr><td><span class=\"v\">q</span> = 1</td><td>1</td><td>immobile</td></tr><tr><td>−1 < <span class=\"v\">q</span> < 1</td><td>0</td><td>extinction</td></tr><tr><td><span class=\"v\">q</span> ⩽ −1</td><td>pas de limite</td><td>oscillation</td></tr></table>"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Два очень конкретных действия.</b></p><p><b>Умножать на 2:</b> 1 → 2 → 4 → 8 → 16 → 32…</p><p>Через 30 шагов перевалишь за миллиард. Это <span class=\"v\">q</span> > 1 — взрыв.</p><p><b>Умножать на 0,5:</b> 1 → 0,5 → 0,25 → 0,125…</p><p>Через 30 шагов окажешься меньше миллиардной доли. Это |<span class=\"v\">q</span>| < 1 — затухание.</p><p><b>А отрицательный случай?</b> При <span class=\"v\">q</span> = −2: 1 → −2 → 4 → −8 → 16…</p><p>Величина растёт, но знак скачет. Последовательность никуда не идёт: <b>предела нет</b>.</p>",
+     "fr": "<p><b>Deux gestes très concrets.</b></p><p><b>Multiplier par 2 :</b> 1 → 2 → 4 → 8 → 16 → 32…</p><p>Après 30 étapes, tu dépasses le milliard. C'est <span class=\"v\">q</span> > 1 : ça explose.</p><p><b>Multiplier par 0,5 :</b> 1 → 0,5 → 0,25 → 0,125…</p><p>Après 30 étapes, moins d'un milliardième. C'est |<span class=\"v\">q</span>| < 1 : ça s'éteint.</p><p><b>Et le cas négatif ?</b> Avec <span class=\"v\">q</span> = −2 : 1 → −2 → 4 → −8 → 16…</p><p>La valeur grandit, mais le signe saute. La suite ne va nulle part : <b>pas de limite</b>.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Знак важен не меньше величины",
+     "fr": "Le signe compte autant que la taille"
+    },
+    "h": {
+     "ru": "<p>Сравни <span class=\"v\">q</span> = 2 и <span class=\"v\">q</span> = −2.</p><p>2<sup><span class=\"v\">n</span></sup>: 1, 2, 4, 8, 16 → +∞<br>(−2)<sup><span class=\"v\">n</span></sup>: 1, −2, 4, −8, 16 → предела нет</p><p>Одинаковая величина, совершенно разное поведение.</p><p><b>Но:</b> при <span class=\"v\">q</span> = −0,5 получается 1; −0,5; 0,25; −0,125… Знак тоже скачет, но всё сжимается к нулю. Предел есть и равен <b>0</b>.</p><p><b>Правило:</b> знак чередуется + величина растёт → предела нет. Знак чередуется + величина убывает → предел 0.</p>",
+     "fr": "<p>Compare <span class=\"v\">q</span> = 2 et <span class=\"v\">q</span> = −2.</p><p>2<sup><span class=\"v\">n</span></sup> : 1, 2, 4, 8, 16 → +∞<br>(−2)<sup><span class=\"v\">n</span></sup> : 1, −2, 4, −8, 16 → pas de limite</p><p>Même taille, comportement opposé.</p><p><b>Mais</b> avec <span class=\"v\">q</span> = −0,5 : 1 ; −0,5 ; 0,25 ; −0,125… Le signe alterne aussi, mais tout se rapproche de zéro. La limite existe et vaut <b>0</b>.</p><p><b>Règle :</b> alternance + croissance → pas de limite. Alternance + décroissance → limite 0.</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Задача о пороге.</b> «Начиная с какого года превысит 1000?» — её решают либо перебором степеней, либо алгоритмом.",
+     "fr": "<b>Le problème du seuil.</b> « À partir de quelle année dépasse-t-on 1000 ? » — par essais successifs ou par algorithme."
+    }
+   },
+   {
+    "k": "ex",
+    "h": {
+     "ru": "<p><span class=\"v\">u<sub>n</sub></span> = 3<sup><span class=\"v\">n</span></sup>. С какого ранга превысит 500?</p><p>3¹ = 3 · 3² = 9 · 3³ = 27 · 3⁴ = 81 · 3⁵ = 243 · 3⁶ = 729</p><p>На ранге 5 — 243, ещё не хватает. На ранге 6 — 729, превысили.</p><p><b>Ответ: ранг 6.</b></p><p>Частая ошибка — ответить 5, потому что это «последнее посчитанное». Нет: ищем первый ранг, который <b>превышает</b>.</p>",
+     "fr": "<p><span class=\"v\">u<sub>n</sub></span> = 3<sup><span class=\"v\">n</span></sup>. À partir de quel rang dépasse-t-on 500 ?</p><p>3¹ = 3 · 3² = 9 · 3³ = 27 · 3⁴ = 81 · 3⁵ = 243 · 3⁶ = 729</p><p>Au rang 5 : 243, pas encore. Au rang 6 : 729, dépassé.</p><p><b>Réponse : rang 6.</b></p><p>Piège habituel : répondre 5 parce que c'est « le dernier calculé ». Non — on cherche le premier rang qui <b>dépasse</b>.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Проценты — пошагово",
+     "fr": "Les pourcentages, pas à pas"
+    },
+    "h": {
+     "ru": "<p>Вклад 5000 €, ставка 4 % в год. Сколько через 10 лет?</p><p><b>Шаг 1. Переводим процент в множитель.</b><br>Было 100 %, добавилось 4 % → стало 104 %<br>104 % = 1,04</p><p><b>Шаг 2. Записываем последовательность.</b><br><span class=\"v\">u<sub>0</sub></span> = 5000, <span class=\"v\">q</span> = 1,04<br><span class=\"v\">u<sub>n</sub></span> = 5000 × 1,04<sup><span class=\"v\">n</span></sup></p><p><b>Шаг 3. Считаем на 10 лет.</b><br>1,04<sup>10</sup> ≈ 1,4802<br>5000 × 1,4802 ≈ <b>7401 €</b></p><p><b>Шаг 4. Предел?</b><br>1,04 > 1, значит 1,04<sup><span class=\"v\">n</span></sup> → +∞.<br>Вклад растёт без предела — математически. Реально банк, конечно, не вечный.</p>",
+     "fr": "<p>Un placement de 5000 €, taux 4 % par an. Combien après 10 ans ?</p><p><b>Étape 1. Du pourcentage au coefficient.</b><br>On part de 100 %, on ajoute 4 % → 104 %<br>104 % = 1,04</p><p><b>Étape 2. On écrit la suite.</b><br><span class=\"v\">u<sub>0</sub></span> = 5000, <span class=\"v\">q</span> = 1,04<br><span class=\"v\">u<sub>n</sub></span> = 5000 × 1,04<sup><span class=\"v\">n</span></sup></p><p><b>Étape 3. Calcul sur 10 ans.</b><br>1,04<sup>10</sup> ≈ 1,4802<br>5000 × 1,4802 ≈ <b>7 401 €</b></p><p><b>Étape 4. La limite ?</b><br>1,04 > 1, donc 1,04<sup><span class=\"v\">n</span></sup> → +∞.<br>Le capital croît sans limite — mathématiquement. Dans la réalité, la banque n'est pas éternelle.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "0,999 в степени всё равно стремится к нулю",
+     "fr": "Même 0,999 finit par s'éteindre"
+    },
+    "h": {
+     "ru": "<p>Кажется, что 0,999 почти единица, значит почти ничего не меняется. Это верно <b>на первых шагах</b>.</p><p>0,999<sup>10</sup> ≈ 0,990 — почти не изменилось<br>0,999<sup>1000</sup> ≈ 0,368 — уже треть<br>0,999<sup>10000</sup> ≈ 0,00005 — почти ноль</p><p><b>Правило беспощадное:</b> если |<span class=\"v\">q</span>| < 1, предел ноль. Насколько близко <span class=\"v\">q</span> к единице — влияет только на скорость, не на результат.</p>",
+     "fr": "<p>On croit que 0,999 est presque 1, donc que rien ne change. C'est vrai <b>aux premiers pas</b>.</p><p>0,999<sup>10</sup> ≈ 0,990 — presque inchangé<br>0,999<sup>1000</sup> ≈ 0,368 — un tiers déjà<br>0,999<sup>10000</sup> ≈ 0,00005 — presque zéro</p><p><b>La règle est implacable :</b> si |<span class=\"v\">q</span>| < 1, la limite est 0. La proximité de 1 n'influence que la vitesse, pas le résultat.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Не путай q и u₀",
+     "fr": "Ne confonds pas q et u₀"
+    },
+    "h": {
+     "ru": "<p>В записи <span class=\"v\">u<sub>n</sub></span> = 7 × 3<sup><span class=\"v\">n</span></sup>:</p><p><b>7</b> — это первый член (<span class=\"v\">u<sub>0</sub></span>), потому что при <span class=\"v\">n</span> = 0 получается 7 × 1 = 7.</p><p><b>3</b> — это raison, потому что именно на неё умножаем каждый шаг.</p><p><b>Для предела важна только raison.</b> Множитель впереди ничего не решает: и 7 × 3<sup><span class=\"v\">n</span></sup>, и 0,001 × 3<sup><span class=\"v\">n</span></sup> уходят в +∞.</p><p><b>Проверка:</b> raison — это всегда основание степени, то, что стоит под показателем <span class=\"v\">n</span>.</p>",
+     "fr": "<p>Dans l'écriture <span class=\"v\">u<sub>n</sub></span> = 7 × 3<sup><span class=\"v\">n</span></sup> :</p><p><b>7</b> est le premier terme (<span class=\"v\">u<sub>0</sub></span>), car pour <span class=\"v\">n</span> = 0 on obtient 7 × 1 = 7.</p><p><b>3</b> est la raison, car c'est par elle qu'on multiplie à chaque pas.</p><p><b>Pour la limite, seule la raison compte.</b> Le facteur devant ne change rien : 7 × 3<sup><span class=\"v\">n</span></sup> et 0,001 × 3<sup><span class=\"v\">n</span></sup> partent tous deux vers +∞.</p><p><b>Repère :</b> la raison est toujours la base de la puissance, celle qui porte l'exposant <span class=\"v\">n</span>.</p>"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему сложный процент обгоняет что угодно.</b></p><p>Сравни два способа копить.</p><p><b>Способ А:</b> каждый год добавляют 1000 €. Через 30 лет — 30 000 €.</p><p><b>Способ Б:</b> каждый год сумма растёт на 10 %. Начали с 1000 €. Через 30 лет — около 17 450 €.</p><p>Пока проигрывает. Но через 50 лет: способ А даст 50 000, способ Б — около 117 000.</p><p>Через 70 лет: 70 000 против почти 790 000.</p><p><b>Вот что значит «экспонента обгоняет линейный рост».</b> Сначала медленно, потом отрыв необратим. На баке это встречается в задачах про вклады и население.</p>",
+     "fr": "<p><b>Pourquoi les intérêts composés dépassent tout.</b></p><p>Compare deux façons d'épargner.</p><p><b>Méthode A :</b> on ajoute 1000 € par an. Après 30 ans : 30 000 €.</p><p><b>Méthode B :</b> la somme croît de 10 % par an, départ 1000 €. Après 30 ans : environ 17 450 €.</p><p>Elle perd encore. Mais après 50 ans : A donne 50 000, B environ 117 000.</p><p>Après 70 ans : 70 000 contre près de 790 000.</p><p><b>Voilà ce que signifie « l'exponentielle dépasse le linéaire ».</b> Lentement d'abord, puis l'écart devient irréversible. Au bac, cela apparaît dans les problèmes de placements et de populations.</p>"
+    }
+   },
+   {
+    "k": "ds",
+    "h": {
+     "ru": "<p><i>Comme −1 &lt; 0,8 &lt; 1, on a lim<sub>n→+∞</sub> 0,8<sup>n</sup> = 0.<br>Donc la suite (u<sub>n</sub>) converge vers 0.</i></p><p>Слово <b>comme</b> в начале показывает, что ты проверил условие теоремы, а не просто назвал ответ.</p>",
+     "fr": "<p><i>Comme −1 &lt; 0,8 &lt; 1, on a lim<sub>n→+∞</sub> 0,8<sup>n</sup> = 0.<br>Donc la suite (u<sub>n</sub>) converge vers 0.</i></p><p>Le mot <b>comme</b> montre que tu as vérifié la condition du théorème, pas seulement donné le résultat.</p>"
+    }
+   }
+  ]
+ },
+ {
+  "n": 6,
+  "t": {
+   "ru": "Монотонная ограниченная",
+   "fr": "Convergence monotone"
+  },
+  "st": {
+   "ru": "Теорема, доказывающая существование предела",
+   "fr": "Le théorème d'existence"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Иногда предел нельзя вычислить напрямую — формулы просто нет. Эта теорема доказывает, что предел <b>существует</b>, даже если мы не знаем его значения. На баке это самый используемый инструмент для рекуррентных последовательностей.",
+     "fr": "<b>À quoi ça sert.</b> Parfois on ne peut pas calculer la limite directement — il n'y a pas de formule. Ce théorème prouve que la limite <b>existe</b>, même sans en connaître la valeur. C'est l'outil le plus utilisé au bac pour les suites récurrentes."
+    }
+   },
+   {
+    "k": "f",
+    "h": {
+     "ru": "Возрастающая и мажорированная → сходится<br>Убывающая и минорированная → сходится",
+     "fr": "Croissante et majorée → converge<br>Décroissante et minorée → converge"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Лифт и потолок.</b></p><p>Лифт едет вверх. Едет ещё. Но у здания есть крыша.</p><p>Сквозь крышу он пройти не может. Значит, поднимаясь, он обязательно <b>где-то остановится</b>.</p><p>Где именно? Неизвестно. Может, на восьмом этаже, может, прямо под крышей.</p><p><b>Но что остановится — точно.</b></p><p>Вот и вся теорема: подниматься бесконечно невозможно, если сверху что-то мешает.</p><p><b>А если крыши нет?</b> Тогда лифт едет бесконечно — последовательность уходит в +∞.</p>",
+     "fr": "<p><b>L'ascenseur et le plafond.</b></p><p>Un ascenseur monte. Il monte encore. Mais l'immeuble a un toit.</p><p>Il ne peut pas le traverser. Donc il finit forcément par <b>s'arrêter quelque part</b>.</p><p>Où exactement ? On ne sait pas.</p><p><b>Mais qu'il s'arrête, c'est certain.</b></p><p>C'est tout le théorème : monter sans fin est impossible si quelque chose bloque au-dessus.</p><p><b>Et sans toit ?</b> L'ascenseur monte indéfiniment : la suite tend vers +∞.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Предел ≠ мажоранта",
+     "fr": "La limite n'est pas le majorant"
+    },
+    "h": {
+     "ru": "<p>Последовательность возрастает и мажорирована десяткой. Это <b>не значит</b>, что она стремится к десяти.</p><p>Возьми <span class=\"v\">u<sub>n</sub></span> = 1 − 1/(<span class=\"v\">n</span>+1): 0; 0,5; 0,67; 0,75…</p><p>Она возрастает. Она мажорирована сотней — это правда, она никогда не превысит 100.</p><p>Стремится ли она к ста? Очевидно нет. Она стремится к <b>1</b>.</p><p><b>Мажоранта — это просто барьер</b>, а не цель. Их можно выбрать тысячу разных: 2, 10, 100. Все годятся.</p><p>Предел же один. И теорема его не даёт — она лишь говорит, что он есть.</p>",
+     "fr": "<p>Une suite croissante majorée par 10 ne tend <b>pas forcément</b> vers 10.</p><p>Prends <span class=\"v\">u<sub>n</sub></span> = 1 − 1/(<span class=\"v\">n</span>+1) : 0 ; 0,5 ; 0,67 ; 0,75…</p><p>Elle est croissante. Elle est majorée par <b>100</b> — c'est vrai, elle ne dépasse jamais 100.</p><p>Tend-elle vers 100 ? Non. Elle tend vers <b>1</b>.</p><p><b>Le majorant est une barrière</b>, pas une destination. On peut en choisir mille : 2, 10, 100.</p><p>La limite, elle, est unique. Et le théorème ne la donne pas.</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Почему нужны оба условия.</b>",
+     "fr": "<b>Pourquoi les deux hypothèses sont indispensables.</b>"
+    }
+   },
+   {
+    "k": "ul",
+    "items": [
+     {
+      "ru": "<b>Монотонность без границы:</b> последовательность <span class=\"v\">n</span> возрастает, но уходит в +∞. Не хватает потолка.",
+      "fr": "<b>Monotonie sans borne :</b> la suite <span class=\"v\">n</span> est croissante mais part à +∞. Il manque le plafond."
+     },
+     {
+      "ru": "<b>Граница без монотонности:</b> (−1)<sup><span class=\"v\">n</span></sup> ограничена, но болтается. Не хватает монотонности.",
+      "fr": "<b>Borne sans monotonie :</b> (−1)<sup><span class=\"v\">n</span></sup> est bornée mais oscille. Il manque la monotonie."
+     },
+     {
+      "ru": "<b>Вместе:</b> болтаться нельзя (монотонна), улететь нельзя (ограничена). Остаётся только сойтись.",
+      "fr": "<b>Les deux ensemble :</b> impossible d'osciller (monotone), impossible de fuir (bornée). Il ne reste qu'à converger."
+     }
+    ]
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Полное решение с двумя индукциями",
+     "fr": "Solution complète avec deux récurrences"
+    },
+    "h": {
+     "ru": "<p><span class=\"v\">u<sub>0</sub></span> = 1 и <span class=\"v\">u<sub>n+1</sub></span> = (<span class=\"v\">u<sub>n</sub></span> + 6) ÷ 2.<br>Показать, что последовательность сходится.</p><p><b>Часть 1. Ограничена сверху шестёркой.</b></p><p><i>Инициализация:</i> <span class=\"v\">u<sub>0</sub></span> = 1 ⩽ 6 ✓</p><p><i>Наследственность:</i> пусть <span class=\"v\">u<sub>n</sub></span> ⩽ 6. Тогда<br><span class=\"v\">u<sub>n+1</sub></span> = (<span class=\"v\">u<sub>n</sub></span> + 6)/2 ⩽ (6 + 6)/2 = 6 ✓</p><p><b>Часть 2. Возрастает.</b></p><p>Считаем разность:<br><span class=\"v\">u<sub>n+1</sub></span> − <span class=\"v\">u<sub>n</sub></span> = (<span class=\"v\">u<sub>n</sub></span> + 6)/2 − <span class=\"v\">u<sub>n</sub></span></p><p>Приводим к общему знаменателю:<br>= (<span class=\"v\">u<sub>n</sub></span> + 6 − 2<span class=\"v\">u<sub>n</sub></span>)/2 = (6 − <span class=\"v\">u<sub>n</sub></span>)/2</p><p>Из части 1 знаем <span class=\"v\">u<sub>n</sub></span> ⩽ 6, значит 6 − <span class=\"v\">u<sub>n</sub></span> ⩾ 0.<br>Разность неотрицательна → возрастает ✓</p><p><b>Часть 3. Вывод.</b><br>Возрастающая и мажорированная → сходится.</p><p><b>Часть 4. Предел.</b><br><span class=\"v\">ℓ</span> = (<span class=\"v\">ℓ</span> + 6)/2 → 2<span class=\"v\">ℓ</span> = <span class=\"v\">ℓ</span> + 6 → <span class=\"v\">ℓ</span> = <b>6</b></p>",
+     "fr": "<p><span class=\"v\">u<sub>0</sub></span> = 1 et <span class=\"v\">u<sub>n+1</sub></span> = (<span class=\"v\">u<sub>n</sub></span> + 6) ÷ 2.<br>Montrer que la suite converge.</p><p><b>Partie 1. Majorée par 6.</b></p><p><i>Initialisation :</i> <span class=\"v\">u<sub>0</sub></span> = 1 ⩽ 6 ✓</p><p><i>Hérédité :</i> supposons <span class=\"v\">u<sub>n</sub></span> ⩽ 6. Alors<br><span class=\"v\">u<sub>n+1</sub></span> = (<span class=\"v\">u<sub>n</sub></span> + 6)/2 ⩽ (6 + 6)/2 = 6 ✓</p><p><b>Partie 2. Croissante.</b></p><p>On calcule la différence :<br><span class=\"v\">u<sub>n+1</sub></span> − <span class=\"v\">u<sub>n</sub></span> = (<span class=\"v\">u<sub>n</sub></span> + 6)/2 − <span class=\"v\">u<sub>n</sub></span></p><p>Même dénominateur :<br>= (6 − <span class=\"v\">u<sub>n</sub></span>)/2</p><p>D'après la partie 1, <span class=\"v\">u<sub>n</sub></span> ⩽ 6, donc 6 − <span class=\"v\">u<sub>n</sub></span> ⩾ 0.<br>La différence est positive → croissante ✓</p><p><b>Partie 3. Conclusion.</b><br>Croissante et majorée → converge.</p><p><b>Partie 4. La limite.</b><br><span class=\"v\">ℓ</span> = (<span class=\"v\">ℓ</span> + 6)/2 → <span class=\"v\">ℓ</span> = <b>6</b></p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Ограничена и сходится — не одно и то же",
+     "fr": "Bornée et convergente, ce n'est pas pareil"
+    },
+    "h": {
+     "ru": "<p>Легко перепутать два слова.</p><p><b>Ограничена</b> — не выходит за какие-то пределы. Например, (−1)<sup><span class=\"v\">n</span></sup> всегда между −1 и 1.</p><p><b>Сходится</b> — приближается к одному конкретному числу.</p><p>(−1)<sup><span class=\"v\">n</span></sup> ограничена, но <b>не сходится</b> — она прыгает и не оседает.</p><p><b>Обратное верно:</b> любая сходящаяся последовательность обязательно ограничена. Если она подходит к числу, она не может улететь.</p>",
+     "fr": "<p>Deux mots faciles à confondre.</p><p><b>Bornée</b> — elle ne sort pas d'un intervalle. Par exemple (−1)<sup><span class=\"v\">n</span></sup> reste entre −1 et 1.</p><p><b>Convergente</b> — elle s'approche d'un nombre précis.</p><p>(−1)<sup><span class=\"v\">n</span></sup> est bornée mais <b>ne converge pas</b> — elle saute sans se fixer.</p><p><b>L'inverse est vrai :</b> toute suite convergente est bornée. Si elle s'approche d'un nombre, elle ne peut pas s'échapper.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Мажоранта должна работать для всех n",
+     "fr": "Le majorant doit valoir pour tout n"
+    },
+    "h": {
+     "ru": "<p>Проверить первые десять членов и сказать «мажорирована» — недостаточно.</p><p>Нужно доказать, что <b>ни один</b> член никогда не превысит границу. Обычно это делают индукцией.</p><p><b>Схема:</b> предполагаем, что <span class=\"v\">u<sub>n</sub></span> не превышает <span class=\"v\">M</span>, и показываем, что тогда и <span class=\"v\">u<sub>n+1</sub></span> не превышает.</p><p>Это как забор: если каждый, кто внутри, остаётся внутри после шага — значит никто не выйдет никогда.</p>",
+     "fr": "<p>Vérifier les dix premiers termes et écrire « majorée » ne suffit pas.</p><p>Il faut prouver qu'<b>aucun</b> terme ne dépassera jamais la borne. En général par récurrence.</p><p><b>Schéma :</b> on suppose que <span class=\"v\">u<sub>n</sub></span> ne dépasse pas <span class=\"v\">M</span>, et on montre que <span class=\"v\">u<sub>n+1</sub></span> non plus.</p><p>C'est comme une clôture : si tout ce qui est dedans y reste après un pas, alors rien ne sortira jamais.</p>"
+    }
+   },
+   {
+    "k": "ds",
+    "h": {
+     "ru": "<p>Рассуждение в три такта:</p><p><i>1. Pour tout n, u<sub>n+1</sub> − u<sub>n</sub> ⩾ 0 : la suite est croissante.<br>2. Par récurrence, u<sub>n</sub> ⩽ 5 pour tout n : la suite est majorée.<br>3. La suite (u<sub>n</sub>) est croissante et majorée, donc elle converge.</i></p><p>Заметь: в конце пишут просто <b>elle converge</b>, без указания значения.</p>",
+     "fr": "<p>Rédaction en trois temps :</p><p><i>1. Pour tout n, u<sub>n+1</sub> − u<sub>n</sub> ⩾ 0 : la suite est croissante.<br>2. Par récurrence, u<sub>n</sub> ⩽ 5 pour tout n : la suite est majorée.<br>3. La suite (u<sub>n</sub>) est croissante et majorée, donc elle converge.</i></p><p>Remarque : on écrit simplement <b>elle converge</b>, sans valeur.</p>"
+    }
+   }
+  ]
+ },
+ {
+  "n": 7,
+  "t": {
+   "ru": "Рекуррентные последовательности",
+   "fr": "Suites uₙ₊₁ = f(uₙ)"
+  },
+  "st": {
+   "ru": "Главное задание бака целиком",
+   "fr": "L'exercice complet du bac"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Это самый частый большой пример на баке. Дают <span class=\"v\">u<sub>0</sub></span> и правило, спрашивают предел. Формулы нет, посчитать напрямую нельзя — и в этом весь смысл задания.",
+     "fr": "<b>À quoi ça sert.</b> C'est le grand exercice type du bac. On donne <span class=\"v\">u<sub>0</sub></span> et une relation, on demande la limite. Sans forme explicite, impossible de calculer directement — et c'est tout l'intérêt."
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему нужна вся эта гимнастика.</b></p><p>Дано <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>). Как вычислить <span class=\"v\">u<sub>1000</sub></span>?</p><p>Пришлось бы взять тысячу корней подряд. Вручную невозможно.</p><p><b>Но точное значение и не нужно.</b> Нужно знать, куда она идёт.</p><p>Поэтому действуют иначе: показывают, что последовательность не может сбежать (ограничена) и всегда идёт в одну сторону (монотонна).</p><p>Эти два факта <b>гарантируют</b>, что она где-то осядет — это теорема из прошлого раздела.</p><p>И только потом ищут, где именно.</p>",
+     "fr": "<p><b>Pourquoi cette gymnastique.</b></p><p>Avec <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>), comment calculer <span class=\"v\">u<sub>1000</sub></span> ?</p><p>Il faudrait mille racines carrées. Impossible à la main.</p><p><b>Mais on n'a pas besoin de la valeur exacte.</b> On veut savoir où ça va.</p><p>Alors on montre que la suite ne peut pas s'échapper (bornée) et qu'elle va toujours dans le même sens (monotone).</p><p>Ces deux faits <b>garantissent</b> qu'elle se pose quelque part.</p><p>Ensuite seulement, on cherche où.</p>"
+    }
+   },
+   {
+    "k": "ol",
+    "items": [
+     {
+      "ru": "Показать, что последовательность <b>ограничена</b> — обычно по индукции",
+      "fr": "Montrer que la suite est <b>bornée</b> — souvent par récurrence"
+     },
+     {
+      "ru": "Показать, что она <b>монотонна</b>",
+      "fr": "Montrer qu'elle est <b>monotone</b>"
+     },
+     {
+      "ru": "Заключить: монотонная и ограниченная → <b>сходится</b>",
+      "fr": "Conclure : monotone et bornée → <b>converge</b>"
+     },
+     {
+      "ru": "Найти предел через <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)",
+      "fr": "Trouver la limite par <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)"
+     }
+    ]
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Ключевой момент — переход к пределу.</b> Если <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>, то и <span class=\"v\">u<sub>n+1</sub></span> → <span class=\"v\">ℓ</span> — это та же последовательность, просто сдвинутая.",
+     "fr": "<b>L'étape clé : le passage à la limite.</b> Si <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">ℓ</span>, alors <span class=\"v\">u<sub>n+1</sub></span> → <span class=\"v\">ℓ</span> aussi — c'est la même suite, décalée."
+    }
+   },
+   {
+    "k": "f",
+    "h": {
+     "ru": "<span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">f</span>(<span class=\"v\">u<sub>n</sub></span>) &nbsp;→&nbsp; <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)",
+     "fr": "<span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">f</span>(<span class=\"v\">u<sub>n</sub></span>) &nbsp;→&nbsp; <span class=\"v\">ℓ</span> = <span class=\"v\">f</span>(<span class=\"v\">ℓ</span>)"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Почему у <span class=\"v\">u<sub>n+1</sub></span> тот же предел.</b></p><p>Представь очередь людей, идущих к двери.</p><p>Последовательность <span class=\"v\">u<sub>n</sub></span> — положение <span class=\"v\">n</span>-го. Последовательность <span class=\"v\">u<sub>n+1</sub></span> — положение следующего.</p><p>Все идут к одной двери. Смотреть на «следующего» не меняет пункт назначения — только точку начала наблюдения.</p><p><b>Условие:</b> функция <span class=\"v\">f</span> должна быть непрерывной. На баке она всегда такая.</p>",
+     "fr": "<p><b>Pourquoi <span class=\"v\">u<sub>n+1</sub></span> a la même limite.</b></p><p>Imagine une file de gens qui avancent vers une porte.</p><p>La suite <span class=\"v\">u<sub>n</sub></span>, c'est la position du <span class=\"v\">n</span>-ième. <span class=\"v\">u<sub>n+1</sub></span>, celle du suivant.</p><p>Tout le monde va vers la même porte. Regarder « le suivant » ne change pas la destination.</p><p><b>Condition :</b> <span class=\"v\">f</span> doit être continue. Au bac, elle l'est toujours.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Задача целиком",
+     "fr": "Exercice mené jusqu'au bout"
+    },
+    "h": {
+     "ru": "<p><span class=\"v\">u<sub>0</sub></span> = 0 и <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>).</p><p><b>Ограничена:</b> по индукции 0 ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ 2.</p><p><b>Монотонна:</b> показываем, что возрастает.</p><p><b>Вывод:</b> возрастающая и мажорированная → сходится к <span class=\"v\">ℓ</span>.</p><p><b>Значение:</b> <span class=\"v\">ℓ</span> = √(2 + <span class=\"v\">ℓ</span>), значит <span class=\"v\">ℓ</span>² = 2 + <span class=\"v\">ℓ</span>.</p><p><span class=\"v\">ℓ</span>² − <span class=\"v\">ℓ</span> − 2 = 0 → <span class=\"v\">ℓ</span> = 2 или <span class=\"v\">ℓ</span> = −1</p><p>Отбрасываем −1, потому что все члены положительны. <b><span class=\"v\">ℓ</span> = 2</b>.</p>",
+     "fr": "<p><span class=\"v\">u<sub>0</sub></span> = 0 et <span class=\"v\">u<sub>n+1</sub></span> = √(2 + <span class=\"v\">u<sub>n</sub></span>).</p><p><b>Bornée :</b> par récurrence, 0 ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ 2.</p><p><b>Monotone :</b> on montre qu'elle est croissante.</p><p><b>Conclusion :</b> croissante et majorée → converge vers <span class=\"v\">ℓ</span>.</p><p><b>Valeur :</b> <span class=\"v\">ℓ</span> = √(2 + <span class=\"v\">ℓ</span>), donc <span class=\"v\">ℓ</span>² = 2 + <span class=\"v\">ℓ</span>.</p><p><span class=\"v\">ℓ</span>² − <span class=\"v\">ℓ</span> − 2 = 0 → <span class=\"v\">ℓ</span> = 2 ou <span class=\"v\">ℓ</span> = −1</p><p>On rejette −1 car la suite est positive. <b><span class=\"v\">ℓ</span> = 2</b>.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Последний шаг, который забывают",
+     "fr": "Le dernier réflexe, souvent oublié"
+    },
+    "h": {
+     "ru": "<p>Уравнение даёт <b>два</b> решения: 2 и −1. Какое верное? Само уравнение не отвечает.</p><p><b>Надо вернуться к последовательности.</b> Все её члены положительны — это же квадратный корень. Предел положительных чисел не может быть отрицательным.</p><p>Значит −1 отпадает.</p><p><b>На контрольной эта фраза приносит балл.</b> Написать «ℓ = 2 или ℓ = −1» и остановиться — значит не доделать.</p><p>Нужная формулировка: <i>« Comme u<sub>n</sub> ⩾ 0 pour tout n, la limite est positive. On rejette donc −1 et ℓ = 2. »</i></p>",
+     "fr": "<p>L'équation donne <b>deux</b> solutions : 2 et −1. Laquelle ? L'équation seule ne le dit pas.</p><p><b>Il faut revenir à la suite.</b> Tous ses termes sont positifs — c'est une racine carrée. Une limite de nombres positifs ne peut être négative.</p><p>Donc −1 est impossible.</p><p><b>En devoir, cette phrase vaut des points.</b> Écrire « ℓ = 2 ou ℓ = −1 » sans trancher laisse le travail inachevé.</p><p>Formulation attendue : <i>« Comme u<sub>n</sub> ⩾ 0 pour tout n, la limite est positive. On rejette donc −1 et ℓ = 2. »</i></p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Ещё одна задача целиком",
+     "fr": "Un autre exercice complet"
+    },
+    "h": {
+     "ru": "<p><span class=\"v\">u<sub>0</sub></span> = 10 и <span class=\"v\">u<sub>n+1</sub></span> = 0,5<span class=\"v\">u<sub>n</sub></span> + 3.</p><p><b>Шаг 1. Найдём неподвижную точку заранее</b> — она подскажет, к чему всё идёт.<br><span class=\"v\">ℓ</span> = 0,5<span class=\"v\">ℓ</span> + 3<br><span class=\"v\">ℓ</span> − 0,5<span class=\"v\">ℓ</span> = 3<br>0,5<span class=\"v\">ℓ</span> = 3 → <span class=\"v\">ℓ</span> = 6</p><p><b>Шаг 2. Посчитаем первые члены.</b><br><span class=\"v\">u<sub>0</sub></span> = 10<br><span class=\"v\">u<sub>1</sub></span> = 5 + 3 = 8<br><span class=\"v\">u<sub>2</sub></span> = 4 + 3 = 7<br><span class=\"v\">u<sub>3</sub></span> = 3,5 + 3 = 6,5</p><p>Видно: убывает и приближается к шести.</p><p><b>Шаг 3. Доказываем минорирование шестёркой.</b><br><i>Инициализация:</i> 10 ⩾ 6 ✓<br><i>Наследственность:</i> если <span class=\"v\">u<sub>n</sub></span> ⩾ 6, то <span class=\"v\">u<sub>n+1</sub></span> = 0,5<span class=\"v\">u<sub>n</sub></span> + 3 ⩾ 0,5×6 + 3 = 6 ✓</p><p><b>Шаг 4. Доказываем убывание.</b><br><span class=\"v\">u<sub>n+1</sub></span> − <span class=\"v\">u<sub>n</sub></span> = 0,5<span class=\"v\">u<sub>n</sub></span> + 3 − <span class=\"v\">u<sub>n</sub></span> = 3 − 0,5<span class=\"v\">u<sub>n</sub></span></p><p>Так как <span class=\"v\">u<sub>n</sub></span> ⩾ 6, имеем 0,5<span class=\"v\">u<sub>n</sub></span> ⩾ 3, значит разность ⩽ 0 → убывает ✓</p><p><b>Вывод.</b> Убывающая и минорированная → сходится, предел = <b>6</b>.</p>",
+     "fr": "<p><span class=\"v\">u<sub>0</sub></span> = 10 et <span class=\"v\">u<sub>n+1</sub></span> = 0,5<span class=\"v\">u<sub>n</sub></span> + 3.</p><p><b>Étape 1. Trouvons le point fixe d'abord</b> — il indique la destination.<br><span class=\"v\">ℓ</span> = 0,5<span class=\"v\">ℓ</span> + 3 → 0,5<span class=\"v\">ℓ</span> = 3 → <span class=\"v\">ℓ</span> = 6</p><p><b>Étape 2. Calculons les premiers termes.</b><br><span class=\"v\">u<sub>0</sub></span> = 10 · <span class=\"v\">u<sub>1</sub></span> = 8 · <span class=\"v\">u<sub>2</sub></span> = 7 · <span class=\"v\">u<sub>3</sub></span> = 6,5</p><p>On voit : elle décroît vers 6.</p><p><b>Étape 3. Minorée par 6.</b><br><i>Initialisation :</i> 10 ⩾ 6 ✓<br><i>Hérédité :</i> si <span class=\"v\">u<sub>n</sub></span> ⩾ 6, alors <span class=\"v\">u<sub>n+1</sub></span> ⩾ 0,5×6 + 3 = 6 ✓</p><p><b>Étape 4. Décroissante.</b><br><span class=\"v\">u<sub>n+1</sub></span> − <span class=\"v\">u<sub>n</sub></span> = 3 − 0,5<span class=\"v\">u<sub>n</sub></span></p><p>Comme <span class=\"v\">u<sub>n</sub></span> ⩾ 6, on a 0,5<span class=\"v\">u<sub>n</sub></span> ⩾ 3, donc la différence est ⩽ 0 → décroissante ✓</p><p><b>Conclusion.</b> Décroissante et minorée → converge vers <b>6</b>.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Неподвижная точка может отталкивать",
+     "fr": "Un point fixe peut repousser"
+    },
+    "h": {
+     "ru": "<p>Неподвижная точка — это <b>кандидат</b> на предел, а не гарантия.</p><p>Возьми <span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> − 3. Неподвижная точка: <span class=\"v\">ℓ</span> = 2<span class=\"v\">ℓ</span> − 3 → <span class=\"v\">ℓ</span> = 3.</p><p>Стартуем с <span class=\"v\">u<sub>0</sub></span> = 4 (чуть выше трёх):<br>4 → 5 → 7 → 11 → 19 → 35…</p><p>Уходит в бесконечность! От точки 3 она <b>убегает</b>, а не приближается.</p><p><b>Правило:</b> если множитель перед <span class=\"v\">u<sub>n</sub></span> по модулю больше единицы — точка отталкивающая. Поэтому и нельзя просто решить уравнение и сказать «вот предел». Сначала надо доказать сходимость.</p>",
+     "fr": "<p>Le point fixe est un <b>candidat</b>, pas une garantie.</p><p>Prends <span class=\"v\">u<sub>n+1</sub></span> = 2<span class=\"v\">u<sub>n</sub></span> − 3. Point fixe : <span class=\"v\">ℓ</span> = 3.</p><p>Démarrons à <span class=\"v\">u<sub>0</sub></span> = 4 (juste au-dessus) :<br>4 → 5 → 7 → 11 → 19 → 35…</p><p>Ça part à l'infini ! La suite <b>fuit</b> le point 3 au lieu de s'en approcher.</p><p><b>Règle :</b> si le coefficient devant <span class=\"v\">u<sub>n</sub></span> est de valeur absolue supérieure à 1, le point fixe est répulsif. C'est pourquoi on ne peut pas juste résoudre l'équation et annoncer la limite. Il faut d'abord prouver la convergence.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Порядок вопросов не случаен",
+     "fr": "L'ordre des questions n'est pas arbitraire"
+    },
+    "h": {
+     "ru": "<p>В задании сначала просят границы, потом монотонность, потом сходимость, и только в конце предел.</p><p>Это не формальность. Каждый шаг <b>нужен следующему</b>:</p><p>· границы используются, чтобы доказать монотонность (как в примере выше)<br>· монотонность плюс границы дают сходимость<br>· и только зная, что предел есть, можно его искать</p><p><b>Если поменять порядок</b>, решение развалится: нельзя искать предел того, что, возможно, не сходится.</p>",
+     "fr": "<p>L'énoncé demande d'abord les bornes, puis la monotonie, puis la convergence, et enfin la limite.</p><p>Ce n'est pas une formalité. Chaque étape <b>sert à la suivante</b> :</p><p>· les bornes servent à prouver la monotonie (comme dans l'exemple ci-dessus)<br>· monotonie plus bornes donnent la convergence<br>· et ce n'est qu'en sachant que la limite existe qu'on peut la chercher</p><p><b>En changeant l'ordre</b>, le raisonnement s'écroule : on ne cherche pas la limite de ce qui pourrait diverger.</p>"
+    }
+   }
+  ]
+ },
+ {
+  "n": 8,
+  "t": {
+   "ru": "Как устроено задание бака",
+   "fr": "L'exercice de bac, structure et rédaction"
+  },
+  "st": {
+   "ru": "Порядок вопросов и что приносит баллы",
+   "fr": "L'ordre des questions et ce qui rapporte"
+  },
+  "b": [
+   {
+    "k": "pourquoi",
+    "h": {
+     "ru": "<b>Зачем это нужно.</b> Знать методы мало — на экзамене надо собрать их в связное решение и оформить так, как ждёт проверяющий. Половина потерянных баллов уходит не на ошибки, а на отсутствие нужных фраз.",
+     "fr": "<b>À quoi ça sert.</b> Connaître les méthodes ne suffit pas : il faut les enchaîner et rédiger comme le correcteur l'attend. La moitié des points perdus ne vient pas d'erreurs, mais de phrases manquantes."
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Типичный порядок вопросов.</b> Он почти всегда один и тот же.",
+     "fr": "<b>L'ordre habituel des questions.</b> Il varie peu."
+    }
+   },
+   {
+    "k": "ol",
+    "items": [
+     {
+      "ru": "Вычислить первые члены",
+      "fr": "Calculer les premiers termes"
+     },
+     {
+      "ru": "Предположить поведение (<i>conjecturer</i>)",
+      "fr": "Conjecturer le comportement"
+     },
+     {
+      "ru": "Доказать по индукции",
+      "fr": "Démontrer par récurrence"
+     },
+     {
+      "ru": "Изучить монотонность",
+      "fr": "Étudier la monotonie"
+     },
+     {
+      "ru": "Заключить о сходимости",
+      "fr": "Conclure sur la convergence"
+     },
+     {
+      "ru": "Определить предел",
+      "fr": "Déterminer la limite"
+     }
+    ]
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Стратегия, которая спасает баллы.</b></p><p>Если застрял на третьем вопросе — <b>не останавливайся</b>. Следующие часто не зависят от точного вычисления.</p><p>Можно написать: «<i>on admet le résultat de la question 3</i>» и двигаться дальше.</p><p>Проверяющие это принимают. Ты теряешь баллы за третий вопрос, но сохраняешь за четвёртый, пятый и шестой.</p><p><b>Дорогая ошибка:</b> двадцать минут сидеть над одним вопросом и оставить остальное пустым.</p><p><b>Ещё совет:</b> первые два вопроса почти всегда лёгкие — несколько вычислений и наблюдение. Это гарантированные баллы, не пропускай их.</p>",
+     "fr": "<p><b>Une stratégie qui rapporte.</b></p><p>Si tu bloques sur la question 3, <b>ne t'arrête pas</b>. Les suivantes sont souvent indépendantes.</p><p>Écris : « <i>on admet le résultat de la question 3</i> » et continue.</p><p>Les correcteurs l'acceptent. Tu perds les points de Q3 mais gardes ceux de Q4, Q5, Q6.</p><p><b>L'erreur coûteuse :</b> passer vingt minutes sur une question et laisser le reste vide.</p><p><b>Autre conseil :</b> Q1 et Q2 sont presque toujours faciles. Ce sont des points sûrs.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Conjecturer ≠ démontrer",
+     "fr": "Conjecturer n'est pas démontrer"
+    },
+    "h": {
+     "ru": "<p>Эти два слова требуют разного.</p><p><b>Conjecturer</b> — посчитать несколько членов и высказать предположение. Достаточно наблюдения.</p><p><b>Démontrer</b> — доказать для <b>всех</b> <span class=\"v\">n</span>. Нужна индукция или общая формула.</p><p>Ответить на «démontrer» тремя примерами — потерять весь балл за вопрос.</p>",
+     "fr": "<p>Ces deux mots demandent des choses différentes.</p><p><b>Conjecturer</b> — calculer quelques termes et émettre une hypothèse. L'observation suffit.</p><p><b>Démontrer</b> — prouver pour <b>tout</b> <span class=\"v\">n</span>. Il faut une récurrence ou une formule générale.</p><p>Répondre à « démontrer » par trois exemples fait perdre tout le point.</p>"
+    }
+   },
+   {
+    "k": "p",
+    "h": {
+     "ru": "<b>Что реально приносит баллы.</b> Голый ответ почти ничего не стоит — ценится путь.",
+     "fr": "<b>Ce qui rapporte vraiment.</b> Un résultat nu ne vaut presque rien — c'est la démarche qui compte."
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Две работы с одним ответом",
+     "fr": "Deux copies, même résultat"
+    },
+    "h": {
+     "ru": "<p><b>Работа А:</b> «ℓ = 2»</p><p><b>Работа Б:</b> «La suite est croissante et majorée par 2, donc elle converge vers une limite ℓ. En passant à la limite dans la relation, on obtient ℓ = √(2+ℓ), soit ℓ² − ℓ − 2 = 0. Les solutions sont 2 et −1. Comme tous les termes sont positifs, on rejette −1. <b>Donc la suite converge vers 2.</b>»</p><p>Один и тот же результат. Но работа А получает один балл из пяти, работа Б — все пять.</p><p><b>Это не украшательство.</b> Проверяющий ставит балл за то, что может проследить. Ответ без обоснования мог быть угадан или списан.</p>",
+     "fr": "<p><b>Copie A :</b> « ℓ = 2 »</p><p><b>Copie B :</b> « La suite est croissante et majorée par 2, donc elle converge vers une limite ℓ. En passant à la limite dans la relation, on obtient ℓ = √(2+ℓ), soit ℓ² − ℓ − 2 = 0. Les solutions sont 2 et −1. Comme tous les termes sont positifs, on rejette −1. <b>Donc la suite converge vers 2.</b> »</p><p>Même résultat. La copie A récolte un point sur cinq, la copie B les cinq.</p><p><b>Ce n'est pas de la décoration.</b> Le correcteur note ce qu'il peut suivre.</p>"
+    }
+   },
+   {
+    "k": "ex",
+    "n": {
+     "ru": "Как оформить индукцию на баллы",
+     "fr": "Rédiger une récurrence pour les points"
+    },
+    "h": {
+     "ru": "<p>Сравни два оформления одного и того же доказательства.</p><p><b>Слабо:</b><br>«n=0: 1=1 ok. Предположим верно. Тогда u<sub>n+1</sub> = 2(2<sup>n</sup>−1)+1 = 2<sup>n+1</sup>−1. Значит верно.»</p><p><b>Как надо:</b><br>«<i>Montrons par récurrence que pour tout entier naturel n, u<sub>n</sub> = 2<sup>n</sup> − 1.</i></p><p><i><b>Initialisation.</b> Pour n = 0, la formule donne 2<sup>0</sup> − 1 = 0, et u<sub>0</sub> = 0 par définition. Donc P(0) est vraie.</i></p><p><i><b>Hérédité.</b> Supposons que pour un entier naturel n fixé, u<sub>n</sub> = 2<sup>n</sup> − 1. Montrons que u<sub>n+1</sub> = 2<sup>n+1</sup> − 1.<br>Par définition, u<sub>n+1</sub> = 2u<sub>n</sub> + 1.<br>En utilisant l'hypothèse de récurrence : u<sub>n+1</sub> = 2(2<sup>n</sup> − 1) + 1 = 2<sup>n+1</sup> − 1.<br>Donc P(n+1) est vraie.</i></p><p><i><b>Conclusion.</b> D'après le principe de récurrence, P(n) est vraie pour tout entier naturel n.</i>»</p><p>Разница: названы три этапа, есть фраза «en utilisant l'hypothèse», есть вывод. Первый вариант получит один балл, второй — все.</p>",
+     "fr": "<p>Compare deux rédactions de la même démonstration.</p><p><b>Faible :</b><br>« n=0 : 1=1 ok. Supposons vrai. Alors u<sub>n+1</sub> = 2(2<sup>n</sup>−1)+1 = 2<sup>n+1</sup>−1. Donc vrai. »</p><p><b>Attendu :</b><br>« <i>Montrons par récurrence que pour tout entier naturel n, u<sub>n</sub> = 2<sup>n</sup> − 1.</i></p><p><i><b>Initialisation.</b> Pour n = 0, la formule donne 2<sup>0</sup> − 1 = 0, et u<sub>0</sub> = 0 par définition. Donc P(0) est vraie.</i></p><p><i><b>Hérédité.</b> Supposons que pour un entier naturel n fixé, u<sub>n</sub> = 2<sup>n</sup> − 1. Montrons que u<sub>n+1</sub> = 2<sup>n+1</sup> − 1.<br>Par définition, u<sub>n+1</sub> = 2u<sub>n</sub> + 1.<br>En utilisant l'hypothèse de récurrence : u<sub>n+1</sub> = 2(2<sup>n</sup> − 1) + 1 = 2<sup>n+1</sup> − 1.<br>Donc P(n+1) est vraie.</i></p><p><i><b>Conclusion.</b> D'après le principe de récurrence, P(n) est vraie pour tout entier naturel n.</i> »</p><p>La différence : les trois étapes sont nommées, la phrase « en utilisant l'hypothèse » est là, la conclusion aussi. La première version vaut un point, la seconde tous.</p>"
+    }
+   },
+   {
+    "k": "piege",
+    "n": {
+     "ru": "Часто забываемые фразы",
+     "fr": "Les phrases qu'on oublie"
+    },
+    "h": {
+     "ru": "<p>Список того, что теряют чаще всего:</p><p>· <b>«pour tout entier naturel n»</b> перед общим вычислением<br>· <b>«en utilisant l'hypothèse de récurrence»</b> в наследственности<br>· <b>«d'après le théorème des gendarmes»</b> при encadrement<br>· <b>«comme tous les termes sont positifs, on rejette…»</b> при выборе корня<br>· <b>финальная фраза по-французски</b> с ответом</p><p>Каждая — от половины до целого балла. В сумме это может быть больше, чем за все вычисления.</p>",
+     "fr": "<p>Liste de ce qu'on perd le plus souvent :</p><p>· <b>« pour tout entier naturel n »</b> avant un calcul général<br>· <b>« en utilisant l'hypothèse de récurrence »</b> dans l'hérédité<br>· <b>« d'après le théorème des gendarmes »</b> après un encadrement<br>· <b>« comme tous les termes sont positifs, on rejette… »</b> au choix de la racine<br>· <b>la phrase finale</b> avec le résultat</p><p>Chacune vaut d'un demi à un point. Au total, cela peut dépasser les points de calcul.</p>"
+    }
+   },
+   {
+    "k": "image",
+    "h": {
+     "ru": "<p><b>Как распределить время на экзамене.</b></p><p>Задание на последовательности обычно даёт 5–7 баллов и занимает около 25 минут.</p><p>Разумная раскладка:</p><p>· вопросы 1–2 (вычисления и conjecture) — <b>5 минут</b>, баллы почти гарантированы<br>· вопрос 3 (индукция) — <b>8 минут</b>, самый дорогой<br>· вопросы 4–5 (монотонность, сходимость) — <b>7 минут</b><br>· вопрос 6 (предел) — <b>5 минут</b></p><p><b>Главное правило:</b> если на каком-то вопросе прошло больше десяти минут — пиши «on admet» и двигайся. Оставшиеся вопросы стоят больше, чем застрявший.</p>",
+     "fr": "<p><b>Comment répartir le temps à l'examen.</b></p><p>Un exercice sur les suites vaut en général 5 à 7 points et prend environ 25 minutes.</p><p>Répartition raisonnable :</p><p>· questions 1–2 (calculs et conjecture) — <b>5 minutes</b>, points presque garantis<br>· question 3 (récurrence) — <b>8 minutes</b>, la plus chère<br>· questions 4–5 (monotonie, convergence) — <b>7 minutes</b><br>· question 6 (limite) — <b>5 minutes</b></p><p><b>Règle d'or :</b> si une question dépasse dix minutes, écris « on admet » et avance. Les questions restantes valent plus que celle où tu es bloqué.</p>"
+    }
+   },
+   {
+    "k": "ds",
+    "h": {
+     "ru": "<p><b>Три фразы, которые должны быть всегда:</b></p><p><i>Pour tout entier naturel n…</i> — в начале общего вычисления</p><p><i>Donc…</i> — перед каждым выводом</p><p><i>Donc la suite converge vers 2.</i> — финальная фраза по-французски</p><p>Без последней решение считается незавершённым, даже если всё посчитано верно.</p>",
+     "fr": "<p><b>Trois phrases toujours nécessaires :</b></p><p><i>Pour tout entier naturel n…</i> — au début d'un calcul général</p><p><i>Donc…</i> — avant chaque conclusion</p><p><i>Donc la suite converge vers 2.</i> — la phrase finale</p><p>Sans la dernière, la réponse est jugée incomplète, même si tout est juste.</p>"
+    }
+   }
+  ]
+ }
 ];
 
 

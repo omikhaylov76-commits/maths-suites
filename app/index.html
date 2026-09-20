@@ -839,7 +839,7 @@ to{opacity:1;transform:translateX(0)}
             <i class="bell-dot" id="bell-dot"></i>
           </button>
         </div>
-        <p class="sub">Première spécialité · programme 2026</p>
+        <p class="sub" id="sub"></p>
       </div>
       <div class="tabs" id="tabs"></div>
 
@@ -7491,6 +7491,9 @@ function drawMods(){
       ? "Cours · Première"
       : "Cours · Terminale";
   }
+  const sb = $("sub"); if(sb) sb.textContent = ANNEE === "prem"
+    ? "Première spécialité · programme 2026"
+    : "Terminale spécialité · programme en vigueur";
 
   const liste = modulesAnnee();
 

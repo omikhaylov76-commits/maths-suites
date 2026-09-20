@@ -446,6 +446,53 @@ to{opacity:1;transform:translateX(0)}
 .memo-x{margin:10px 0 0;padding-top:10px;border-top:1px solid var(--mist);
   font-size:12px;line-height:1.5;color:var(--soft)}
 
+
+/* ── suivi parent ── */
+.pstate{display:flex;gap:14px;align-items:flex-start;background:#fff;
+  border:1px solid var(--mist);border-radius:16px;padding:18px 20px}
+.pstate-dot{flex:0 0 11px;height:11px;border-radius:50%;margin-top:5px;background:var(--slate)}
+.pstate-dot.vert{background:#3fa66a;box-shadow:0 0 0 4px rgba(63,166,106,.14)}
+.pstate-dot.orange{background:var(--ember);box-shadow:0 0 0 4px rgba(246,119,72,.14)}
+.pstate-dot.gris{background:#b9bec7}
+.pstate-h{font:600 16.5px/1.3 "Inter",sans-serif;color:var(--ink);letter-spacing:-.01em}
+.pstate-s{font-size:13.5px;color:var(--soft);margin-top:4px;line-height:1.5}
+
+.cal{display:grid;grid-template-columns:repeat(15,1fr);gap:5px;margin-top:4px}
+.cal i{display:block;aspect-ratio:1;border-radius:4px;background:#efe7dc}
+.cal i.lv1{background:#f9c9b2}
+.cal i.lv2{background:#f79a6f}
+.cal i.lv3{background:var(--ember)}
+.cal i.today{box-shadow:0 0 0 2px var(--ink)}
+.cal-leg{display:flex;align-items:center;gap:5px;margin-top:9px;
+  font-size:10.5px;color:var(--soft)}
+.cal-leg i{width:11px;height:11px;border-radius:3px;display:block;background:#efe7dc}
+.cal-leg i.lv1{background:#f9c9b2}
+.cal-leg i.lv2{background:#f79a6f}
+.cal-leg i.lv3{background:var(--ember)}
+
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.pcard{background:#fff;border:1px solid var(--mist);border-radius:14px;padding:15px 16px}
+.pcard b{display:block;font:600 22px/1 "Inter",sans-serif;color:var(--ink);letter-spacing:-.02em}
+.pcard span{display:block;font-size:12px;color:var(--soft);margin-top:5px;line-height:1.4}
+
+.pchs{display:flex;flex-direction:column;gap:7px}
+.pch{display:flex;align-items:center;gap:11px;background:#fff;
+  border:1px solid var(--mist);border-radius:13px;padding:12px 15px}
+.pch-n{flex:1;font-size:14px;color:var(--ink)}
+.pch-b{flex:0 0 62px;height:6px;border-radius:3px;background:#e8ded1;overflow:hidden}
+.pch-f{height:100%;background:var(--ember);border-radius:3px;min-width:0;transition:width .4s var(--e)}
+.pch-e{flex:0 0 auto;font-size:11px;color:var(--ember);letter-spacing:.5px}
+.pch-s{flex:0 0 auto;font-size:11.5px;color:var(--soft);min-width:34px;text-align:right}
+
+.pnote{margin-top:20px;padding:15px 17px;background:var(--warm);
+  border-radius:14px;font-size:13px;line-height:1.55;color:var(--charcoal)}
+.pnote b{color:var(--ink);font-weight:600;display:block;margin-bottom:5px}
+
+@media (min-width:900px){
+  .cal{grid-template-columns:repeat(30,1fr);gap:6px}
+  .pgrid{grid-template-columns:repeat(4,1fr)}
+}
+
 /* ── révision mêlée ── */
 .revcard{display:block;width:100%;text-align:left;background:var(--warm);
   border:1px solid rgba(214,122,78,.22);border-radius:16px;padding:16px 18px;
@@ -634,6 +681,48 @@ to{opacity:1;transform:translateX(0)}
       <div class="dock-in">
         <button class="go" id="go">Suivant</button>
         <div class="keys" id="keys"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-parent">
+    <div class="top">
+      <div class="top-in">
+        <button class="back" id="p-back" aria-label="Retour">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="top-t">
+          <span class="top-name">Suivi</span>
+          <span class="top-step" id="p-sub">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="pad">
+      <div class="work">
+
+        <div class="pstate" id="p-state">
+          <div class="pstate-dot" id="p-dot"></div>
+          <div>
+            <div class="pstate-h" id="p-h">—</div>
+            <div class="pstate-s" id="p-s"></div>
+          </div>
+        </div>
+
+        <p class="list-lbl" style="margin-top:26px">30 DERNIERS JOURS</p>
+        <div class="cal" id="p-cal"></div>
+        <div class="cal-leg">
+          <span>moins</span>
+          <i class="lv0"></i><i class="lv1"></i><i class="lv2"></i><i class="lv3"></i>
+          <span>plus</span>
+        </div>
+
+        <div class="pgrid" id="p-grid"></div>
+
+        <p class="list-lbl" style="margin-top:26px">PROGRESSION</p>
+        <div class="pchs" id="p-chs"></div>
+
+        <div class="pnote" id="p-note" style="display:none"></div>
+
       </div>
     </div>
   </section>
@@ -3179,7 +3268,7 @@ let DB = load();
 
 function load(){
   try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){}
-  return { ch:{}, streak:0, last:null, aides:0 };
+  return { ch:{}, streak:0, last:null, aides:0, jours:{} };
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} }
 function today(){
@@ -3209,6 +3298,160 @@ function show(id){
 
 
 
+
+
+/* ═══════════ JOURNAL D'ACTIVITÉ ═══════════ */
+/* une ligne par jour : ce qui permet au parent de voir l'assiduité */
+
+let TIC = null;   /* début de l'exercice courant */
+
+function jour(d){
+  if(!DB.jours) DB.jours = {};
+  const k = d || today();
+  if(!DB.jours[k]) DB.jours[k] = { ex:0, ok:0, sec:0, ch:[] };
+  return DB.jours[k];
+}
+
+function tic(){ TIC = Date.now(); }
+
+function tac(juste, chapitre){
+  const j = jour();
+  j.ex++;
+  if(juste) j.ok++;
+  if(TIC){
+    /* on plafonne à 3 min par exercice : sinon une pause fausse le total */
+    j.sec += Math.min(Math.round((Date.now()-TIC)/1000), 180);
+    TIC = null;
+  }
+  if(chapitre && !j.ch.includes(chapitre)) j.ch.push(chapitre);
+
+  /* on ne garde que 120 jours */
+  const cles = Object.keys(DB.jours).sort();
+  while(cles.length > 120) delete DB.jours[cles.shift()];
+
+  save();
+  pousser();
+}
+
+/* derniers N jours, du plus ancien au plus récent */
+function derniersJours(n){
+  const out = [];
+  for(let i=n-1;i>=0;i--){
+    const d = new Date(Date.now() - i*864e5);
+    const k = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    out.push({ cle:k, date:d, ...(DB.jours && DB.jours[k] ? DB.jours[k] : { ex:0, ok:0, sec:0, ch:[] }) });
+  }
+  return out;
+}
+
+/* ═══════════ SYNCHRONISATION ═══════════ */
+/* un code, pas de compte. Le code voyage avec l'élève. */
+
+const SYNC_URL = "https://suites-sync.__COMPTE__.workers.dev";
+const SYNC_KEY = "suites.fr.code";
+
+let SYNC = {
+  code: null,
+  etat: "hors",      /* hors · ok · envoi · erreur */
+  dernier: 0
+};
+
+function codeSync(){
+  if(SYNC.code) return SYNC.code;
+  try{ SYNC.code = localStorage.getItem(SYNC_KEY); }catch(e){}
+  return SYNC.code;
+}
+
+function nouveauCode(){
+  const L = "ABCDEFGHJKLMNPQRSTUVWXYZ";   /* sans I ni O */
+  let s = "";
+  for(let i=0;i<4;i++) s += L[Math.floor(Math.random()*L.length)];
+  s += "-" + String(Math.floor(Math.random()*9000)+1000);
+  return s;
+}
+
+function poserCode(code){
+  SYNC.code = code.toUpperCase().trim();
+  try{ localStorage.setItem(SYNC_KEY, SYNC.code); }catch(e){}
+  majBadgeSync();
+}
+
+function oublierCode(){
+  SYNC.code = null;
+  try{ localStorage.removeItem(SYNC_KEY); }catch(e){}
+  SYNC.etat = "hors";
+  majBadgeSync();
+}
+
+/* ── envoi (throttlé) ── */
+let syncTimer = null;
+
+function pousser(force){
+  const code = codeSync();
+  if(!code) return;
+  clearTimeout(syncTimer);
+  const delai = force ? 0 : 2500;
+  syncTimer = setTimeout(async ()=>{
+    SYNC.etat = "envoi"; majBadgeSync();
+    try{
+      const r = await fetch(SYNC_URL + "/p/" + code, {
+        method:"PUT",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(DB)
+      });
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      SYNC.dernier = j.maj || Date.now();
+      SYNC.etat = "ok";
+    }catch(e){
+      SYNC.etat = "erreur";
+    }
+    majBadgeSync();
+  }, delai);
+}
+
+/* ── récupération ── */
+async function tirer(){
+  const code = codeSync();
+  if(!code) return { ok:false, raison:"pas de code" };
+  SYNC.etat = "envoi"; majBadgeSync();
+  try{
+    const r = await fetch(SYNC_URL + "/p/" + code, { cache:"no-store" });
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    if(j.vide){
+      SYNC.etat = "ok"; majBadgeSync();
+      return { ok:true, vide:true };
+    }
+    /* le serveur a déjà fusionné : on adopte */
+    DB = {
+      ch:      j.ch      || {},
+      fiches:  j.fiches  || {},
+      streak:  j.streak  || 0,
+      last:    j.last    || null,
+      aides:   j.aides   || 0
+    };
+    save();
+    SYNC.etat = "ok"; SYNC.dernier = j.maj || Date.now();
+    majBadgeSync();
+    return { ok:true };
+  }catch(e){
+    SYNC.etat = "erreur"; majBadgeSync();
+    return { ok:false, raison:e.message };
+  }
+}
+
+function majBadgeSync(){
+  const b = $("syncbadge");
+  if(!b) return;
+  const code = codeSync();
+  if(!code){ b.style.display = "none"; return; }
+  b.style.display = "inline-flex";
+  b.className = "syncbadge " + SYNC.etat;
+  const pt = $("sync-pt");
+  if(pt) pt.textContent = code;
+}
+
 /* ═══════════ PILE DE NAVIGATION ═══════════ */
 /* chaque écran se souvient d'où l'on vient : retour = un pas en arrière */
 
@@ -3231,7 +3474,8 @@ function retour(){
   switch(p.ecran){
     case "s-mods":  show("s-mods");  drawMods();  break;
     case "s-home":  show("s-home");  drawHome();  break;
-    case "s-done":  show("s-done");  redrawDone(); break;
+    case "s-done":   show("s-done");   redrawDone(); break;
+    case "s-parent": show("s-parent"); drawParent(); break;
     default:        show("s-mods");  drawMods();
   }
 }
@@ -3250,6 +3494,109 @@ function redrawDone(){
   else tip.style.display="none";
   $("d-more").textContent = s.more;
   R.ch = s.ch;
+}
+
+
+/* ═══════════ SUIVI PARENT ═══════════ */
+
+function drawParent(){
+  const js = derniersJours(30);
+  const actifs = js.filter(j=>j.ex>0);
+  const dernier = [...js].reverse().find(j=>j.ex>0);
+
+  /* ── état : une phrase qui répond « s'y met-il ? » ── */
+  const dot = $("p-dot"), h = $("p-h"), s = $("p-s");
+  const hier = js[js.length-2], auj = js[js.length-1];
+  const sem = js.slice(-7).filter(j=>j.ex>0).length;
+
+  let ecart = null;
+  if(dernier){
+    const d = new Date(dernier.cle);
+    ecart = Math.round((Date.now() - d.getTime()) / 864e5);
+  }
+
+  if(!dernier){
+    dot.className = "pstate-dot gris";
+    h.textContent = "Pas encore commencé";
+    s.textContent = "Aucun exercice enregistré sur cet appareil.";
+  } else if(ecart <= 1){
+    dot.className = "pstate-dot vert";
+    h.textContent = auj.ex>0 ? "Il a travaillé aujourd'hui" : "Il a travaillé hier";
+    s.textContent = sem + (sem>1?" jours":" jour") + " sur les 7 derniers.";
+  } else if(ecart <= 3){
+    dot.className = "pstate-dot orange";
+    h.textContent = "Dernière séance il y a " + ecart + " jours";
+    s.textContent = sem>0 ? sem + (sem>1?" jours":" jour") + " sur les 7 derniers." : "Rien cette semaine.";
+  } else {
+    dot.className = "pstate-dot gris";
+    h.textContent = "Rien depuis " + ecart + " jours";
+    s.textContent = "Dernière séance le " + frDate(dernier.cle);
+  }
+
+  $("p-sub").textContent = actifs.length
+    ? actifs.length + (actifs.length>1?" jours actifs":" jour actif") + " sur 30"
+    : "aucune activité";
+
+  /* ── calendrier ── */
+  const cal = $("p-cal"); cal.innerHTML = "";
+  const aujCle = today();
+  js.forEach(j=>{
+    const i = document.createElement("i");
+    const lv = j.ex===0 ? 0 : j.ex<5 ? 1 : j.ex<12 ? 2 : 3;
+    i.className = "lv"+lv + (j.cle===aujCle ? " today" : "");
+    i.title = frDate(j.cle) + " · " + j.ex + " exercice" + (j.ex>1?"s":"");
+    cal.appendChild(i);
+  });
+
+  /* ── chiffres ── */
+  const tot   = js.reduce((a,j)=>a+j.ex,0);
+  const just  = js.reduce((a,j)=>a+j.ok,0);
+  const secs  = js.reduce((a,j)=>a+j.sec,0);
+  const pct   = tot ? Math.round(just/tot*100) : 0;
+  const mins  = Math.round(secs/60);
+
+  const moyenne = actifs.length ? Math.round(tot/actifs.length) : 0;
+
+  $("p-grid").innerHTML = `
+    <div class="pcard"><b>${tot}</b><span>exercices<br>en 30 jours</span></div>
+    <div class="pcard"><b>${pct}%</b><span>justes du<br>premier coup</span></div>
+    <div class="pcard"><b>${mins}</b><span>minutes<br>au total</span></div>
+    <div class="pcard"><b>${moyenne}</b><span>exercices<br>par séance</span></div>`;
+
+  /* ── progression par chapitre ── */
+  const box = $("p-chs"); box.innerHTML = "";
+  const chs = MODULES[0].chapitres.map(n=>CHAPITRES.find(c=>c.n===n)).filter(c=>c&&c.pret);
+  chs.forEach(c=>{
+    const d = DB.ch[c.n] || {};
+    const vus = (d.vus||[]).length;
+    const tot = poolOf(c.n).length;
+    const pc  = tot ? Math.min(100, Math.round(vus/tot*100)) : 0;
+    const row = document.createElement("div");
+    row.className = "pch";
+    const etoiles = d.done ? "★".repeat(d.stars||1) + "☆".repeat(3-(d.stars||1)) : "";
+    row.innerHTML = `
+      <span class="pch-n">${c.nom}</span>
+      <span class="pch-e">${etoiles}</span>
+      <span class="pch-b"><span class="pch-f" style="width:${pc}%"></span></span>
+      <span class="pch-s">${pc}%</span>`;
+    box.appendChild(row);
+  });
+
+  /* ── note d'interprétation ── */
+  const note = $("p-note");
+  if(tot >= 10 && pct < 50){
+    note.style.display = "block";
+    note.innerHTML = `<b>À savoir</b>Un taux bas au début est normal : les exercices sont mélangés exprès, ce qui rend la pratique plus difficile mais la mémoire plus durable. Ce qui compte, c'est la régularité.`;
+  } else if(actifs.length >= 5){
+    note.style.display = "block";
+    note.innerHTML = `<b>Bon rythme</b>La régularité pèse plus que la durée : 10 minutes par jour valent mieux qu'une heure le dimanche.`;
+  } else note.style.display = "none";
+}
+
+function frDate(cle){
+  const [a,m,j] = cle.split("-");
+  const mois = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+  return parseInt(j) + " " + mois[parseInt(m)-1];
 }
 
 /* ═══════════ ÉCRAN MODULES ═══════════ */
@@ -3783,6 +4130,7 @@ function bindPad(){
 
 function drawQ(){
   R.mode="q"; R.tried=false;
+  tic();
   padHide();
   const ch = CHAPITRES.find(c=>c.n===R.ch);
   const q = R.queue[R.qi];
@@ -3886,6 +4234,7 @@ function answerQcm(i){
     if(!R.tried) R.first++;
     R.total++;
     if(q._id) planifier(q._id, !R.tried);
+    tac(!R.tried, R.ch);
     openExp(true,q.opts[i].why,q.regle);
     finishQ();
   } else {
@@ -3908,6 +4257,7 @@ function answerNum(){
     if(!R.tried) R.first++;
     R.total++;
     if(q._id) planifier(q._id, !R.tried);
+    tac(!R.tried, R.ch);
     padHide();
     openExp(true,q.ok,q.regle);
     finishQ();
@@ -4056,6 +4406,33 @@ document.addEventListener("keydown",e=>{
   }
   if(e.key==="Escape"){ retour(); }
 });
+
+
+/* ── entrée discrète : appui long sur le titre, ou ?suivi dans l'adresse ── */
+(function(){
+  const cible = document.querySelector("#s-mods .hero h1");
+  if(cible){
+    let tm = null;
+    const start = ()=>{ tm = setTimeout(()=>{ ouvrirSuivi(); }, 700); };
+    const stop  = ()=>{ clearTimeout(tm); };
+    cible.addEventListener("touchstart", start, {passive:true});
+    cible.addEventListener("touchend",   stop,  {passive:true});
+    cible.addEventListener("touchmove",  stop,  {passive:true});
+    cible.addEventListener("mousedown",  start);
+    cible.addEventListener("mouseup",    stop);
+    cible.addEventListener("mouseleave", stop);
+  }
+  if(location.search.indexOf("suivi") >= 0) setTimeout(ouvrirSuivi, 300);
+})();
+
+function ouvrirSuivi(){
+  PILE.push({ ecran: (document.querySelector(".screen.on")||{}).id || "s-mods" });
+  show("s-parent");
+  drawParent();
+}
+
+$("p-back").onclick = ()=> retour();
+
 
 drawMods();
 </script>

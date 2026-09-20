@@ -223,8 +223,8 @@ to{opacity:1;transform:translateX(0)}
 .slow-btn svg{transition:transform var(--t-move) var(--e)}
 .slow-btn.open svg{transform:rotate(180deg)}
 .slow{
-  display:block;max-height:0;overflow:hidden;margin-top:0;margin-bottom:0;opacity:0;
-  transition:max-height 440ms var(--e), margin-top 440ms var(--e), opacity 300ms var(--e-soft);
+  display:block;height:0;overflow:hidden;margin-top:0;margin-bottom:0;opacity:0;
+  transition:height 440ms var(--e), opacity 300ms var(--e-soft);
 }
 .slow.open{margin-top:16px;margin-bottom:4px;opacity:1}
 .slow-in{
@@ -400,7 +400,7 @@ to{opacity:1;transform:translateX(0)}
 }
 
 /* объяснение */
-.exp{max-height:0;overflow:hidden;transition:max-height 440ms var(--e),margin-top 440ms var(--e);margin-top:0}
+.exp{height:0;overflow:hidden;transition:height 440ms var(--e),margin-top 440ms var(--e);margin-top:0}
 .exp.open{margin-top:18px}
 .exp-in{padding:18px 19px;border-radius:var(--r-card);font-size:14.8px;line-height:1.62}
 .exp-in.win{background:var(--ok-soft);border:1px solid var(--ok-line)}
@@ -666,8 +666,7 @@ to{opacity:1;transform:translateX(0)}
 
 .pt-wrap{margin-top:12px}
 .pt-card{background:#fff;border:1px solid var(--mist);border-radius:15px;
-  padding:16px 18px;margin-bottom:9px;
-  animation:qIn var(--t-base) var(--e)}
+  padding:16px 18px;margin-bottom:9px}
 .pt-h{display:flex;align-items:baseline;gap:9px;margin-bottom:11px}
 .pt-n{flex:0 0 auto;font:600 9.5px/1.6 "Inter",sans-serif;letter-spacing:.08em;
   padding:2px 7px;border-radius:5px;background:var(--warm);color:var(--ember)}
@@ -7407,7 +7406,7 @@ function drawPonts(ch, anim){
       </div>`).join("") +
     `<button class="pt-btn" id="pt-close">Masquer les bases</button></div>`;
 
-  if(anim) animH(box, oldH, box.scrollHeight, 440);
+  if(anim) slideH(box, oldH, box.scrollHeight, 440);
 
   box.querySelectorAll(".pt-go").forEach(b=>{
     b.onclick = ()=>{
@@ -8118,14 +8117,14 @@ function drawCard(){
         void vp.offsetHeight;
         vp.style.transition = "height 440ms var(--e)";
         vp.style.height = H1 + "px";
+        setTimeout(()=>{ vp.style.transition="none"; fitHeight(false); }, 480);
       }
-      setTimeout(()=>{ if(vp) vp.style.transition="none"; fitHeight(false); }, 460);
     } else {
       /* cible calculée avant de replier : hauteur ouverte − contenu − marges */
       const cOuvert = cardH(slide);
       const perte = box.scrollHeight + 20;
       box.classList.remove("open");
-      slowClose(box, ()=>{ measureFloor(); fitHeight(false); });
+      slowClose(box);
       const H1 = Math.max(cOuvert - perte, FLOOR);
       if(vp){
         vp.style.transition = "none";
@@ -8133,6 +8132,9 @@ function drawCard(){
         void vp.offsetHeight;
         vp.style.transition = "height 440ms var(--e)";
         vp.style.height = H1 + "px";
+        setTimeout(()=>{ vp.style.transition="none"; measureFloor(); fitHeight(false); }, 480);
+      } else {
+        setTimeout(()=>{ measureFloor(); fitHeight(false); }, 480);
       }
     }
   };
@@ -8323,53 +8325,53 @@ function drawQ(){
 
 /* ступенчатые подсказки */
 
-/* ── accordéons doux : hauteur mesurée, sans plafond fixe ── */
-function animH(el, fromH, toH, dur, after){
+/* ── accordéons doux : hauteur exacte animée (le contenu ne reflue pas) ── */
+function slideH(el, fromH, toH, dur, after){
   el.style.overflow = "hidden";
   el.style.transition = "none";
-  el.style.maxHeight = fromH + "px";
+  el.style.height = fromH + "px";
   void el.offsetHeight;
-  el.style.transition = "max-height " + dur + "ms var(--e)";
-  el.style.maxHeight = toH + "px";
+  el.style.transition = "height " + dur + "ms var(--e)";
+  el.style.height = toH + "px";
   let t = setTimeout(fin, dur + 90);
   function fin(ev){
-    if(ev && ev.propertyName && ev.propertyName !== "max-height") return;
+    if(ev && ev.propertyName && ev.propertyName !== "height") return;
     clearTimeout(t);
     el.removeEventListener("transitionend", fin);
-    el.style.maxHeight = "none";
-    el.style.overflow = "";
     el.style.transition = "";
+    el.style.height = "";
+    el.style.overflow = "";
     if(after) after();
   }
   el.addEventListener("transitionend", fin);
 }
-function slowOpen(box){
-  box.style.maxHeight = "0px";
+function slowOpen(box, after){
+  box.style.height = "0px";
   void box.offsetHeight;
-  box.style.maxHeight = box.scrollHeight + "px";
+  box.style.height = box.scrollHeight + "px";
   let t = setTimeout(fin, 540);
   function fin(ev){
-    if(ev && ev.propertyName && ev.propertyName !== "max-height") return;
+    if(ev && ev.propertyName && ev.propertyName !== "height") return;
     clearTimeout(t);
     box.removeEventListener("transitionend", fin);
-    box.style.maxHeight = "none";
+    box.style.height = "auto";
+    if(after) after();
   }
   box.addEventListener("transitionend", fin);
 }
 function slowClose(box, after){
-  box.style.maxHeight = box.scrollHeight + "px";
+  box.style.height = box.scrollHeight + "px";
   void box.offsetHeight;
-  box.style.maxHeight = "0px";
+  box.style.height = "0px";
   let t = setTimeout(fin, 540);
   function fin(ev){
-    if(ev && ev.propertyName && ev.propertyName !== "max-height") return;
+    if(ev && ev.propertyName && ev.propertyName !== "height") return;
     clearTimeout(t);
     box.removeEventListener("transitionend", fin);
     if(after) after();
   }
   box.addEventListener("transitionend", fin);
 }
-
 function drawAid(level, anim){
   const q = R.queue[R.qi];
   const box = $("aid");
@@ -8392,7 +8394,7 @@ function drawAid(level, anim){
     </button>`;
   }
   box.innerHTML = html;
-  if(anim) animH(box, oldH, box.scrollHeight, 440);
+  if(anim) slideH(box, oldH, box.scrollHeight, 440);
   const b=$("aid-btn");
   if(b) b.onclick=()=>{
     DB.aides=(DB.aides||0)+1; R.aides++; save();
@@ -8467,7 +8469,10 @@ function openExp(win,text,regle){
     ${regle?`<div class="rule"><b>À retenir.</b> ${regle}</div>`:``}
     ${!win?`<div class="rule" style="color:var(--miss)">Réessaie.</div>`:``}`;
   box.classList.add("open");
-  box.style.maxHeight = box.scrollHeight + "px";
+  box.style.height = "0px";
+  void box.offsetHeight;
+  box.style.height = box.scrollHeight + "px";
+  setTimeout(()=>{ box.style.height = "auto"; }, 500);
 }
 
 function finishQ(){

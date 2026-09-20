@@ -3061,6 +3061,868 @@ const PLUS = {
 
 /* ═══════════ MODULES ═══════════ */
 
+const CH_TERM_A = [
+
+/* ═════════ 11 · RÉCURRENCE ═════════ */
+{
+  n:11, nom:"Raisonnement par récurrence", sous:"Démontrer pour tout n", pret:true, ds:true,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"La chaîne de dominos",
+      c:`<p>Comment prouver qu'une propriété est vraie pour <b>tous</b> les entiers, alors qu'il y en a une infinité ?</p>
+        <p>On ne peut pas les vérifier un par un. Le raisonnement par <b>récurrence</b> règle cela en deux étapes.</p>
+        <div class="show"><b>1.</b> On pousse le premier domino<br><b>2.</b> Chaque domino fait tomber le suivant</div>
+        <p>Si ces deux points sont vrais, toute la rangée tombe — quelle que soit sa longueur.</p>`,
+      lent:`<p><b>Une rangée infinie de dominos.</b></p>
+        <p>Tu veux prouver qu'ils tombent tous. Impossible de les regarder un par un : il y en a une infinité.</p>
+        <p>Mais deux choses suffisent :</p>
+        <p><b>Le premier tombe.</b> Tu le pousses, tu le vois tomber. C'est <b>l'initialisation</b>.</p>
+        <p><b>Chaque domino qui tombe renverse son voisin.</b> Tu ne regardes pas un domino précis — tu montres que <i>n'importe lequel</i> qui tombe fait tomber le suivant. C'est <b>l'hérédité</b>.</p>
+        <p>Alors tout tombe. Le premier renverse le deuxième, qui renverse le troisième, et ainsi de suite sans fin.</p>
+        <p><b>Pourquoi ça marche :</b> on remplace une infinité de vérifications par deux phrases. C'est l'outil le plus puissant du programme.</p>`
+    },
+    {
+      k:"LA MÉTHODE", t:"Trois étapes, toujours les mêmes",
+      c:`<p><b>Initialisation.</b> On vérifie la propriété au premier rang (souvent <span class="v">n</span> = 0 ou 1).</p>
+        <p><b>Hérédité.</b> On suppose la propriété vraie à un rang <span class="v">n</span> <b>fixé</b>, et on démontre qu'elle est alors vraie au rang <span class="v">n</span>+1.</p>
+        <p><b>Conclusion.</b> On invoque le principe de récurrence.</p>
+        <div class="note"><b>À retenir.</b> Les trois étapes rapportent chacune des points. Sauter l'initialisation ou oublier la conclusion coûte cher.</div>`,
+      lent:`<p><b>Pourquoi l'initialisation est indispensable.</b></p>
+        <p>Imagine qu'on prouve seulement l'hérédité : « si un domino tombe, le suivant tombe aussi ».</p>
+        <p>Très bien. Mais si <b>personne ne pousse le premier</b>, rien ne se passe. Toute la rangée reste debout.</p>
+        <p>L'hérédité sans initialisation ne prouve rien du tout.</p>
+        <p><b>Et l'inverse ?</b> Si tu pousses le premier mais que les dominos sont trop espacés, seul le premier tombe. L'initialisation seule ne suffit pas non plus.</p>
+        <p>Il faut vraiment les deux.</p>`
+    },
+    {
+      k:"LE PIÈGE", t:"« pour un n fixé », jamais « pour tout n »",
+      c:`<p>À l'étape d'hérédité, la formulation est stricte :</p>
+        <div class="show">Supposons que pour un entier <span class="v">n</span> <b>fixé</b>, P(<span class="v">n</span>) soit vraie.</div>
+        <p>Écrire « supposons que <b>pour tout</b> <span class="v">n</span>, P(<span class="v">n</span>) soit vraie » est une faute de logique.</p>
+        <div class="note"><b>Pourquoi.</b> Si on suppose la propriété vraie partout, il n'y a plus rien à démontrer — on a supposé la conclusion.</div>`,
+      lent:`<p><b>La différence est énorme, même si les mots se ressemblent.</b></p>
+        <p>« Pour un <span class="v">n</span> fixé » = je regarde <b>un seul</b> domino, celui qui est en train de tomber. Je montre qu'il renverse son voisin.</p>
+        <p>« Pour tout <span class="v">n</span> » = je suppose que <b>toute la rangée</b> est déjà tombée. Mais c'est exactement ce que je voulais prouver !</p>
+        <p>C'est comme dire : « supposons que j'aie raison, donc j'ai raison ». Ça ne démontre rien.</p>
+        <p><b>Le correcteur regarde cette phrase.</b> C'est là qu'il voit si tu as compris le raisonnement ou si tu récites.</p>`
+    },
+    {
+      k:"EXEMPLE", t:"Une démonstration complète",
+      c:`<p>Soit <span class="v">u<sub>0</sub></span> = 1 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> + 1.<br>Montrer que <span class="v">u<sub>n</sub></span> = 2<sup><span class="v">n</span>+1</sup> − 1.</p>
+        <p><b>Initialisation.</b> Pour <span class="v">n</span> = 0 : 2<sup>1</sup> − 1 = 1 = <span class="v">u<sub>0</sub></span> ✓</p>
+        <p><b>Hérédité.</b> Supposons <span class="v">u<sub>n</sub></span> = 2<sup><span class="v">n</span>+1</sup> − 1 pour un <span class="v">n</span> fixé.</p>
+        <div class="show"><span class="v">u<sub>n+1</sub></span> = 2(2<sup><span class="v">n</span>+1</sup> − 1) + 1 = 2<sup><span class="v">n</span>+2</sup> − 1 ✓</div>
+        <p><b>Conclusion.</b> Par récurrence, la formule est vraie pour tout <span class="v">n</span>.</p>`,
+      lent:`<p><b>Regardons le cœur du calcul, ligne par ligne.</b></p>
+        <p>On part de la relation donnée : <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> + 1.</p>
+        <p><b>Étape clé :</b> on remplace <span class="v">u<sub>n</sub></span> par ce qu'on a supposé. C'est ça, utiliser l'hypothèse.</p>
+        <p>2 × (2<sup><span class="v">n</span>+1</sup> − 1) + 1</p>
+        <p>On développe : 2 × 2<sup><span class="v">n</span>+1</sup> = 2<sup><span class="v">n</span>+2</sup>, et 2 × (−1) = −2.</p>
+        <p>Donc : 2<sup><span class="v">n</span>+2</sup> − 2 + 1 = 2<sup><span class="v">n</span>+2</sup> − 1</p>
+        <p><b>Et maintenant, le moment important :</b> compare avec la formule au rang <span class="v">n</span>+1. Elle dirait 2<sup>(<span class="v">n</span>+1)+1</sup> − 1, c'est-à-dire 2<sup><span class="v">n</span>+2</sup> − 1.</p>
+        <p>Identique. L'hérédité est prouvée.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`Dans une récurrence, que vérifie l'<b>initialisation</b> ?`,
+        opts:[{t:`La propriété au premier rang`,ok:true,why:`On pousse le premier domino.`},
+              {t:`La propriété pour tout n`,ok:false,why:`C'est ce qu'on veut démontrer au final.`},
+              {t:`Que la suite converge`,ok:false,why:`Rien à voir avec la convergence.`}],
+        regle:`Initialisation = premier rang.`,
+        aides:[`Quel domino pousse-t-on en premier ?`,`Le tout premier, au rang n = 0 ou 1.`],
+        sol:[`L'initialisation vérifie P(n₀)`,`C'est le point de départ de la chaîne`,`<b>La propriété au premier rang</b>`] },
+
+      { k:"TROUVE L'ERREUR", type:"qcm", q:`Un élève écrit :<br>« Supposons que pour tout entier n, P(n) soit vraie. »<br>Verdict ?`,
+        opts:[{t:`Faux : il faut « pour un entier n fixé »`,ok:true,why:`Sinon on suppose ce qu'on veut démontrer.`},
+              {t:`Juste`,ok:false,why:`Supposer la propriété partout rend la démonstration inutile.`}],
+        regle:`Hérédité : un rang fixé, pas tous.`,
+        aides:[`Que resterait-il à démontrer ?`,`Rien — c'est le problème.`],
+        sol:[`« Pour tout n » suppose la conclusion`,`On ne regarde qu'un seul rang à la fois`,`<b>Faux</b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>0</sub></span> = 3 et <span class="v">u<sub>n+1</sub></span> = 2<span class="v">u<sub>n</sub></span> − 1.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
+        rep:17, ind:"un entier", ok:`3 → 5 → 9 → <b>17</b>`, no:`Applique la relation trois fois.`,
+        regle:`Une récurrence se déroule pas à pas.`,
+        aides:[`<span class="v">u<sub>1</sub></span> = 2×3 − 1 = 5.`,`Puis 9, puis 17.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 5`,`<span class="v">u<sub>2</sub></span> = 9`,`<span class="v">u<sub>3</sub></span> = <b>17</b>`] },
+
+      { k:"QCM", type:"qcm", q:`On veut montrer <span class="v">u<sub>n</sub></span> = 3<sup><span class="v">n</span></sup>. À l'hérédité, on part de <span class="v">u<sub>n+1</sub></span> = 3<span class="v">u<sub>n</sub></span>.<br>Que fait-on ensuite ?`,
+        opts:[{t:`On remplace <span class="v">u<sub>n</sub></span> par 3<sup><span class="v">n</span></sup>`,ok:true,why:`C'est exactement l'hypothèse de récurrence.`},
+              {t:`On remplace <span class="v">u<sub>n+1</sub></span> par 3<sup><span class="v">n</span>+1</sup>`,ok:false,why:`Ce serait supposer ce qu'on démontre.`},
+              {t:`On calcule les premiers termes`,ok:false,why:`Ce n'est pas une démonstration.`}],
+        regle:`L'hypothèse sert à remplacer le terme de rang n.`,
+        aides:[`Qu'a-t-on le droit de supposer ?`,`Uniquement la formule au rang n.`],
+        sol:[`L'hypothèse porte sur <span class="v">u<sub>n</sub></span>`,`On l'injecte dans la relation`,`<b>On remplace <span class="v">u<sub>n</sub></span> par 3<sup><span class="v">n</span></sup></b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 2<sup><span class="v">n</span>+1</sup> − 1.<br>Calculer <span class="v">u<sub>4</sub></span>.`,
+        rep:31, ind:"un entier", ok:`2<sup>5</sup> − 1 = 32 − 1 = <b>31</b>`, no:`L'exposant vaut n+1 = 5.`,
+        regle:`Attention à l'exposant.`,
+        aides:[`2<sup>4+1</sup> = 2<sup>5</sup>.`,`32 − 1.`],
+        sol:[`Exposant : 4 + 1 = 5`,`2<sup>5</sup> = 32`,`32 − 1 = <b>31</b>`] }
+    ],
+    [
+      { k:"VRAI OU FAUX", type:"qcm", q:`« L'hérédité seule suffit à démontrer une propriété. »`,
+        opts:[{t:"Faux",ok:true,why:`Sans initialisation, aucun domino ne tombe.`},
+              {t:"Vrai",ok:false,why:`Il manque le point de départ.`}],
+        regle:`Les deux étapes sont nécessaires.`,
+        aides:[`Que se passe-t-il si personne ne pousse le premier ?`,`Rien ne bouge.`],
+        sol:[`L'hérédité dit : si un tombe, le suivant tombe`,`Sans premier domino poussé, la chaîne ne démarre pas`,`<b>Faux</b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>0</sub></span> = 2 et <span class="v">u<sub>n+1</sub></span> = 3<span class="v">u<sub>n</sub></span> + 4.<br>Calculer <span class="v">u<sub>2</sub></span>.`,
+        rep:34, ind:"un entier", ok:`2 → 10 → <b>34</b>`, no:`Deux applications.`,
+        regle:`Pas à pas.`,
+        aides:[`<span class="v">u<sub>1</sub></span> = 3×2 + 4 = 10.`,`<span class="v">u<sub>2</sub></span> = 3×10 + 4.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 10`,`<span class="v">u<sub>2</sub></span> = 30 + 4`,`<b>34</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Que conclut-on après avoir prouvé initialisation et hérédité ?`,
+        opts:[{t:`La propriété est vraie pour tout n ⩾ n₀`,ok:true,why:`C'est le principe de récurrence.`},
+              {t:`La propriété est vraie pour n₀ seulement`,ok:false,why:`L'hérédité propage la propriété.`},
+              {t:`La suite est croissante`,ok:false,why:`Sans rapport.`}],
+        regle:`Conclusion : pour tout n à partir du rang initial.`,
+        aides:[`Tous les dominos tombent-ils ?`,`Oui, à partir du premier poussé.`],
+        sol:[`Le premier est vrai`,`Chaque rang entraîne le suivant`,`<b>Vraie pour tout n ⩾ n₀</b>`] },
+
+      { k:"DÉFI ⭑", hard:true, type:"num", q:`<span class="v">u<sub>0</sub></span> = 1, <span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> + 2<span class="v">n</span> + 1.<br>Calculer <span class="v">u<sub>3</sub></span>.`,
+        rep:9, ind:"un entier", ok:`1 → 2 → 5 → <b>9</b>`, no:`La quantité ajoutée dépend du rang.`,
+        regle:`Ici le pas change à chaque étape.`,
+        aides:[`Pour n=0 : +1, donc <span class="v">u<sub>1</sub></span> = 2.`,`Pour n=1 : +3 → 5. Pour n=2 : +5.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 1 + 1 = 2`,`<span class="v">u<sub>2</sub></span> = 2 + 3 = 5`,`<span class="v">u<sub>3</sub></span> = 5 + 5 = <b>9</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Pour prouver qu'une suite est <b>positive</b> par récurrence, que suppose-t-on à l'hérédité ?`,
+        opts:[{t:`<span class="v">u<sub>n</sub></span> ⩾ 0 pour un n fixé`,ok:true,why:`Puis on en déduit <span class="v">u<sub>n+1</sub></span> ⩾ 0.`},
+              {t:`<span class="v">u<sub>n+1</sub></span> ⩾ 0`,ok:false,why:`C'est ce qu'on veut démontrer.`},
+              {t:`La suite est croissante`,ok:false,why:`Autre propriété.`}],
+        regle:`On suppose au rang n, on démontre au rang n+1.`,
+        aides:[`Sur quel rang porte l'hypothèse ?`,`Sur n, pas sur n+1.`],
+        sol:[`Hypothèse : au rang n`,`Objectif : au rang n+1`,`<b><span class="v">u<sub>n</sub></span> ⩾ 0 pour un n fixé</b>`] }
+    ]
+  ]
+},
+
+/* ═════════ 12 · LIMITE D'UNE SUITE ═════════ */
+{
+  n:12, nom:"Limite d'une suite", sous:"Converge, diverge, oscille", pret:true, ds:true,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"Où va la suite, très loin ?",
+      c:`<p>La question de la limite : que deviennent les termes quand <span class="v">n</span> devient énorme ?</p>
+        <p>Trois réponses possibles :</p>
+        <div class="show"><b>Elle converge</b> → elle s'approche d'un nombre <span class="v">ℓ</span><br>
+        <b>Elle diverge vers ±∞</b> → elle part sans fin<br>
+        <b>Elle n'a pas de limite</b> → elle oscille</div>`,
+      lent:`<p><b>Trois destins, trois images.</b></p>
+        <p><b>Converger</b> — une balle qui rebondit de moins en moins haut. Elle finit par se poser. La hauteur tend vers 0.</p>
+        <p><b>Diverger vers +∞</b> — un escalier sans fin. Tu montes, tu montes, rien ne t'arrête.</p>
+        <p><b>Osciller</b> — un pendule qui ne ralentit pas. Il va d'un côté, de l'autre, éternellement. Il ne se pose nulle part.</p>
+        <p>Exemple d'oscillation : <span class="v">u<sub>n</sub></span> = (−1)<sup><span class="v">n</span></sup> donne 1, −1, 1, −1… Elle ne s'approche d'aucun nombre.</p>`
+    },
+    {
+      k:"LE PIÈGE", t:"Diverger ≠ partir à l'infini",
+      c:`<p>Le mot <b>diverger</b> signifie seulement : <b>ne pas avoir de limite finie</b>.</p>
+        <p>Deux cas très différents :</p>
+        <div class="show">(−1)<sup><span class="v">n</span></sup> → oscille entre −1 et 1<br>
+        <span class="v">n</span>² → part vers +∞</div>
+        <p>Les deux divergent. Mais la première reste bornée !</p>`,
+      lent:`<p><b>L'erreur classique en devoir.</b></p>
+        <p>On lit « la suite diverge » et on écrit « donc elle tend vers +∞ ». Faux.</p>
+        <p>Regarde (−1)<sup><span class="v">n</span></sup> : 1, −1, 1, −1, 1…</p>
+        <p>Elle ne dépasse jamais 1. Elle ne descend jamais sous −1. Elle est <b>parfaitement bornée</b>.</p>
+        <p>Et pourtant elle diverge — parce qu'elle ne se pose sur aucune valeur.</p>
+        <p><b>Retiens :</b> diverger = « pas de limite finie ». Ça peut vouloir dire « part à l'infini » <i>ou</i> « oscille sans fin ». Il faut préciser lequel.</p>`
+    },
+    {
+      k:"À CONNAÎTRE", t:"Les limites de référence",
+      c:`<p>Ces limites doivent être sues par cœur — elles servent dans presque tous les exercices.</p>
+        <div class="show"><span class="v">n</span> → +∞ &nbsp;·&nbsp; <span class="v">n</span>² → +∞ &nbsp;·&nbsp; √<span class="v">n</span> → +∞</div>
+        <div class="show">1/<span class="v">n</span> → 0 &nbsp;·&nbsp; 1/<span class="v">n</span>² → 0 &nbsp;·&nbsp; 1/√<span class="v">n</span> → 0</div>
+        <div class="note"><b>Le principe.</b> Un dénominateur qui grandit écrase la fraction vers zéro.</div>`,
+      lent:`<p><b>Pourquoi 1/<span class="v">n</span> tend vers 0.</b></p>
+        <p>Imagine un gâteau que tu partages.</p>
+        <p>Entre 2 personnes : chacun a 1/2 du gâteau. Entre 10 : 1/10. Entre 1000 : 1/1000.</p>
+        <p>Plus il y a de monde, plus la part est petite. Avec un million de personnes, la part est presque invisible.</p>
+        <p>Elle n'atteint jamais zéro — il reste toujours une miette. Mais elle s'en approche autant qu'on veut.</p>
+        <p><b>C'est exactement ça, une limite nulle.</b> Pas « ça vaut zéro », mais « ça devient aussi proche de zéro qu'on le souhaite ».</p>`
+    },
+    {
+      k:"MÉTHODE", t:"Le quotient de polynômes",
+      c:`<p>Cas très fréquent : une fraction avec des puissances de <span class="v">n</span> en haut et en bas.</p>
+        <p><b>Règle :</b> on compare les degrés dominants.</p>
+        <div class="show">degré du haut &lt; degré du bas → limite <b>0</b><br>
+        degrés égaux → rapport des <b>coefficients</b><br>
+        degré du haut &gt; degré du bas → <b>±∞</b></div>`,
+      lent:`<p><b>Une course entre le haut et le bas.</b></p>
+        <p>Prends (3<span class="v">n</span> + 1) ÷ (<span class="v">n</span>² + 5).</p>
+        <p>En haut, <span class="v">n</span> grandit. En bas, <span class="v">n</span>² grandit <b>beaucoup plus vite</b>.</p>
+        <p>Pour <span class="v">n</span> = 1000 : le haut vaut environ 3 000, le bas environ 1 000 000. Le rapport ≈ 0,003.</p>
+        <p>Pour <span class="v">n</span> = 1 000 000 : le rapport devient minuscule.</p>
+        <p><b>Le bas gagne la course</b> → la limite est 0.</p>
+        <p>Si les deux avaient le même degré, par exemple (3<span class="v">n</span>²+1) ÷ (2<span class="v">n</span>²+5), ils grandiraient à la même vitesse. La limite serait alors 3/2 — le rapport des coefficients.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`Que vaut la limite de <span class="v">u<sub>n</sub></span> = 1/<span class="v">n</span> ?`,
+        opts:[{t:"0",ok:true,why:`Le dénominateur grandit, la fraction s'écrase.`},
+              {t:"1",ok:false,why:`Non : 1/1000 est déjà très petit.`},
+              {t:"+∞",ok:false,why:`Au contraire, elle diminue.`}],
+        regle:`1/<span class="v">n</span> → 0`,
+        aides:[`Calcule 1/10, puis 1/1000.`,`0,1 puis 0,001 — ça descend.`],
+        sol:[`1/10 = 0,1`,`1/1000 = 0,001`,`La limite est <b>0</b>`] },
+
+      { k:"VRAI OU FAUX", type:"qcm", q:`« La suite (−1)<sup><span class="v">n</span></sup> tend vers l'infini. »`,
+        opts:[{t:"Faux",ok:true,why:`Elle oscille entre −1 et 1 : elle est bornée.`},
+              {t:"Vrai",ok:false,why:`Ses termes ne dépassent jamais 1.`}],
+        regle:`Diverger ≠ tendre vers l'infini.`,
+        aides:[`Écris les premiers termes.`,`1, −1, 1, −1 — jamais plus grand que 1.`],
+        sol:[`Termes : 1, −1, 1, −1…`,`Bornée entre −1 et 1`,`<b>Faux</b> — elle diverge mais reste bornée`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = (2<span class="v">n</span> + 3) ÷ (<span class="v">n</span> + 1) ?`,
+        opts:[{t:"2",ok:true,why:`Degrés égaux → rapport des coefficients : 2/1.`},
+              {t:"0",ok:false,why:`Les degrés sont égaux, pas inférieurs.`},
+              {t:"+∞",ok:false,why:`Le haut ne domine pas.`}],
+        regle:`Degrés égaux → rapport des coefficients.`,
+        aides:[`Quels sont les degrés en haut et en bas ?`,`1 et 1 — égaux.`],
+        sol:[`Degré du haut : 1 · degré du bas : 1`,`Coefficients : 2 et 1`,`Limite = <b>2</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = (<span class="v">n</span> + 4) ÷ (<span class="v">n</span>² + 1) ?`,
+        opts:[{t:"0",ok:true,why:`Le dénominateur a un degré plus élevé.`},
+              {t:"1",ok:false,why:`Les degrés ne sont pas égaux.`},
+              {t:"+∞",ok:false,why:`C'est le bas qui domine.`}],
+        regle:`Degré du bas plus grand → limite 0.`,
+        aides:[`Compare les degrés : 1 et 2.`,`Le bas grandit plus vite.`],
+        sol:[`Degré haut 1 &lt; degré bas 2`,`Le dénominateur écrase la fraction`,`Limite = <b>0</b>`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 3<span class="v">n</span> ?`,
+        opts:[{t:"+∞",ok:true,why:`<span class="v">n</span>² l'emporte largement sur 3<span class="v">n</span>.`},
+              {t:"0",ok:false,why:`Rien ne s'écrase ici.`},
+              {t:"−∞",ok:false,why:`Le terme dominant est positif.`}],
+        regle:`Le terme de plus haut degré impose la limite.`,
+        aides:[`Pour n=100 : 10000 − 300.`,`Le carré domine largement.`],
+        sol:[`<span class="v">n</span>² croît bien plus vite que 3<span class="v">n</span>`,`Pour n=100 : 10 000 − 300 = 9 700`,`Limite = <b>+∞</b>`] }
+    ],
+    [
+      { k:"QCM", type:"qcm", q:`Une suite converge vers 5. Que signifie exactement cette phrase ?`,
+        opts:[{t:`Les termes s'approchent de 5 autant qu'on veut`,ok:true,why:`C'est la définition intuitive de la convergence.`},
+              {t:`Un terme vaut exactement 5`,ok:false,why:`Pas nécessairement.`},
+              {t:`Tous les termes sont inférieurs à 5`,ok:false,why:`Ils peuvent approcher par au-dessus.`}],
+        regle:`Converger = s'approcher indéfiniment.`,
+        aides:[`Faut-il atteindre la valeur ?`,`Non, seulement s'en approcher.`],
+        sol:[`La convergence est une approche`,`La valeur limite n'est pas forcément atteinte`,`<b>Les termes s'approchent de 5</b>`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = 3 + 1/<span class="v">n</span> ?`,
+        opts:[{t:"3",ok:true,why:`1/<span class="v">n</span> → 0, il reste 3.`},
+              {t:"0",ok:false,why:`Le 3 ne disparaît pas.`},
+              {t:"+∞",ok:false,why:`Rien ne grandit ici.`}],
+        regle:`Constante + quelque chose qui tend vers 0.`,
+        aides:[`Que devient 1/<span class="v">n</span> ?`,`Zéro. Il reste donc le 3.`],
+        sol:[`1/<span class="v">n</span> → 0`,`3 + 0`,`Limite = <b>3</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Quelle suite <b>n'a pas</b> de limite ?`,
+        opts:[{t:`(−1)<sup><span class="v">n</span></sup> × <span class="v">n</span>`,ok:true,why:`Elle alterne : 0, −1, 2, −3, 4… sans se fixer.`},
+              {t:`1/<span class="v">n</span>²`,ok:false,why:`Elle tend vers 0.`},
+              {t:`2<span class="v">n</span>`,ok:false,why:`Elle tend vers +∞.`}],
+        regle:`Un facteur alterné empêche la limite.`,
+        aides:[`Écris les premiers termes de chaque suite.`,`La première saute de part et d'autre.`],
+        sol:[`0, −1, 2, −3, 4, −5…`,`Elle va dans les deux sens sans se fixer`,`<b>(−1)<sup><span class="v">n</span></sup> × <span class="v">n</span></b>`] },
+
+      { k:"DÉFI ⭑⭑", hard:true, type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = (<span class="v">n</span>² + 1) ÷ (3<span class="v">n</span> + 2) ?`,
+        opts:[{t:"+∞",ok:true,why:`Degré 2 en haut contre 1 en bas : le haut domine.`},
+              {t:"1/3",ok:false,why:`Ce serait le cas avec des degrés égaux.`},
+              {t:"0",ok:false,why:`C'est le haut qui grandit le plus vite.`}],
+        regle:`Degré du haut plus grand → ±∞.`,
+        aides:[`Compare les degrés : 2 et 1.`,`Pour n=1000 : haut ≈ 10⁶, bas ≈ 3000.`],
+        sol:[`Degré haut 2 &gt; degré bas 1`,`Le numérateur l'emporte`,`Limite = <b>+∞</b>`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = 5 − 2/<span class="v">n</span>² ?`,
+        opts:[{t:"5",ok:true,why:`2/<span class="v">n</span>² → 0.`},
+              {t:"3",ok:false,why:`On ne soustrait pas 2, mais une quantité qui tend vers 0.`},
+              {t:"0",ok:false,why:`Le 5 reste.`}],
+        regle:`Les termes en 1/<span class="v">n</span><sup>p</sup> disparaissent.`,
+        aides:[`Que devient 2/<span class="v">n</span>² quand n grandit ?`,`Zéro.`],
+        sol:[`2/<span class="v">n</span>² → 0`,`5 − 0`,`Limite = <b>5</b>`] }
+    ]
+  ]
+},
+
+/* ═════════ 13 · OPÉRATIONS ET INDÉTERMINATIONS ═════════ */
+{
+  n:13, nom:"Opérations sur les limites", sous:"Les quatre formes indéterminées", pret:true, ds:false,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"On peut souvent additionner les limites",
+      c:`<p>Si deux suites ont des limites connues, on combine généralement sans difficulté.</p>
+        <div class="show">lim(<span class="v">u<sub>n</sub></span> + <span class="v">v<sub>n</sub></span>) = lim <span class="v">u<sub>n</sub></span> + lim <span class="v">v<sub>n</sub></span></div>
+        <p>Même chose pour le produit et le quotient (si le dénominateur ne tend pas vers 0).</p>
+        <div class="note"><b>Mais.</b> Quatre combinaisons échappent à la règle : ce sont les <b>formes indéterminées</b>.</div>`,
+      lent:`<p><b>Pourquoi « indéterminé » et non « impossible ».</b></p>
+        <p>Indéterminé ne veut pas dire « la limite n'existe pas ». Ça veut dire : <b>la règle générale ne suffit pas à trancher</b>.</p>
+        <p>Regarde ∞ − ∞ sur trois exemples :</p>
+        <p>(<span class="v">n</span>+1) − <span class="v">n</span> = 1 → limite <b>1</b></p>
+        <p><span class="v">n</span>² − <span class="v">n</span> → limite <b>+∞</b></p>
+        <p><span class="v">n</span> − <span class="v">n</span>² → limite <b>−∞</b></p>
+        <p>Trois fois la même forme ∞ − ∞, trois résultats différents.</p>
+        <p><b>D'où le mot :</b> la forme seule ne détermine rien. Il faut regarder le détail du calcul.</p>`
+    },
+    {
+      k:"À CONNAÎTRE", t:"Les quatre formes indéterminées",
+      c:`<div class="show">∞ − ∞ &nbsp;&nbsp;·&nbsp;&nbsp; 0 × ∞<br>∞ / ∞ &nbsp;&nbsp;·&nbsp;&nbsp; 0 / 0</div>
+        <p>Dès qu'une de ces formes apparaît, il faut <b>transformer l'expression</b> avant de conclure.</p>
+        <div class="note"><b>Erreur fréquente.</b> Écrire directement « ∞ − ∞ = 0 ». C'est faux dans le cas général.</div>`,
+      lent:`<p><b>Comment les reconnaître à vue.</b></p>
+        <p>Tu calcules la limite de chaque morceau séparément, puis tu regardes ce que ça donne.</p>
+        <p><b>∞ − ∞</b> : deux morceaux qui partent tous deux vers l'infini, avec une soustraction.</p>
+        <p><b>0 × ∞</b> : un morceau s'écrase, l'autre explose. Qui gagne ?</p>
+        <p><b>∞/∞</b> : haut et bas explosent tous les deux. Le cas des quotients de polynômes.</p>
+        <p><b>0/0</b> : haut et bas s'écrasent tous les deux.</p>
+        <p><b>Le réflexe :</b> voir une de ces formes = signal d'alarme. Ne pas conclure, transformer.</p>`
+    },
+    {
+      k:"MÉTHODE", t:"Factoriser le terme dominant",
+      c:`<p>La technique principale pour lever une indétermination : mettre en facteur la plus grande puissance.</p>
+        <p>Exemple : <span class="v">n</span>² − 3<span class="v">n</span> donne la forme ∞ − ∞.</p>
+        <div class="show"><span class="v">n</span>² − 3<span class="v">n</span> = <span class="v">n</span>²(1 − 3/<span class="v">n</span>)</div>
+        <p>Or <span class="v">n</span>² → +∞ et (1 − 3/<span class="v">n</span>) → 1.</p>
+        <p>Donc le produit tend vers <b>+∞</b>.</p>`,
+      lent:`<p><b>L'idée derrière la factorisation.</b></p>
+        <p>Dans <span class="v">n</span>² − 3<span class="v">n</span>, les deux termes grandissent. Mais <b>pas à la même vitesse</b>.</p>
+        <p>Pour <span class="v">n</span> = 1000 : <span class="v">n</span>² = 1 000 000 et 3<span class="v">n</span> = 3 000.</p>
+        <p>Le premier écrase complètement le second. Retirer 3 000 à un million ne change presque rien.</p>
+        <p><b>La factorisation rend cela visible :</b> en sortant <span class="v">n</span>², ce qui reste dans la parenthèse est 1 − 3/<span class="v">n</span>, et 3/<span class="v">n</span> tend vers 0.</p>
+        <p>Donc la parenthèse tend vers 1, et tout le produit se comporte comme <span class="v">n</span>².</p>
+        <p><b>En une phrase :</b> on identifie qui commande, et on montre que le reste ne compte plus.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`Parmi ces expressions, laquelle est une <b>forme indéterminée</b> ?`,
+        opts:[{t:"∞ − ∞",ok:true,why:`Le résultat dépend du détail.`},
+              {t:"∞ + ∞",ok:false,why:`Cela vaut +∞, sans ambiguïté.`},
+              {t:"0 + ∞",ok:false,why:`Cela vaut +∞.`}],
+        regle:`Quatre FI : ∞−∞, 0×∞, ∞/∞, 0/0.`,
+        aides:[`Laquelle peut donner plusieurs résultats ?`,`Celle avec une soustraction d'infinis.`],
+        sol:[`∞ + ∞ = +∞ (clair)`,`∞ − ∞ peut valoir 1, +∞, −∞…`,`<b>∞ − ∞</b>`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 5<span class="v">n</span> ?`,
+        opts:[{t:"+∞",ok:true,why:`<span class="v">n</span>²(1 − 5/<span class="v">n</span>) → +∞ × 1.`},
+              {t:"0",ok:false,why:`La forme ∞−∞ ne donne pas 0 automatiquement.`},
+              {t:"−∞",ok:false,why:`Le terme dominant est positif.`}],
+        regle:`Factoriser par la plus haute puissance.`,
+        aides:[`Mets <span class="v">n</span>² en facteur.`,`<span class="v">n</span>²(1 − 5/<span class="v">n</span>), et 5/<span class="v">n</span> → 0.`],
+        sol:[`<span class="v">n</span>² − 5<span class="v">n</span> = <span class="v">n</span>²(1 − 5/<span class="v">n</span>)`,`La parenthèse tend vers 1`,`Limite = <b>+∞</b>`] },
+
+      { k:"TROUVE L'ERREUR", type:"qcm", q:`Un élève écrit :<br>« lim(<span class="v">n</span>² − <span class="v">n</span>) = ∞ − ∞ = 0 »<br>Verdict ?`,
+        opts:[{t:`Faux : la limite est +∞`,ok:true,why:`∞−∞ est indéterminé, il faut factoriser.`},
+              {t:`Juste`,ok:false,why:`On ne peut pas conclure directement.`}],
+        regle:`Une FI ne se simplifie jamais directement.`,
+        aides:[`Teste avec n = 100 : 10000 − 100.`,`9900, et ça continue de grandir.`],
+        sol:[`Pour n=100 : 10 000 − 100 = 9 900`,`Pour n=1000 : 999 000`,`Limite = <b>+∞</b>, pas 0`] },
+
+      { k:"QCM", type:"qcm", q:`lim <span class="v">u<sub>n</sub></span> = 3 et lim <span class="v">v<sub>n</sub></span> = 7.<br>Que vaut lim(<span class="v">u<sub>n</sub></span> × <span class="v">v<sub>n</sub></span>) ?`,
+        opts:[{t:"21",ok:true,why:`Limites finies : on multiplie simplement.`},
+              {t:"10",ok:false,why:`C'est la somme, pas le produit.`},
+              {t:"Indéterminé",ok:false,why:`Aucune FI ici.`}],
+        regle:`Limites finies → opérations directes.`,
+        aides:[`Y a-t-il une forme indéterminée ?`,`Non, deux nombres finis.`],
+        sol:[`Les deux limites sont finies`,`3 × 7`,`<b>21</b>`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = (4<span class="v">n</span>² + <span class="v">n</span>) ÷ (2<span class="v">n</span>² + 3) ?`,
+        opts:[{t:"2",ok:true,why:`Degrés égaux : 4/2 = 2.`},
+              {t:"+∞",ok:false,why:`Les degrés sont égaux.`},
+              {t:"0",ok:false,why:`Le haut ne s'écrase pas.`}],
+        regle:`∞/∞ avec degrés égaux → rapport des coefficients.`,
+        aides:[`Les deux degrés valent 2.`,`Coefficients dominants : 4 et 2.`],
+        sol:[`Forme ∞/∞`,`Degrés égaux → 4/2`,`Limite = <b>2</b>`] }
+    ]
+  ]
+},
+
+/* ═════════ 14 · COMPARAISON ET GENDARMES ═════════ */
+{
+  n:14, nom:"Comparaison et gendarmes", sous:"Encadrer pour conclure", pret:true, ds:true,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"Deux gendarmes et un prisonnier",
+      c:`<p>Parfois une suite est trop compliquée pour qu'on calcule sa limite directement.</p>
+        <p>Astuce : on l'<b>encadre</b> entre deux suites simples qui ont la même limite.</p>
+        <div class="show">Si <span class="v">a<sub>n</sub></span> ⩽ <span class="v">u<sub>n</sub></span> ⩽ <span class="v">b<sub>n</sub></span><br>
+        et <span class="v">a<sub>n</sub></span> → <span class="v">ℓ</span>, <span class="v">b<sub>n</sub></span> → <span class="v">ℓ</span><br>
+        alors <span class="v">u<sub>n</sub></span> → <span class="v">ℓ</span></div>`,
+      lent:`<p><b>D'où vient ce nom bizarre.</b></p>
+        <p>Deux gendarmes encadrent un prisonnier — un à gauche, un à droite.</p>
+        <p>Les deux gendarmes vont au commissariat. Le prisonnier, coincé entre eux, <b>ne peut aller nulle part ailleurs</b>.</p>
+        <p>Il arrive au commissariat, forcément.</p>
+        <p><b>En maths :</b> si <span class="v">u<sub>n</sub></span> est coincée entre deux suites qui vont toutes deux vers <span class="v">ℓ</span>, elle n'a pas le choix. Elle va vers <span class="v">ℓ</span>.</p>
+        <p>C'est une des rares façons de trouver une limite <b>sans jamais calculer l'expression exacte</b>.</p>`
+    },
+    {
+      k:"MÉTHODE", t:"Encadrer un sinus ou un cosinus",
+      c:`<p>Cas d'école : une expression contenant sin ou cos.</p>
+        <p>On part toujours du même encadrement :</p>
+        <div class="show">−1 ⩽ sin(<span class="v">n</span>) ⩽ 1</div>
+        <p>Puis on divise par <span class="v">n</span> :</p>
+        <div class="show">−1/<span class="v">n</span> ⩽ sin(<span class="v">n</span>)/<span class="v">n</span> ⩽ 1/<span class="v">n</span></div>
+        <p>Les deux bords tendent vers 0. Donc la limite est <b>0</b>.</p>`,
+      lent:`<p><b>Pourquoi on ne peut pas faire autrement.</b></p>
+        <p>sin(<span class="v">n</span>) n'a <b>aucune limite</b> : il oscille sans fin entre −1 et 1, sans jamais se fixer.</p>
+        <p>Donc impossible d'écrire « lim sin(<span class="v">n</span>) = quelque chose ».</p>
+        <p><b>Mais</b> on sait une chose : il reste toujours entre −1 et 1. Jamais plus, jamais moins.</p>
+        <p>Alors on divise tout par <span class="v">n</span>. Le numérateur reste borné, le dénominateur explose.</p>
+        <p>Un nombre coincé entre −1 et 1, divisé par un million… donne quelque chose de minuscule, quel que soit ce nombre.</p>
+        <p><b>C'est là toute l'astuce :</b> on n'a pas besoin de savoir combien vaut sin(<span class="v">n</span>). Il suffit de savoir qu'il est borné.</p>`
+    },
+    {
+      k:"AUSSI", t:"Comparaison vers l'infini",
+      c:`<p>Version simplifiée, quand on vise l'infini : un seul gendarme suffit.</p>
+        <div class="show">Si <span class="v">u<sub>n</sub></span> ⩾ <span class="v">v<sub>n</sub></span> et <span class="v">v<sub>n</sub></span> → +∞<br>alors <span class="v">u<sub>n</sub></span> → +∞</div>
+        <p>Si quelque chose est au-dessus d'une suite qui part à l'infini, elle part aussi.</p>
+        <div class="note"><b>Image.</b> Un ballon plus haut qu'une fusée qui monte indéfiniment monte indéfiniment aussi.</div>`,
+      lent:`<p><b>Pourquoi un seul suffit ici.</b></p>
+        <p>Pour converger vers un nombre précis, il faut être coincé <b>des deux côtés</b>. Sinon la suite pourrait filer ailleurs.</p>
+        <p>Mais pour partir à +∞, il n'y a rien au-dessus. L'infini n'a pas de plafond.</p>
+        <p>Donc être <b>au-dessus</b> d'une suite qui part à l'infini suffit : tu es forcément poussé vers le haut.</p>
+        <p><b>Exemple :</b> <span class="v">u<sub>n</sub></span> = <span class="v">n</span> + sin(<span class="v">n</span>).</p>
+        <p>Comme sin(<span class="v">n</span>) ⩾ −1, on a <span class="v">u<sub>n</sub></span> ⩾ <span class="v">n</span> − 1.</p>
+        <p>Et <span class="v">n</span> − 1 → +∞. Donc <span class="v">u<sub>n</sub></span> → +∞.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`<span class="v">a<sub>n</sub></span> ⩽ <span class="v">u<sub>n</sub></span> ⩽ <span class="v">b<sub>n</sub></span>, avec <span class="v">a<sub>n</sub></span> → 4 et <span class="v">b<sub>n</sub></span> → 4.<br>Que vaut lim <span class="v">u<sub>n</sub></span> ?`,
+        opts:[{t:"4",ok:true,why:`Théorème des gendarmes.`},
+              {t:`On ne peut rien dire`,ok:false,why:`L'encadrement force la conclusion.`},
+              {t:"0",ok:false,why:`Les deux bornes valent 4.`}],
+        regle:`Encadrée par deux suites de même limite → même limite.`,
+        aides:[`Les deux gendarmes vont au même endroit.`,`Le prisonnier suit forcément.`],
+        sol:[`Les deux bornes tendent vers 4`,`<span class="v">u<sub>n</sub></span> est coincée entre elles`,`Limite = <b>4</b>`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = sin(<span class="v">n</span>)/<span class="v">n</span> ?`,
+        opts:[{t:"0",ok:true,why:`Encadrée entre −1/<span class="v">n</span> et 1/<span class="v">n</span>.`},
+              {t:`Pas de limite`,ok:false,why:`Le sinus oscille, mais la division par <span class="v">n</span> l'écrase.`},
+              {t:"1",ok:false,why:`Le dénominateur grandit.`}],
+        regle:`Numérateur borné ÷ dénominateur infini → 0.`,
+        aides:[`−1 ⩽ sin(<span class="v">n</span>) ⩽ 1.`,`Divise tout par <span class="v">n</span>.`],
+        sol:[`−1 ⩽ sin(<span class="v">n</span>) ⩽ 1`,`−1/<span class="v">n</span> ⩽ <span class="v">u<sub>n</sub></span> ⩽ 1/<span class="v">n</span>`,`Les deux bords → 0, donc limite = <b>0</b>`] },
+
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n</sub></span> ⩾ <span class="v">n</span>² et on cherche sa limite.`,
+        opts:[{t:"+∞",ok:true,why:`Minorée par une suite qui part à l'infini.`},
+              {t:"0",ok:false,why:`Elle est au-dessus de <span class="v">n</span>².`},
+              {t:`On ne peut rien dire`,ok:false,why:`Un seul minorant suffit pour +∞.`}],
+        regle:`Minorée par une suite → +∞ implique → +∞.`,
+        aides:[`<span class="v">n</span>² part vers l'infini.`,`Être au-dessus ne laisse pas le choix.`],
+        sol:[`<span class="v">n</span>² → +∞`,`<span class="v">u<sub>n</sub></span> est au-dessus`,`Limite = <b>+∞</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Pourquoi ne peut-on pas calculer lim sin(<span class="v">n</span>) directement ?`,
+        opts:[{t:`Parce que sin(<span class="v">n</span>) n'a pas de limite`,ok:true,why:`Il oscille indéfiniment entre −1 et 1.`},
+              {t:`Parce que sin(<span class="v">n</span>) tend vers 0`,ok:false,why:`Non, il ne se stabilise pas.`},
+              {t:`Parce que c'est interdit`,ok:false,why:`Ce n'est pas une question de règle.`}],
+        regle:`Le sinus oscille : pas de limite.`,
+        aides:[`Le sinus se stabilise-t-il ?`,`Non, il oscille sans fin.`],
+        sol:[`sin(<span class="v">n</span>) oscille entre −1 et 1`,`Il ne s'approche d'aucune valeur`,`<b>Pas de limite</b> — d'où l'encadrement`] },
+
+      { k:"DÉFI ⭑⭑", hard:true, type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = (2 + cos(<span class="v">n</span>))/<span class="v">n</span> ?`,
+        opts:[{t:"0",ok:true,why:`Le numérateur reste entre 1 et 3, le dénominateur explose.`},
+              {t:"2",ok:false,why:`Le dénominateur grandit sans fin.`},
+              {t:`Pas de limite`,ok:false,why:`L'encadrement donne 0.`}],
+        regle:`Borné ÷ infini → 0.`,
+        aides:[`−1 ⩽ cos(<span class="v">n</span>) ⩽ 1, donc 1 ⩽ 2+cos(<span class="v">n</span>) ⩽ 3.`,`Divise par <span class="v">n</span> : 1/<span class="v">n</span> ⩽ <span class="v">u<sub>n</sub></span> ⩽ 3/<span class="v">n</span>.`],
+        sol:[`1 ⩽ 2 + cos(<span class="v">n</span>) ⩽ 3`,`1/<span class="v">n</span> ⩽ <span class="v">u<sub>n</sub></span> ⩽ 3/<span class="v">n</span>`,`Les deux bords → 0, limite = <b>0</b>`] }
+    ]
+  ]
+}
+
+];
+
+const CH_TERM_B = [
+
+/* ═════════ 15 · COMPORTEMENT DE qⁿ ═════════ */
+{
+  n:15, nom:"Comportement de qⁿ", sous:"Le cas le plus fréquent au bac", pret:true, ds:true,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"Tout dépend de la raison",
+      c:`<p>Une suite géométrique se comporte de quatre façons selon la valeur de <span class="v">q</span>.</p>
+        <div class="show"><span class="v">q</span> &gt; 1 → +∞<br>
+        <span class="v">q</span> = 1 → 1<br>
+        −1 &lt; <span class="v">q</span> &lt; 1 → 0<br>
+        <span class="v">q</span> ⩽ −1 → pas de limite</div>
+        <div class="note"><b>À retenir.</b> La frontière est |<span class="v">q</span>| = 1. En dessous, tout s'éteint. Au-dessus, tout explose.</div>`,
+      lent:`<p><b>Deux gestes très concrets.</b></p>
+        <p><b>Multiplier par 2 :</b> 1 → 2 → 4 → 8 → 16 → 32…</p>
+        <p>Après 30 étapes, tu dépasses le milliard. C'est <span class="v">q</span> &gt; 1 : ça explose.</p>
+        <p><b>Multiplier par 0,5 :</b> 1 → 0,5 → 0,25 → 0,125…</p>
+        <p>Après 30 étapes, tu es à moins d'un milliardième. C'est |<span class="v">q</span>| &lt; 1 : ça s'éteint.</p>
+        <p><b>Et le cas négatif ?</b> Avec <span class="v">q</span> = −2 : 1 → −2 → 4 → −8 → 16 → −32…</p>
+        <p>La valeur grandit, mais le signe saute d'un côté à l'autre. La suite ne va nulle part : <b>pas de limite</b>.</p>`
+    },
+    {
+      k:"LE PIÈGE", t:"Le signe compte autant que la taille",
+      c:`<p>Comparons <span class="v">q</span> = 2 et <span class="v">q</span> = −2.</p>
+        <div class="show">2<sup><span class="v">n</span></sup> : 1, 2, 4, 8, 16 → +∞<br>
+        (−2)<sup><span class="v">n</span></sup> : 1, −2, 4, −8, 16 → pas de limite</div>
+        <p>Même taille, comportement totalement différent.</p>
+        <div class="note"><b>La règle exacte porte sur |<span class="v">q</span>|</b>, mais le cas <span class="v">q</span> négatif se traite à part.</div>`,
+      lent:`<p><b>Pourquoi le signe change tout.</b></p>
+        <p>Pour avoir une limite, une suite doit <b>se poser</b> quelque part.</p>
+        <p>Avec (−2)<sup><span class="v">n</span></sup>, les termes s'éloignent de zéro — mais alternativement à gauche et à droite.</p>
+        <p>Au rang 100, tu es à +2<sup>100</sup>, un nombre gigantesque positif. Au rang 101, à −2<sup>101</sup>, gigantesque négatif.</p>
+        <p>Impossible de dire « ça tend vers +∞ » : une fois sur deux, c'est −∞.</p>
+        <p><b>En revanche</b>, avec <span class="v">q</span> = −0,5 : 1, −0,5, 0,25, −0,125… Le signe alterne aussi, mais tout se rapproche de zéro. La limite existe et vaut <b>0</b>.</p>
+        <p>Donc : signe alterné + décroissance → limite 0. Signe alterné + croissance → pas de limite.</p>`
+    },
+    {
+      k:"MÉTHODE", t:"Le seuil : quand dépasse-t-on une valeur",
+      c:`<p>Question classique : « à partir de quel rang <span class="v">u<sub>n</sub></span> dépasse-t-il 1000 ? »</p>
+        <p>Deux façons de répondre :</p>
+        <p><b>Par essais</b> — on calcule les puissances jusqu'à dépasser. Sûr, un peu long.</p>
+        <p><b>Par algorithme</b> — une boucle <span style="font-family:monospace">while</span> qui compte les tours.</p>
+        <div class="note"><b>Au bac</b>, l'algorithme est souvent donné : on demande de l'interpréter ou de le compléter.</div>`,
+      lent:`<p><b>Un exemple déroulé en entier.</b></p>
+        <p><span class="v">u<sub>n</sub></span> = 3<sup><span class="v">n</span></sup>. À partir de quel rang dépasse-t-on 500 ?</p>
+        <p>3<sup>1</sup> = 3 · 3<sup>2</sup> = 9 · 3<sup>3</sup> = 27 · 3<sup>4</sup> = 81 · 3<sup>5</sup> = 243 · 3<sup>6</sup> = 729</p>
+        <p>Au rang 5, on est à 243 : pas encore. Au rang 6, à 729 : dépassé.</p>
+        <p><b>Réponse : rang 6.</b></p>
+        <p>Le piège habituel : répondre 5 parce que 243 est « le dernier calculé ». Non — on cherche le premier rang qui <b>dépasse</b>.</p>
+        <p><b>Conseil pratique :</b> connais par cœur les puissances de 2 et de 3 jusqu'à 1000. Ça fait gagner du temps en devoir.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = 0,8<sup><span class="v">n</span></sup> ?`,
+        opts:[{t:"0",ok:true,why:`−1 &lt; 0,8 &lt; 1 : la suite s'éteint.`},
+              {t:"0,8",ok:false,why:`Les puissances diminuent : 0,64 ; 0,51…`},
+              {t:"+∞",ok:false,why:`Multiplier par 0,8 diminue.`}],
+        regle:`|<span class="v">q</span>| &lt; 1 → limite 0.`,
+        aides:[`Calcule 0,8² puis 0,8³.`,`0,64 puis 0,512 — ça descend.`],
+        sol:[`0,8² = 0,64 · 0,8³ = 0,512`,`−1 &lt; 0,8 &lt; 1`,`Limite = <b>0</b>`] },
+
+      { k:"AUTOMATISME", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = 1,5<sup><span class="v">n</span></sup> ?`,
+        opts:[{t:"+∞",ok:true,why:`<span class="v">q</span> &gt; 1 : croissance sans fin.`},
+              {t:"1,5",ok:false,why:`Les puissances grandissent.`},
+              {t:"0",ok:false,why:`Ce serait le cas si <span class="v">q</span> &lt; 1.`}],
+        regle:`<span class="v">q</span> &gt; 1 → +∞.`,
+        aides:[`1,5² = 2,25 ; 1,5¹⁰ ≈ 57.`,`Ça monte de plus en plus vite.`],
+        sol:[`1,5 &gt; 1`,`Chaque terme est 1,5 fois le précédent`,`Limite = <b>+∞</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = (−3)<sup><span class="v">n</span></sup> ?`,
+        opts:[{t:`Pas de limite`,ok:true,why:`Termes : 1, −3, 9, −27 — le signe alterne en grandissant.`},
+              {t:"+∞",ok:false,why:`Une fois sur deux, les termes sont très négatifs.`},
+              {t:"0",ok:false,why:`La valeur absolue grandit.`}],
+        regle:`<span class="v">q</span> ⩽ −1 → pas de limite.`,
+        aides:[`Écris les quatre premiers termes.`,`1, −3, 9, −27 : ça saute.`],
+        sol:[`Termes : 1, −3, 9, −27, 81…`,`Le signe alterne, la taille grandit`,`<b>Pas de limite</b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 2<sup><span class="v">n</span></sup>.<br>Premier rang où <span class="v">u<sub>n</sub></span> dépasse 100 ?`,
+        rep:7, ind:"un entier", ok:`2<sup>6</sup> = 64, 2<sup>7</sup> = 128 → rang <b>7</b>`, no:`64 ne dépasse pas encore 100.`,
+        regle:`On cherche le premier rang qui franchit le seuil.`,
+        aides:[`Puissances de 2 : 32, 64, 128.`,`64 &lt; 100, mais 128 &gt; 100.`],
+        sol:[`2<sup>6</sup> = 64 (insuffisant)`,`2<sup>7</sup> = 128 (dépassé)`,`Rang <b>7</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = (−0,5)<sup><span class="v">n</span></sup> ?`,
+        opts:[{t:"0",ok:true,why:`|−0,5| &lt; 1 : malgré l'alternance, tout s'écrase vers 0.`},
+              {t:`Pas de limite`,ok:false,why:`L'alternance n'empêche pas la convergence ici.`},
+              {t:"−0,5",ok:false,why:`Les termes diminuent en valeur absolue.`}],
+        regle:`|<span class="v">q</span>| &lt; 1 → 0, même si <span class="v">q</span> est négatif.`,
+        aides:[`Termes : 1 ; −0,5 ; 0,25 ; −0,125.`,`Ils s'approchent de 0 des deux côtés.`],
+        sol:[`Termes : 1 ; −0,5 ; 0,25 ; −0,125`,`La valeur absolue tend vers 0`,`Limite = <b>0</b>`] }
+    ],
+    [
+      { k:"AUTOMATISME", type:"num", q:`Un capital de 1000 € croît de 10 % par an.<br>Valeur après 3 ans ?`,
+        rep:1331, ind:"en euros", ok:`1000 × 1,1³ = <b>1331 €</b>`, no:`1,1³ = 1,331.`,
+        regle:`Croissance en pourcentage → géométrique.`,
+        aides:[`1,1² = 1,21.`,`1,21 × 1,1 = 1,331.`],
+        sol:[`Coefficient : 1,1`,`1,1³ = 1,331`,`1000 × 1,331 = <b>1331 €</b>`] },
+
+      { k:"DÉFI ⭑⭑", hard:true, type:"qcm", q:`Limite de <span class="v">u<sub>n</sub></span> = 5 × 0,4<sup><span class="v">n</span></sup> + 3 ?`,
+        opts:[{t:"3",ok:true,why:`0,4<sup><span class="v">n</span></sup> → 0, il reste 3.`},
+              {t:"8",ok:false,why:`Le terme en 0,4<sup><span class="v">n</span></sup> disparaît.`},
+              {t:"0",ok:false,why:`La constante 3 reste.`}],
+        regle:`Le terme géométrique s'éteint, la constante demeure.`,
+        aides:[`Que devient 0,4<sup><span class="v">n</span></sup> ?`,`Zéro. Donc 5×0 + 3.`],
+        sol:[`0,4<sup><span class="v">n</span></sup> → 0 car |0,4| &lt; 1`,`5 × 0 = 0`,`Limite = <b>3</b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`Une population de 5000 baisse de 20 % par an.<br>Après combien d'années passe-t-elle sous 2000 ?`,
+        sub:`5000 → 4000 → 3200 → 2560 → 2048 → 1638`,
+        rep:5, ind:"un entier", ok:`Au 5<sup>e</sup> an : 1638 &lt; 2000`, no:`2048 est encore au-dessus.`,
+        regle:`Seuil géométrique décroissant.`,
+        aides:[`Coefficient : 0,8.`,`Après 4 ans : 2048, encore au-dessus.`],
+        sol:[`Années 1-3 : 4000, 3200, 2560`,`Année 4 : 2048 (&gt; 2000)`,`Année 5 : 1638 → <b>5 ans</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Pour quelles valeurs de <span class="v">q</span> la suite <span class="v">q</span><sup><span class="v">n</span></sup> converge-t-elle ?`,
+        opts:[{t:`−1 &lt; <span class="v">q</span> ⩽ 1`,ok:true,why:`Limite 0 si |<span class="v">q</span>|&lt;1, limite 1 si <span class="v">q</span>=1.`},
+              {t:`<span class="v">q</span> &gt; 0 seulement`,ok:false,why:`<span class="v">q</span> = −0,5 converge aussi.`},
+              {t:`Toutes les valeurs`,ok:false,why:`<span class="v">q</span> = 2 diverge.`}],
+        regle:`Convergence ssi −1 &lt; <span class="v">q</span> ⩽ 1.`,
+        aides:[`Teste <span class="v">q</span> = −0,5 puis <span class="v">q</span> = 2.`,`La première converge, la seconde non.`],
+        sol:[`|<span class="v">q</span>| &lt; 1 → limite 0`,`<span class="v">q</span> = 1 → limite 1`,`<b>−1 &lt; <span class="v">q</span> ⩽ 1</b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n</sub></span> = 3<sup><span class="v">n</span></sup>.<br>Premier rang où <span class="v">u<sub>n</sub></span> dépasse 500 ?`,
+        rep:6, ind:"un entier", ok:`3<sup>5</sup> = 243, 3<sup>6</sup> = 729 → rang <b>6</b>`, no:`243 est encore sous 500.`,
+        regle:`Connaître les puissances de 3.`,
+        aides:[`3⁴ = 81, 3⁵ = 243.`,`3⁶ = 729, c'est dépassé.`],
+        sol:[`3<sup>5</sup> = 243 (insuffisant)`,`3<sup>6</sup> = 729 (dépassé)`,`Rang <b>6</b>`] }
+    ]
+  ]
+},
+
+/* ═════════ 16 · CONVERGENCE MONOTONE ═════════ */
+{
+  n:16, nom:"Convergence monotone", sous:"Le théorème d'existence", pret:true, ds:true,
+  cartes:[
+    {
+      k:"LE THÉORÈME", t:"Croissante et majorée, donc convergente",
+      c:`<p>Le résultat le plus utilisé au bac pour prouver qu'une limite <b>existe</b>.</p>
+        <div class="show">Croissante et majorée → converge<br>Décroissante et minorée → converge</div>
+        <div class="note"><b>Attention.</b> Le théorème donne l'existence de la limite, <b>pas sa valeur</b>.</div>`,
+      lent:`<p><b>L'ascenseur et le plafond.</b></p>
+        <p>Un ascenseur monte. Il monte encore. Mais le bâtiment a un toit.</p>
+        <p>Il ne peut pas traverser le toit. Il monte, monte, et finit forcément par <b>s'arrêter quelque part</b>.</p>
+        <p>Où exactement ? On ne sait pas. Peut-être au 8<sup>e</sup>, peut-être juste sous le toit.</p>
+        <p><b>Mais qu'il s'arrête, c'est certain.</b></p>
+        <p>C'est tout le théorème : monter sans fin est impossible si quelque chose bloque au-dessus.</p>
+        <p><b>Et si le bâtiment n'a pas de toit ?</b> Alors l'ascenseur monte indéfiniment : la suite tend vers +∞.</p>`
+    },
+    {
+      k:"LE PIÈGE", t:"La limite n'est pas le majorant",
+      c:`<p>Une suite croissante majorée par 10 <b>ne tend pas forcément vers 10</b>.</p>
+        <p>Elle peut s'arrêter à 7, à 9, à 9,99.</p>
+        <div class="show">Croissante + majorée par <span class="v">M</span><br>→ converge vers <span class="v">ℓ</span> ⩽ <span class="v">M</span></div>
+        <div class="note"><b>Écrire « donc elle converge vers 10 » est une faute.</b> On écrit : « donc elle converge ».</div>`,
+      lent:`<p><b>Un exemple qui rend la chose évidente.</b></p>
+        <p>Prends <span class="v">u<sub>n</sub></span> = 1 − 1/(<span class="v">n</span>+1) : 0 ; 0,5 ; 0,67 ; 0,75 ; 0,8…</p>
+        <p>Elle est croissante. Elle est majorée par <b>100</b> — c'est vrai, elle ne dépasse jamais 100.</p>
+        <p>Tend-elle vers 100 ? Évidemment pas. Elle tend vers <b>1</b>.</p>
+        <p><b>Le majorant est juste une barrière</b>, pas une destination. On peut en choisir mille différents : 2, 10, 100, un million. Tous sont des majorants valables.</p>
+        <p>La limite, elle, est unique. Et le théorème ne la donne pas — il dit seulement qu'elle existe.</p>`
+    },
+    {
+      k:"MÉTHODE", t:"La rédaction en trois temps",
+      c:`<p>Pour utiliser le théorème en devoir, il faut établir deux choses puis conclure.</p>
+        <p><b>1.</b> Montrer la monotonie — signe de <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>, ou récurrence.</p>
+        <p><b>2.</b> Montrer la borne — souvent par récurrence.</p>
+        <p><b>3.</b> Conclure : « croissante et majorée, donc convergente ».</p>`,
+      lent:`<p><b>Pourquoi les deux points sont indispensables.</b></p>
+        <p><b>Monotonie sans borne :</b> la suite <span class="v">n</span> est croissante. Converge-t-elle ? Non, elle part à +∞. Il manque le plafond.</p>
+        <p><b>Borne sans monotonie :</b> la suite (−1)<sup><span class="v">n</span></sup> est bornée entre −1 et 1. Converge-t-elle ? Non, elle oscille. Il manque la monotonie.</p>
+        <p><b>Les deux ensemble :</b> impossible d'osciller (elle est monotone), impossible de partir à l'infini (elle est bornée). Il ne reste qu'une possibilité : converger.</p>
+        <p>C'est pour cela que le correcteur veut voir les deux démonstrations. Une seule ne prouve rien.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`Une suite croissante et majorée par 12.<br>Que peut-on affirmer ?`,
+        opts:[{t:`Elle converge vers une limite ⩽ 12`,ok:true,why:`Existence garantie, valeur inconnue.`},
+              {t:`Elle converge vers 12`,ok:false,why:`La limite peut être plus basse.`},
+              {t:`Elle tend vers +∞`,ok:false,why:`Le majorant l'en empêche.`}],
+        regle:`Le théorème donne l'existence, pas la valeur.`,
+        aides:[`Le majorant est une barrière.`,`La suite peut s'arrêter avant.`],
+        sol:[`Croissante + majorée → converge`,`La limite ne dépasse pas le majorant`,`<b>Converge vers ℓ ⩽ 12</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Une suite croissante <b>non majorée</b>. Que se passe-t-il ?`,
+        opts:[{t:`Elle tend vers +∞`,ok:true,why:`Rien ne l'arrête.`},
+              {t:`Elle converge`,ok:false,why:`Il manque le majorant.`},
+              {t:`Elle oscille`,ok:false,why:`Une suite croissante ne peut pas osciller.`}],
+        regle:`Croissante sans plafond → +∞.`,
+        aides:[`Qu'est-ce qui pourrait l'arrêter ?`,`Rien du tout.`],
+        sol:[`Elle monte toujours`,`Aucune barrière au-dessus`,`<b>+∞</b>`] },
+
+      { k:"TROUVE L'ERREUR", type:"qcm", q:`Un élève écrit :<br>« <span class="v">u<sub>n</sub></span> est majorée par 5, donc elle converge. »<br>Verdict ?`,
+        opts:[{t:`Faux : il manque la monotonie`,ok:true,why:`Majorée seule ne suffit pas — (−1)<sup><span class="v">n</span></sup> est bornée et diverge.`},
+              {t:`Juste`,ok:false,why:`Le théorème exige deux hypothèses.`}],
+        regle:`Il faut monotonie ET borne.`,
+        aides:[`Combien d'hypothèses dans le théorème ?`,`Deux : croissante et majorée.`],
+        sol:[`(−1)<sup><span class="v">n</span></sup> est bornée mais diverge`,`Il manque la monotonie`,`<b>Faux</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Une suite décroissante et minorée par 2 converge vers <span class="v">ℓ</span>.<br>Que sait-on de <span class="v">ℓ</span> ?`,
+        opts:[{t:`<span class="v">ℓ</span> ⩾ 2`,ok:true,why:`La limite ne descend pas sous le minorant.`},
+              {t:`<span class="v">ℓ</span> = 2`,ok:false,why:`Elle peut s'arrêter plus haut.`},
+              {t:`<span class="v">ℓ</span> ⩽ 2`,ok:false,why:`Impossible, tous les termes sont ⩾ 2.`}],
+        regle:`La limite respecte les bornes.`,
+        aides:[`Tous les termes sont au-dessus de 2.`,`La limite hérite de cette propriété.`],
+        sol:[`<span class="v">u<sub>n</sub></span> ⩾ 2 pour tout <span class="v">n</span>`,`La limite conserve l'inégalité`,`<b><span class="v">ℓ</span> ⩾ 2</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Pour appliquer le théorème, que faut-il démontrer ?`,
+        opts:[{t:`La monotonie et la borne`,ok:true,why:`Deux démonstrations, souvent par récurrence.`},
+              {t:`Seulement la monotonie`,ok:false,why:`Sans borne, elle peut partir à l'infini.`},
+              {t:`Seulement la borne`,ok:false,why:`Sans monotonie, elle peut osciller.`}],
+        regle:`Deux hypothèses obligatoires.`,
+        aides:[`Que dit exactement le théorème ?`,`Croissante ET majorée.`],
+        sol:[`Monotonie : pas d'oscillation`,`Borne : pas de fuite vers l'infini`,`<b>Les deux</b>`] }
+    ]
+  ]
+},
+
+/* ═════════ 17 · SUITES RÉCURRENTES ═════════ */
+{
+  n:17, nom:"Suites uₙ₊₁ = f(uₙ)", sous:"L'exercice complet du bac", pret:true, ds:true,
+  cartes:[
+    {
+      k:"L'IDÉE", t:"La grande question du bac",
+      c:`<p>On donne <span class="v">u<sub>0</sub></span> et une relation <span class="v">u<sub>n+1</sub></span> = <span class="v">f</span>(<span class="v">u<sub>n</sub></span>).<br>On demande la limite.</p>
+        <p>Problème : sans forme explicite, on ne peut pas calculer directement.</p>
+        <p>La solution se fait en trois temps.</p>
+        <div class="show"><b>1.</b> Montrer que la suite est bornée<br>
+        <b>2.</b> Montrer qu'elle est monotone<br>
+        <b>3.</b> Conclure, puis trouver <span class="v">ℓ</span> par <span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>)</div>`,
+      lent:`<p><b>Pourquoi cette gymnastique.</b></p>
+        <p>Avec <span class="v">u<sub>n+1</sub></span> = √(2 + <span class="v">u<sub>n</sub></span>), comment calculer <span class="v">u<sub>1000</sub></span> ?</p>
+        <p>Il faudrait faire mille racines carrées. Impossible à la main.</p>
+        <p><b>Mais on n'a pas besoin de la valeur exacte.</b> On veut juste savoir où ça va.</p>
+        <p>Alors on procède autrement : on montre que la suite ne peut pas s'échapper (bornée) et qu'elle va toujours dans le même sens (monotone).</p>
+        <p>Ces deux faits <b>garantissent</b> qu'elle se pose quelque part — c'est le théorème de la partie précédente.</p>
+        <p>Ensuite seulement, on cherche où.</p>`
+    },
+    {
+      k:"L'ÉTAPE CLÉ", t:"Le passage à la limite",
+      c:`<p>Si <span class="v">u<sub>n</sub></span> → <span class="v">ℓ</span>, alors <span class="v">u<sub>n+1</sub></span> → <span class="v">ℓ</span> aussi — c'est la même suite, juste décalée.</p>
+        <p>En passant à la limite dans la relation :</p>
+        <div class="show"><span class="v">u<sub>n+1</sub></span> = <span class="v">f</span>(<span class="v">u<sub>n</sub></span>) &nbsp;→&nbsp; <span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>)</div>
+        <p>On résout cette équation : la limite est un <b>point fixe</b> de <span class="v">f</span>.</p>`,
+      lent:`<p><b>Pourquoi <span class="v">u<sub>n+1</sub></span> a la même limite que <span class="v">u<sub>n</sub></span>.</b></p>
+        <p>Imagine une file de gens qui avancent vers une porte.</p>
+        <p>La suite <span class="v">u<sub>n</sub></span>, c'est la position du <span class="v">n</span>-ième. La suite <span class="v">u<sub>n+1</sub></span>, c'est la position du suivant.</p>
+        <p>Tout le monde va vers la même porte. Regarder « le suivant » ne change pas la destination — juste le point de départ de l'observation.</p>
+        <p><b>Donc</b> si <span class="v">u<sub>n</sub></span> → <span class="v">ℓ</span>, alors <span class="v">u<sub>n+1</sub></span> → <span class="v">ℓ</span> aussi.</p>
+        <p>D'où l'équation : le membre de gauche tend vers <span class="v">ℓ</span>, le membre de droite vers <span class="v">f</span>(<span class="v">ℓ</span>). Deux façons d'écrire la même limite, donc elles sont égales.</p>
+        <p><b>Condition :</b> <span class="v">f</span> doit être continue. Au bac, elle l'est toujours.</p>`
+    },
+    {
+      k:"EXEMPLE", t:"Un exercice mené jusqu'au bout",
+      c:`<p><span class="v">u<sub>0</sub></span> = 0 et <span class="v">u<sub>n+1</sub></span> = √(2 + <span class="v">u<sub>n</sub></span>).</p>
+        <p><b>Bornée :</b> par récurrence, 0 ⩽ <span class="v">u<sub>n</sub></span> ⩽ 2.</p>
+        <p><b>Monotone :</b> on montre qu'elle est croissante.</p>
+        <p><b>Conclusion :</b> croissante et majorée → converge vers <span class="v">ℓ</span>.</p>
+        <p><b>Valeur :</b> <span class="v">ℓ</span> = √(2 + <span class="v">ℓ</span>), donc <span class="v">ℓ</span>² = 2 + <span class="v">ℓ</span>.</p>
+        <div class="show"><span class="v">ℓ</span>² − <span class="v">ℓ</span> − 2 = 0 → <span class="v">ℓ</span> = 2 ou <span class="v">ℓ</span> = −1</div>
+        <p>On rejette −1 car la suite est positive. <b><span class="v">ℓ</span> = 2</b>.</p>`,
+      lent:`<p><b>Le dernier réflexe, celui qu'on oublie.</b></p>
+        <p>L'équation <span class="v">ℓ</span>² − <span class="v">ℓ</span> − 2 = 0 donne <b>deux</b> solutions : 2 et −1.</p>
+        <p>Laquelle est la bonne ? L'équation seule ne le dit pas.</p>
+        <p><b>Il faut revenir à la suite.</b> Tous ses termes sont positifs — c'est une racine carrée. Une limite de nombres positifs ne peut pas être négative.</p>
+        <p>Donc −1 est impossible. On garde 2.</p>
+        <p><b>En devoir, cette phrase de rejet vaut des points.</b> Écrire « ℓ = 2 ou ℓ = −1 » sans trancher laisse le travail inachevé.</p>
+        <p>La formulation attendue : <i>« Comme u<sub>n</sub> ⩾ 0 pour tout n, la limite est positive. On rejette donc −1 et ℓ = 2. »</i></p>`
+    }
+  ],
+  series:[
+    [
+      { k:"QCM", type:"qcm", q:`<span class="v">u<sub>n+1</sub></span> = <span class="v">f</span>(<span class="v">u<sub>n</sub></span>) et <span class="v">u<sub>n</sub></span> → <span class="v">ℓ</span>.<br>Quelle équation vérifie <span class="v">ℓ</span> ?`,
+        opts:[{t:`<span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>)`,ok:true,why:`Passage à la limite des deux côtés.`},
+              {t:`<span class="v">ℓ</span> = 0`,ok:false,why:`Aucune raison.`},
+              {t:`<span class="v">f</span>(<span class="v">ℓ</span>) = 0`,ok:false,why:`Ce serait chercher une racine de f.`}],
+        regle:`La limite est un point fixe.`,
+        aides:[`<span class="v">u<sub>n+1</sub></span> tend vers quoi ?`,`Vers <span class="v">ℓ</span> aussi.`],
+        sol:[`À gauche : <span class="v">u<sub>n+1</sub></span> → <span class="v">ℓ</span>`,`À droite : <span class="v">f</span>(<span class="v">u<sub>n</sub></span>) → <span class="v">f</span>(<span class="v">ℓ</span>)`,`<b><span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>)</b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>n+1</sub></span> = (<span class="v">u<sub>n</sub></span> + 6)/2.<br>Quel est le point fixe ?`,
+        rep:6, ind:"un entier", ok:`<span class="v">ℓ</span> = (<span class="v">ℓ</span>+6)/2 → 2<span class="v">ℓ</span> = <span class="v">ℓ</span>+6 → <span class="v">ℓ</span> = <b>6</b>`, no:`Résous l'équation.`,
+        regle:`Point fixe : <span class="v">ℓ</span> = <span class="v">f</span>(<span class="v">ℓ</span>).`,
+        aides:[`Pose <span class="v">ℓ</span> = (<span class="v">ℓ</span>+6)/2.`,`Multiplie par 2 : 2<span class="v">ℓ</span> = <span class="v">ℓ</span> + 6.`],
+        sol:[`<span class="v">ℓ</span> = (<span class="v">ℓ</span>+6)/2`,`2<span class="v">ℓ</span> = <span class="v">ℓ</span> + 6`,`<span class="v">ℓ</span> = <b>6</b>`] },
+
+      { k:"QCM", type:"qcm", q:`Dans un exercice type, quel est l'ordre des questions ?`,
+        opts:[{t:`Bornes → monotonie → convergence → limite`,ok:true,why:`C'est la progression logique.`},
+              {t:`Limite → bornes → monotonie`,ok:false,why:`On ne peut pas chercher la limite sans savoir qu'elle existe.`},
+              {t:`Monotonie seulement`,ok:false,why:`Insuffisant pour conclure.`}],
+        regle:`Existence d'abord, valeur ensuite.`,
+        aides:[`Que faut-il prouver avant de chercher ℓ ?`,`Que la limite existe.`],
+        sol:[`On établit les bornes`,`Puis la monotonie, puis on conclut`,`<b>Bornes → monotonie → convergence → limite</b>`] },
+
+      { k:"AUTOMATISME", type:"num", q:`<span class="v">u<sub>0</sub></span> = 0, <span class="v">u<sub>n+1</sub></span> = √(2 + <span class="v">u<sub>n</sub></span>).<br>Calculer <span class="v">u<sub>2</sub></span> arrondi à l'unité.`,
+        sub:`√2 ≈ 1,41 puis √3,41 ≈ 1,85`,
+        rep:2, ind:"un entier", ok:`<span class="v">u<sub>1</sub></span> = √2 ≈ 1,41 · <span class="v">u<sub>2</sub></span> = √3,41 ≈ 1,85 → <b>2</b>`, no:`Deux applications successives.`,
+        regle:`On avance pas à pas.`,
+        aides:[`<span class="v">u<sub>1</sub></span> = √(2+0) = √2.`,`<span class="v">u<sub>2</sub></span> = √(2+1,41).`],
+        sol:[`<span class="v">u<sub>1</sub></span> = √2 ≈ 1,41`,`<span class="v">u<sub>2</sub></span> = √3,41 ≈ 1,85`,`Arrondi : <b>2</b>`] },
+
+      { k:"DÉFI ⭑⭑⭑", hard:true, type:"num", q:`<span class="v">u<sub>n+1</sub></span> = √(6 + <span class="v">u<sub>n</sub></span>), termes positifs.<br>Quelle est la limite ?`,
+        sub:`Résoudre ℓ² = 6 + ℓ`,
+        rep:3, ind:"un entier", ok:`<span class="v">ℓ</span>² − <span class="v">ℓ</span> − 6 = 0 → 3 ou −2. On garde <b>3</b>.`, no:`Factorise le trinôme.`,
+        regle:`Rejeter la racine négative si la suite est positive.`,
+        aides:[`<span class="v">ℓ</span> = √(6+<span class="v">ℓ</span>) donne <span class="v">ℓ</span>² = 6 + <span class="v">ℓ</span>.`,`<span class="v">ℓ</span>² − <span class="v">ℓ</span> − 6 = (<span class="v">ℓ</span>−3)(<span class="v">ℓ</span>+2).`],
+        sol:[`<span class="v">ℓ</span>² − <span class="v">ℓ</span> − 6 = 0`,`Racines : 3 et −2`,`La suite est positive → <b><span class="v">ℓ</span> = 3</b>`] }
+    ]
+  ]
+},
+
+/* ═════════ 18 · PROBLÈMES TYPE BAC ═════════ */
+{
+  n:18, nom:"Problèmes type bac", sous:"Tout ensemble", pret:true, ds:false,
+  cartes:[
+    {
+      k:"LA STRUCTURE", t:"Comment se présente un sujet",
+      c:`<p>Un exercice de bac sur les suites suit presque toujours le même plan.</p>
+        <p><b>Q1.</b> Calculer les premiers termes<br>
+        <b>Q2.</b> Conjecturer le comportement<br>
+        <b>Q3.</b> Démontrer par récurrence<br>
+        <b>Q4.</b> Étudier la monotonie<br>
+        <b>Q5.</b> Conclure sur la convergence<br>
+        <b>Q6.</b> Déterminer la limite</p>
+        <div class="note"><b>Bonne nouvelle.</b> Les questions s'aident entre elles : la réponse à Q3 sert en Q4, et ainsi de suite.</div>`,
+      lent:`<p><b>Une stratégie qui rapporte.</b></p>
+        <p>Si tu bloques sur Q3, <b>ne t'arrête pas</b>. Les questions suivantes sont souvent indépendantes du calcul exact.</p>
+        <p>Tu peux écrire : « <i>on admet le résultat de la question 3</i> » et continuer.</p>
+        <p>Les correcteurs acceptent cela. Tu perds les points de Q3, mais tu gardes ceux de Q4, Q5, Q6.</p>
+        <p><b>L'erreur coûteuse :</b> rester vingt minutes sur une question et laisser le reste vide.</p>
+        <p><b>Autre conseil :</b> Q1 et Q2 sont presque toujours faciles — quelques calculs et une observation. Ne les néglige pas, ce sont des points sûrs.</p>`
+    },
+    {
+      k:"LA RÉDACTION", t:"Ce qui rapporte vraiment des points",
+      c:`<p>Un résultat seul ne vaut presque rien. C'est la démarche qui compte.</p>
+        <p><b>Toujours écrire :</b></p>
+        <p>· « Pour tout entier naturel <span class="v">n</span>… » au début d'un calcul général<br>
+        · « Donc… » avant chaque conclusion<br>
+        · Une phrase finale en français</p>
+        <div class="show">Donc la suite converge vers 2.</div>`,
+      lent:`<p><b>Exemple de la différence entre deux copies.</b></p>
+        <p><b>Copie A :</b> « ℓ = 2 »</p>
+        <p><b>Copie B :</b> « La suite est croissante et majorée par 2, donc elle converge vers une limite ℓ. En passant à la limite dans la relation, on obtient ℓ = √(2+ℓ), soit ℓ² − ℓ − 2 = 0. Les solutions sont 2 et −1. Comme tous les termes sont positifs, on rejette −1. <b>Donc la suite converge vers 2.</b> »</p>
+        <p>Même résultat. Mais la copie A récolte un point sur cinq, la copie B les cinq.</p>
+        <p><b>Ce n'est pas de la décoration.</b> Le correcteur note ce qu'il peut suivre. Une réponse sans justification pourrait venir d'un hasard ou d'une copie voisine.</p>`
+    }
+  ],
+  series:[
+    [
+      { k:"PROBLÈME", type:"num", q:`<span class="v">u<sub>0</sub></span> = 1, <span class="v">u<sub>n+1</sub></span> = 0,5<span class="v">u<sub>n</sub></span> + 3.<br>Calculer <span class="v">u<sub>2</sub></span>.`,
+        rep:4.75, ind:"un décimal", ok:`1 → 3,5 → <b>4,75</b>`, no:`Deux applications.`,
+        regle:`Arithmético-géométrique : ×0,5 puis +3.`,
+        aides:[`<span class="v">u<sub>1</sub></span> = 0,5×1 + 3 = 3,5.`,`<span class="v">u<sub>2</sub></span> = 0,5×3,5 + 3.`],
+        sol:[`<span class="v">u<sub>1</sub></span> = 3,5`,`<span class="v">u<sub>2</sub></span> = 1,75 + 3`,`<b>4,75</b>`] },
+
+      { k:"PROBLÈME", type:"num", q:`Même suite : <span class="v">u<sub>n+1</sub></span> = 0,5<span class="v">u<sub>n</sub></span> + 3.<br>Quel est le point fixe ?`,
+        rep:6, ind:"un entier", ok:`<span class="v">ℓ</span> = 0,5<span class="v">ℓ</span> + 3 → 0,5<span class="v">ℓ</span> = 3 → <b>6</b>`, no:`Résous l'équation.`,
+        regle:`Le point fixe donne la limite éventuelle.`,
+        aides:[`<span class="v">ℓ</span> − 0,5<span class="v">ℓ</span> = 3.`,`0,5<span class="v">ℓ</span> = 3.`],
+        sol:[`<span class="v">ℓ</span> = 0,5<span class="v">ℓ</span> + 3`,`0,5<span class="v">ℓ</span> = 3`,`<span class="v">ℓ</span> = <b>6</b>`] },
+
+      { k:"PROBLÈME", type:"qcm", q:`Une question demande « <i>conjecturer</i> le comportement ».<br>Que fait-on ?`,
+        opts:[{t:`On calcule des termes et on observe`,ok:true,why:`Conjecturer = formuler une hypothèse.`},
+              {t:`On démontre par récurrence`,ok:false,why:`C'est l'étape suivante.`},
+              {t:`On donne la limite exacte`,ok:false,why:`Trop tôt.`}],
+        regle:`Conjecturer ≠ démontrer.`,
+        aides:[`Que signifie « conjecturer » ?`,`Supposer à partir d'observations.`],
+        sol:[`Conjecturer = observer et supposer`,`La démonstration vient après`,`<b>Calculer des termes et observer</b>`] },
+
+      { k:"PROBLÈME", type:"num", q:`Un lac contient 8000 poissons. Chaque année, 10 % disparaissent et on réintroduit 500 poissons.<br>Population après 1 an ?`,
+        rep:7700, ind:"un entier", ok:`8000 × 0,9 + 500 = <b>7700</b>`, no:`D'abord la perte, puis l'ajout.`,
+        regle:`Arithmético-géométrique en situation.`,
+        aides:[`8000 × 0,9 = 7200.`,`7200 + 500.`],
+        sol:[`Perte : 8000 × 0,9 = 7200`,`Réintroduction : +500`,`<b>7700 poissons</b>`] },
+
+      { k:"PROBLÈME", type:"num", q:`Même situation.<br>Quelle est la population d'équilibre ?`,
+        sub:`Résoudre ℓ = 0,9ℓ + 500`,
+        rep:5000, ind:"un entier", ok:`0,1<span class="v">ℓ</span> = 500 → <b>5000</b>`, no:`Passe à la limite.`,
+        regle:`L'équilibre est le point fixe.`,
+        aides:[`<span class="v">ℓ</span> − 0,9<span class="v">ℓ</span> = 500.`,`0,1<span class="v">ℓ</span> = 500.`],
+        sol:[`<span class="v">ℓ</span> = 0,9<span class="v">ℓ</span> + 500`,`0,1<span class="v">ℓ</span> = 500`,`<b>5000 poissons</b>`] }
+    ]
+  ]
+}
+
+];
+
+/* главы Terminale добавляются в общий список */
+CHAPITRES.push(...CH_TERM_A, ...CH_TERM_B);
+
 const MODULES = [
   {
     id:"suites",
@@ -3069,6 +3931,14 @@ const MODULES = [
     periode:2,
     pret:true,
     chapitres:[1,2,3,4,5,6,7,8]
+  },
+  {
+    id:"suites-term",
+    nom:"Suites · Terminale",
+    sous:"Analyse · limites et récurrence",
+    periode:1,
+    pret:true,
+    chapitres:[11,12,13,14,15,16,17,18]
   },
   {
     id:"second-degre",

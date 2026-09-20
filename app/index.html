@@ -828,9 +828,9 @@ to{opacity:1;transform:translateX(0)}
       </div>
       <p class="list-lbl" style="margin-top:34px">MODULES</p>
       <div class="mods" id="mods"></div>
-      <a class="foot-link" href="../">
-        Ouvrir le cours
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+      <a class="foot-link" id="lien-cours" href="cours-term.html">
+        <span id="lien-cours-t">Ouvrir le cours</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
     </div>
   </section>
@@ -896,9 +896,9 @@ to{opacity:1;transform:translateX(0)}
       </button>
 
       <div class="chs" id="chs"></div>
-      <a class="foot-link" href="../">
-        Ouvrir le cours
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+      <a class="foot-link" id="lien-cours" href="cours-term.html">
+        <span id="lien-cours-t">Ouvrir le cours</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
     </div>
   </section>
@@ -7060,6 +7060,16 @@ function drawMods(){
         drawMods();
       };
     });
+  }
+
+  /* le cours suit l'année choisie */
+  const lc = $("lien-cours");
+  if(lc){
+    lc.href = ANNEE === "prem" ? "cours-prem.html" : "cours-term.html";
+    const lt = $("lien-cours-t");
+    if(lt) lt.textContent = ANNEE === "prem"
+      ? "Cours · Première"
+      : "Cours · Terminale";
   }
 
   const liste = modulesAnnee();

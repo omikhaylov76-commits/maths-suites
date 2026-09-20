@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Les suites — cours</title>
+<link rel="apple-touch-icon" href="app/i/icon-180.png">
+<meta name="theme-color" content="#fdf9f4">
+<style>
+
+/* ── переход между страницами, как в приложении ── */
+@view-transition{ navigation:auto }
+
+@media (prefers-reduced-motion:no-preference){
+  ::view-transition-old(root){
+    animation:sortie 420ms cubic-bezier(.4,0,.2,1) both;
+  }
+  ::view-transition-new(root){
+    animation:entree 500ms cubic-bezier(.215,.61,.355,1) both;
+  }
+  /* retour : on inverse le sens */
+  html.retour::view-transition-old(root){
+    animation:sortie-r 420ms cubic-bezier(.4,0,.2,1) both;
+  }
+  html.retour::view-transition-new(root){
+    animation:entree-r 500ms cubic-bezier(.215,.61,.355,1) both;
+  }
+}
+
+@keyframes sortie{
+  from{ transform:translateX(0);      opacity:1 }
+  to  { transform:translateX(-22%);   opacity:0 }
+}
+@keyframes entree{
+  from{ transform:translateX(100%);   opacity:.4 }
+  to  { transform:translateX(0);      opacity:1 }
+}
+@keyframes sortie-r{
+  from{ transform:translateX(0);      opacity:1 }
+  to  { transform:translateX(100%);   opacity:0 }
+}
+@keyframes entree-r{
+  from{ transform:translateX(-22%);   opacity:.4 }
+  to  { transform:translateX(0);      opacity:1 }
+}
+
+:root{
+  --canvas:#fdf9f4; --warm:#f9efe4; --dust:#f4ece1; --mist:#e8ddd0;
+  --ink:#241f1b; --charcoal:#4a423a; --soft:#8a8078; --slate:#b4a99c;
+  --ember:#f67748; --ember-d:#d65f34;
+  --ok:#3fa66a; --ok-soft:#eef7f1; --ok-line:#cfe6d9;
+  --miss:#c9553d; --miss-soft:#fdf0ec; --miss-line:#f2d5cb;
+  --e:cubic-bezier(.215,.61,.355,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+#toc{scroll-margin-top:74px}
+body{
+  background:var(--canvas); color:var(--ink);
+  font:400 17px/1.7 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+  padding-bottom:80px;
+}
+
+/* ── шапка ── */
+.bar{
+  position:sticky; top:0; z-index:40;
+  background:rgba(253,249,244,.94);
+  backdrop-filter:saturate(180%) blur(16px);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid var(--mist);
+  padding:env(safe-area-inset-top) 0 0;
+}
+.bar-in{
+  max-width:820px; margin:0 auto;
+  display:flex; align-items:center; gap:14px;
+  padding:12px 22px;
+}
+.bar-t{flex:1;min-width:0}
+.bar-t b{display:block;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.bar-t span{display:block;font-size:12px;color:var(--soft);margin-top:1px}
+
+.lang{display:flex;gap:3px;background:var(--dust);border-radius:20px;padding:3px}
+.lang button{
+  border:0;background:none;cursor:pointer;
+  padding:6px 13px;border-radius:17px;
+  font:600 12.5px/1 "Inter",sans-serif;color:var(--soft);
+  transition:background .2s var(--e),color .2s var(--e);
+}
+.lang button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+
+/* ── титул ── */
+.hero{padding:46px 0 34px}
+.hero h1{font-size:clamp(30px,7vw,42px);line-height:1.12;letter-spacing:-.025em;font-weight:700}
+.hero p{margin-top:12px;font-size:16px;color:var(--soft);line-height:1.6}
+
+/* ── оглавление ── */
+.toc{
+  background:#fff;border:1px solid var(--mist);border-radius:18px;
+  padding:22px 24px;margin-bottom:40px;
+}
+.toc h2{font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--soft);font-weight:700;margin-bottom:14px}
+.toc ol{list-style:none;counter-reset:t}
+.toc li{counter-increment:t;margin-bottom:2px}
+.toc a{
+  display:flex;gap:12px;align-items:baseline;
+  padding:8px 10px;margin:0 -10px;border-radius:10px;
+  color:var(--ink);text-decoration:none;font-size:15.5px;
+  transition:background .16s var(--e);
+}
+.toc a:hover{background:var(--dust)}
+.toc a::before{
+  content:counter(t);flex:0 0 22px;
+  font:600 12.5px/1.5 "Inter",sans-serif;color:var(--ember);
+}
+.toc .neuf{
+  font:600 9px/1 "Inter",sans-serif;letter-spacing:.07em;
+  background:var(--warm);color:var(--ember);
+  padding:3px 6px;border-radius:5px;margin-left:6px;
+}
+
+/* ── раздел ── */
+.sec{padding:14px 0 50px;scroll-margin-top:78px}
+.sec-n{
+  display:inline-block;font:600 11px/1 "Inter",sans-serif;
+  letter-spacing:.1em;color:var(--ember);margin-bottom:11px;
+}
+.sec h2{font-size:clamp(23px,5.4vw,30px);line-height:1.22;
+  letter-spacing:-.021em;font-weight:700;margin-bottom:6px}
+.sec-s{font-size:14.5px;color:var(--soft);margin-bottom:24px}
+
+.sec p{margin-bottom:17px}
+.sec p b{font-weight:600}
+.sec ul,.sec ol{margin:0 0 17px 21px}
+.sec li{margin-bottom:7px}
+
+/* ── типы блоков ── */
+.pourquoi{
+  background:var(--warm);border-radius:15px;
+  padding:18px 21px;margin-bottom:24px;
+  font-size:15.5px;line-height:1.62;color:var(--charcoal);
+}
+.pourquoi b{color:var(--ink);font-weight:600}
+
+.image{
+  border-left:3px solid var(--ember);
+  background:linear-gradient(90deg,var(--warm),rgba(249,239,228,.25));
+  border-radius:0 13px 13px 0;
+  padding:17px 20px;margin-bottom:22px;
+}
+.image .lbl{
+  display:block;font:600 10px/1 "Inter",sans-serif;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ember);margin-bottom:9px;
+}
+.image p:last-child{margin-bottom:0}
+
+.f{
+  background:var(--dust);border-radius:13px;
+  padding:19px 20px;margin:0 0 22px;
+  text-align:center;font-family:Georgia,"Times New Roman",serif;
+  font-size:19px;line-height:1.85;
+}
+.f.small{font-size:16.5px}
+
+.ex{
+  background:#fff;border:1px solid var(--mist);border-radius:13px;
+  padding:17px 20px;margin-bottom:22px;font-size:15.5px;line-height:1.66;
+}
+.ex .lbl{
+  display:block;font:600 10px/1 "Inter",sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--slate);margin-bottom:10px;
+}
+.ex p:last-child{margin-bottom:0}
+
+.piege{
+  background:var(--miss-soft);border:1px solid var(--miss-line);
+  border-radius:13px;padding:17px 20px;margin-bottom:22px;
+  font-size:15.5px;line-height:1.66;
+}
+.piege .lbl{
+  display:block;font:600 10px/1 "Inter",sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--miss);margin-bottom:10px;
+}
+.piege p:last-child{margin-bottom:0}
+
+.ds{
+  background:var(--ok-soft);border:1px solid var(--ok-line);
+  border-radius:13px;padding:17px 20px;margin-bottom:22px;
+  font-size:15.5px;line-height:1.68;
+}
+.ds .lbl{
+  display:block;font:600 10px/1 "Inter",sans-serif;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ok);margin-bottom:10px;
+}
+.ds i{font-style:normal;font-family:Georgia,serif;color:var(--ink)}
+.ds p:last-child{margin-bottom:0}
+
+/* ── таблица ── */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:22px}
+table{border-collapse:collapse;width:100%;min-width:400px;font-size:15px}
+th,td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--mist)}
+th{font-weight:600;font-size:12.5px;letter-spacing:.03em;
+   text-transform:uppercase;color:var(--soft)}
+tr:last-child td{border-bottom:0}
+
+/* ── код ── */
+.code{
+  background:#fff;border:1px solid var(--mist);border-radius:13px;
+  padding:16px 19px;margin-bottom:22px;
+  font:400 14px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:var(--charcoal);overflow-x:auto;
+}
+.code .kw{color:var(--ember);font-weight:600}
+.code .cm{color:var(--slate)}
+
+/* ── назад к оглавлению ── */
+.up{
+  display:inline-flex;align-items:center;gap:6px;
+  min-height:38px;padding:0 15px;border-radius:19px;
+  background:var(--dust);color:var(--soft);
+  text-decoration:none;font:600 12px/1 "Inter",sans-serif;
+  transition:background .18s var(--e),color .18s var(--e),transform .12s var(--e);
+}
+.up:hover{background:var(--mist);color:var(--charcoal)}
+.up:hover{background:var(--mist)}
+.up:active{transform:scale(.97)}
+
+
+.toapp{
+  display:grid; place-items:center;
+  flex:0 0 38px; width:38px; height:38px; border-radius:50%;
+  background:var(--ember); color:#fff; text-decoration:none;
+  transition:background .18s var(--e), transform .12s var(--e);
+}
+.toapp:active{transform:scale(.92); background:var(--ember-d)}
+
+/* ── плавающая кнопка «наверх» ── */
+.fab{
+  position:fixed; right:18px; z-index:50;
+  bottom:calc(18px + env(safe-area-inset-bottom));
+  width:52px; height:52px; border-radius:50%;
+  background:#fff; border:1px solid var(--mist);
+  box-shadow:0 4px 16px rgba(36,31,27,.13);
+  display:grid; place-items:center; cursor:pointer;
+  color:var(--charcoal); text-decoration:none;
+  opacity:0; transform:translateY(14px) scale(.9); pointer-events:none;
+  transition:opacity .22s var(--e), transform .26s var(--e);
+}
+.fab.on{opacity:1; transform:none; pointer-events:auto}
+.fab:active{transform:scale(.93)}
+
+@media (max-width:560px){
+  .fab{right:15px; width:50px; height:50px}
+}
+
+/* ── низ ── */
+.foot{
+  border-top:1px solid var(--mist);margin-top:20px;padding:30px 0 0;
+  text-align:center;
+}
+.foot a{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 26px;border-radius:26px;
+  background:var(--ember);color:#fff;text-decoration:none;
+  font:600 14.5px/1 "Inter",sans-serif;
+  transition:transform .12s var(--e),background .2s var(--e);
+}
+.foot a:active{transform:scale(.98);background:var(--ember-d)}
+
+.v{font-family:Georgia,serif;font-style:italic}
+
+@media (max-width:560px){
+  body{font-size:16.5px}
+  .wrap{padding:0 18px}
+  .bar-in{padding:11px 18px}
+  .hero{padding:34px 0 26px}
+  .f{font-size:17px;padding:16px 15px}
+  .toc{padding:19px 18px}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="bar-t">
+      <b>Les suites</b>
+      <span id="bar-sub">Première · Terminale</span>
+    </div>
+    <a class="toapp" href="./" id="toapp" aria-label="Exercices" title="Exercices">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h13M12 6l6 6-6 6"/>
+      </svg>
+    </a>
+    <div class="lang">
+      <button id="b-ru" class="on">Рус</button>
+      <button id="b-fr">Fr</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <h1 id="h-titre">Последовательности<br>с самого начала</h1>
+    <p id="h-sous">Всё, что нужно знать по теме, разобрано на пальцах — с примерами из жизни и готовыми формулировками для контрольной.</p>
+  </div>
+
+  <nav class="toc" id="toc">
+    <h2 id="toc-t">Содержание</h2>
+    <ol id="toc-l"></ol>
+  </nav>
+
+  <main id="corps"></main>
+
+  <div class="foot">
+    <a href="./">
+      <span id="f-txt">Перейти к упражнениям</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</div>
+
+<script>
+/* ═══════════ СОДЕРЖИМОЕ ═══════════ */
+/* вставляется сборкой */
+const COURS = [
+
+/* ══════════ 1 ══════════ */
+{ n:1,
+  t:{ru:"Что такое последовательность", fr:"Qu'est-ce qu'une suite"},
+  st:{ru:"Самое начало — что вообще обозначают этой буквой", fr:"Le tout début — ce que cette lettre désigne"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> В жизни полно вещей, которые меняются по шагам: деньги на счёте каждый месяц, рост растения каждую неделю, население города каждый год. Математике нужен способ записать такую цепочку коротко — и уметь предсказать, что будет на шаге номер сто, не считая девяносто девять предыдущих.",
+    fr:"<b>À quoi ça sert.</b> Beaucoup de choses évoluent par étapes : l'argent sur un compte chaque mois, la taille d'une plante chaque semaine, la population d'une ville chaque année. Les maths ont besoin d'écrire cette chaîne de façon courte — et de prévoir l'étape numéro cent sans calculer les quatre-vingt-dix-neuf précédentes."}},
+
+  {k:"p", h:{
+    ru:"Последовательность — это просто <b>список чисел, у которых есть номера</b>. Ничего сложнее здесь нет.",
+    fr:"Une suite, c'est simplement une <b>liste de nombres numérotés</b>. Il n'y a rien de plus compliqué."}},
+
+  {k:"image", h:{
+    ru:"<p>Представь <b>вагоны поезда</b>. Каждый вагон пронумерован: 0, 1, 2, 3… В каждом вагоне лежит какое-то число.</p><p>Номер вагона — это <span class=\"v\">n</span>. Число внутри — это <span class=\"v\">u<sub>n</sub></span>.</p><p>Весь поезд целиком — это <span class=\"v\">(u<sub>n</sub>)</span>, со скобками.</p>",
+    fr:"<p>Imagine les <b>wagons d'un train</b>. Chaque wagon porte un numéro : 0, 1, 2, 3… Dans chaque wagon, il y a un nombre.</p><p>Le numéro du wagon, c'est <span class=\"v\">n</span>. Le nombre à l'intérieur, c'est <span class=\"v\">u<sub>n</sub></span>.</p><p>Le train entier, c'est <span class=\"v\">(u<sub>n</sub>)</span>, avec les parenthèses.</p>"}},
+
+  {k:"ex", h:{
+    ru:"<p>Возьмём список: 3 ; 7 ; 11 ; 15 ; 19 …</p><p><span class=\"v\">u<sub>0</sub></span> = 3 — в нулевом вагоне лежит тройка<br><span class=\"v\">u<sub>1</sub></span> = 7 — в первом семёрка<br><span class=\"v\">u<sub>2</sub></span> = 11<br><span class=\"v\">u<sub>3</sub></span> = 15</p><p>Номер снизу называется <b>рангом</b> (по-французски <i>le rang</i>). Это просто место в очереди.</p>",
+    fr:"<p>Prenons la liste : 3 ; 7 ; 11 ; 15 ; 19 …</p><p><span class=\"v\">u<sub>0</sub></span> = 3 — dans le wagon zéro, il y a 3<br><span class=\"v\">u<sub>1</sub></span> = 7 — dans le premier, 7<br><span class=\"v\">u<sub>2</sub></span> = 11<br><span class=\"v\">u<sub>3</sub></span> = 15</p><p>Le numéro en bas s'appelle <b>le rang</b>. C'est juste la place dans la file.</p>"}},
+
+  {k:"piege", n:{ru:"Главная путаница", fr:"La confusion la plus fréquente"}, h:{
+    ru:"<p><span class=\"v\">u<sub>n</sub></span> без скобок — это <b>одно число</b>, содержимое одного вагона.</p><p><span class=\"v\">(u<sub>n</sub>)</span> со скобками — это <b>весь поезд</b>, вся последовательность целиком.</p><p>Когда в задании написано «покажите, что <span class=\"v\">(u<sub>n</sub>)</span> возрастает» — речь про весь поезд. Когда «вычислите <span class=\"v\">u<sub>5</sub></span>» — про один вагон.</p>",
+    fr:"<p><span class=\"v\">u<sub>n</sub></span> sans parenthèses, c'est <b>un seul nombre</b>, le contenu d'un wagon.</p><p><span class=\"v\">(u<sub>n</sub>)</span> avec parenthèses, c'est <b>tout le train</b>, la suite entière.</p><p>Quand l'énoncé dit « montrer que <span class=\"v\">(u<sub>n</sub>)</span> est croissante », on parle du train entier. Quand il dit « calculer <span class=\"v\">u<sub>5</sub></span> », on parle d'un seul wagon.</p>"}},
+
+  {k:"p", h:{
+    ru:"Буква не обязана быть <span class=\"v\">u</span>. Встречаются <span class=\"v\">v<sub>n</sub></span>, <span class=\"v\">w<sub>n</sub></span>, <span class=\"v\">t<sub>n</sub></span> — это просто разные имена, как разные поезда на вокзале.",
+    fr:"La lettre n'est pas forcément <span class=\"v\">u</span>. On rencontre <span class=\"v\">v<sub>n</sub></span>, <span class=\"v\">w<sub>n</sub></span>, <span class=\"v\">t<sub>n</sub></span> — ce sont juste des noms différents, comme plusieurs trains en gare."}},
+
+  {k:"ds", h:{
+    ru:"<p>Если просят описать словами, пишут так:</p><p><i>Une suite numérique est une fonction définie sur ℕ (ou sur une partie de ℕ) à valeurs dans ℝ.</i></p><p>Дословно: числовая последовательность — это функция, определённая на множестве натуральных чисел, со значениями в действительных. То есть: вход — номер, выход — число.</p>",
+    fr:"<p>Si on demande une définition, on écrit :</p><p><i>Une suite numérique est une fonction définie sur ℕ (ou sur une partie de ℕ) à valeurs dans ℝ.</i></p><p>Autrement dit : on donne un rang, elle renvoie un nombre.</p>"}}
+]},
+
+/* ══════════ 2 ══════════ */
+{ n:2,
+  t:{ru:"Два способа задать последовательность", fr:"Deux façons de définir une suite"},
+  st:{ru:"Explicite и récurrence — разница принципиальная", fr:"Explicite et récurrence — la différence est essentielle"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> От способа задания зависит вообще всё: можно ли сразу посчитать сотый член или придётся идти пешком через девяносто девять. Это первое, что нужно распознать в любой задаче.",
+    fr:"<b>À quoi ça sert.</b> Tout dépend de la façon dont la suite est définie : peut-on calculer directement le centième terme, ou faut-il passer par les quatre-vingt-dix-neuf précédents ? C'est la première chose à reconnaître dans un exercice."}},
+
+  {k:"p", h:{
+    ru:"<b>Способ первый — явный (explicite).</b> Формула прямо говорит, что лежит в вагоне номер <span class=\"v\">n</span>.",
+    fr:"<b>Première façon — explicite.</b> La formule dit directement ce qu'il y a dans le wagon numéro <span class=\"v\">n</span>."}},
+
+  {k:"f", h:"<span class=\"v\">u<sub>n</sub></span> = 4<span class=\"v\">n</span> + 3"},
+
+  {k:"image", h:{
+    ru:"<p>Это как <b>номер квартиры и этаж</b>. Знаешь номер — сразу знаешь этаж, считать по дороге ничего не надо.</p><p>Нужен <span class=\"v\">u<sub>100</sub></span>? Подставляешь сотню: 4×100 + 3 = 403. Секунда работы.</p>",
+    fr:"<p>C'est comme <b>un numéro d'appartement et son étage</b>. Tu connais le numéro, tu sais l'étage immédiatement, sans rien compter en chemin.</p><p>Tu veux <span class=\"v\">u<sub>100</sub></span> ? Tu remplaces : 4×100 + 3 = 403. Une seconde.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Способ второй — рекуррентный (par récurrence).</b> Даётся первый член и правило, как из текущего получить следующий.",
+    fr:"<b>Deuxième façon — par récurrence.</b> On donne le premier terme et la règle pour passer d'un terme au suivant."}},
+
+  {k:"f", h:"<span class=\"v\">u<sub>0</sub></span> = 3&nbsp;&nbsp;и&nbsp;&nbsp;<span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span> + 4"},
+
+  {k:"image", h:{
+    ru:"<p>Это как <b>рецепт с шагами</b>: «возьми предыдущее и прибавь четыре».</p><p>Чтобы узнать <span class=\"v\">u<sub>100</sub></span>, придётся пройти все сто шагов по очереди. Никакого короткого пути — если, конечно, не найти явную формулу (а это отдельная задача).</p>",
+    fr:"<p>C'est comme <b>une recette étape par étape</b> : « prends le précédent et ajoute quatre ».</p><p>Pour connaître <span class=\"v\">u<sub>100</sub></span>, il faut faire les cent étapes une par une. Aucun raccourci — sauf si on trouve la forme explicite, mais c'est un autre travail.</p>"}},
+
+  {k:"ex", n:{ru:"Одна и та же последовательность", fr:"La même suite, deux écritures"}, h:{
+    ru:"<p>Оба примера выше дают одно и то же: 3 ; 7 ; 11 ; 15 ; 19 …</p><p>Первая запись — фотография всего поезда сразу. Вторая — инструкция, как его собрать.</p>",
+    fr:"<p>Les deux exemples ci-dessus donnent la même chose : 3 ; 7 ; 11 ; 15 ; 19 …</p><p>La première écriture est une photo du train entier. La seconde est la notice de montage.</p>"}},
+
+  {k:"piege", n:{ru:"Как их различить за секунду", fr:"Les distinguer en une seconde"}, h:{
+    ru:"<p>Смотри, <b>есть ли справа <span class=\"v\">u<sub>n</sub></span></b>.</p><p>Если справа только <span class=\"v\">n</span> — формула явная.<br>Если справа стоит <span class=\"v\">u<sub>n</sub></span> — рекуррентная.</p><p>И ещё: у рекуррентной <b>обязательно</b> должен быть задан первый член. Без него рецепт бесполезен — непонятно, с чего начинать.</p>",
+    fr:"<p>Regarde <b>si <span class=\"v\">u<sub>n</sub></span> apparaît à droite</b>.</p><p>S'il n'y a que <span class=\"v\">n</span> à droite, c'est explicite.<br>Si <span class=\"v\">u<sub>n</sub></span> apparaît à droite, c'est une récurrence.</p><p>Et surtout : une récurrence <b>doit</b> donner le premier terme. Sans lui, la recette ne sert à rien — on ne sait pas par où commencer.</p>"}},
+
+  {k:"tab", h:{
+    ru:"<table><tr><th>&nbsp;</th><th>Явная</th><th>Рекуррентная</th></tr><tr><td>Запись</td><td><span class=\"v\">u<sub>n</sub></span> = 4<span class=\"v\">n</span>+3</td><td><span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span>+4</td></tr><tr><td>Нужен <span class=\"v\">u<sub>0</sub></span>?</td><td>Нет</td><td>Да, обязательно</td></tr><tr><td>Сотый член</td><td>Сразу</td><td>За 100 шагов</td></tr><tr><td>По-французски</td><td><i>forme explicite</i></td><td><i>relation de récurrence</i></td></tr></table>",
+    fr:"<table><tr><th>&nbsp;</th><th>Explicite</th><th>Par récurrence</th></tr><tr><td>Écriture</td><td><span class=\"v\">u<sub>n</sub></span> = 4<span class=\"v\">n</span>+3</td><td><span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span>+4</td></tr><tr><td><span class=\"v\">u<sub>0</sub></span> nécessaire ?</td><td>Non</td><td>Oui, obligatoire</td></tr><tr><td>Centième terme</td><td>Directement</td><td>En 100 étapes</td></tr><tr><td>Avantage</td><td>Rapide</td><td>Décrit le mécanisme</td></tr></table>"}},
+
+  {k:"ds", h:{
+    ru:"<p>Когда просят определить природу записи:</p><p><i>La suite est définie de façon explicite : chaque terme s'obtient directement à partir de son rang.</i></p><p>или</p><p><i>La suite est définie par récurrence : chaque terme s'obtient à partir du précédent.</i></p>",
+    fr:"<p>Pour préciser la nature de la définition :</p><p><i>La suite est définie de façon explicite : chaque terme s'obtient directement à partir de son rang.</i></p><p>ou</p><p><i>La suite est définie par récurrence : chaque terme s'obtient à partir du précédent.</i></p>"}}
+]},
+
+/* ══════════ 3 ══════════ */
+{ n:3,
+  t:{ru:"Как считать члены и сколько их", fr:"Calculer les termes, et savoir combien"},
+  st:{ru:"Механика, на которой спотыкаются чаще всего", fr:"La mécanique où l'on trébuche le plus souvent"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Половина потерянных баллов на контрольной — не из-за непонимания теории, а из-за того, что человек подставил не то число или неправильно посчитал количество членов в сумме.",
+    fr:"<b>À quoi ça sert.</b> La moitié des points perdus en devoir ne vient pas d'une incompréhension du cours, mais d'un mauvais remplacement ou d'un mauvais comptage du nombre de termes."}},
+
+  {k:"p", h:{
+    ru:"<b>Считаем по явной формуле.</b> Правило одно: <span class=\"v\">n</span> — это не буква, это место, куда подставляют номер.",
+    fr:"<b>Calcul avec une forme explicite.</b> Une seule règle : <span class=\"v\">n</span> n'est pas une lettre, c'est une case où l'on met le rang."}},
+
+  {k:"ex", h:{
+    ru:"<p><span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">n</span>² − 2<span class=\"v\">n</span></p><p><span class=\"v\">u<sub>0</sub></span> = 0² − 2×0 = 0<br><span class=\"v\">u<sub>1</sub></span> = 1 − 2 = −1<br><span class=\"v\">u<sub>2</sub></span> = 4 − 4 = 0<br><span class=\"v\">u<sub>3</sub></span> = 9 − 6 = 3</p><p>Обрати внимание: члены могут быть отрицательными и могут повторяться. Ничего странного в этом нет.</p>",
+    fr:"<p><span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">n</span>² − 2<span class=\"v\">n</span></p><p><span class=\"v\">u<sub>0</sub></span> = 0² − 2×0 = 0<br><span class=\"v\">u<sub>1</sub></span> = 1 − 2 = −1<br><span class=\"v\">u<sub>2</sub></span> = 4 − 4 = 0<br><span class=\"v\">u<sub>3</sub></span> = 9 − 6 = 3</p><p>Remarque : les termes peuvent être négatifs et peuvent se répéter. C'est normal.</p>"}},
+
+  {k:"piege", n:{ru:"Ошибка на индексе", fr:"L'erreur d'indice"}, h:{
+    ru:"<p>Дано <span class=\"v\">u<sub>n</sub></span> = 4<span class=\"v\">n</span> + 1. Найти <span class=\"v\">u<sub>n+1</sub></span>.</p><p><b>Неверно:</b> 4<span class=\"v\">n</span> + 1 + 1 = 4<span class=\"v\">n</span> + 2</p><p><b>Верно:</b> подставляем <span class=\"v\">n</span>+1 <b>вместо всего <span class=\"v\">n</span></b>:<br>4(<span class=\"v\">n</span>+1) + 1 = 4<span class=\"v\">n</span> + 4 + 1 = 4<span class=\"v\">n</span> + 5</p><p>Разница в том, что множитель 4 тоже действует на прибавленную единицу. Эта ошибка стоит баллов почти на каждой контрольной.</p>",
+    fr:"<p>On donne <span class=\"v\">u<sub>n</sub></span> = 4<span class=\"v\">n</span> + 1. Calculer <span class=\"v\">u<sub>n+1</sub></span>.</p><p><b>Faux :</b> 4<span class=\"v\">n</span> + 1 + 1 = 4<span class=\"v\">n</span> + 2</p><p><b>Juste :</b> on remplace <span class=\"v\">n</span> par <span class=\"v\">n</span>+1 <b>partout</b> :<br>4(<span class=\"v\">n</span>+1) + 1 = 4<span class=\"v\">n</span> + 4 + 1 = 4<span class=\"v\">n</span> + 5</p><p>Le facteur 4 agit aussi sur le +1 ajouté. Cette erreur coûte des points à presque chaque devoir.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Сколько членов от <span class=\"v\">u<sub>p</sub></span> до <span class=\"v\">u<sub>n</sub></span>?</b>",
+    fr:"<b>Combien de termes de <span class=\"v\">u<sub>p</sub></span> à <span class=\"v\">u<sub>n</sub></span> ?</b>"}},
+
+  {k:"f", h:"<span class=\"v\">n</span> − <span class=\"v\">p</span> + 1"},
+
+  {k:"image", h:{
+    ru:"<p>Представь <b>забор</b>. Между пятью столбами — четыре пролёта. Столбов всегда на один больше, чем промежутков.</p><p>Члены последовательности — это столбы. Разность <span class=\"v\">n</span> − <span class=\"v\">p</span> считает пролёты. Поэтому и нужно «+1».</p>",
+    fr:"<p>Imagine une <b>clôture</b>. Entre cinq piquets, il y a quatre intervalles. Il y a toujours un piquet de plus que d'intervalles.</p><p>Les termes sont les piquets. La différence <span class=\"v\">n</span> − <span class=\"v\">p</span> compte les intervalles. D'où le « +1 ».</p>"}},
+
+  {k:"ex", h:{
+    ru:"<p>От <span class=\"v\">u<sub>0</sub></span> до <span class=\"v\">u<sub>10</sub></span> → 10 − 0 + 1 = <b>11 членов</b><br>От <span class=\"v\">u<sub>3</sub></span> до <span class=\"v\">u<sub>10</sub></span> → 10 − 3 + 1 = <b>8 членов</b><br>От <span class=\"v\">u<sub>1</sub></span> до <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">n</span> членов</p>",
+    fr:"<p>De <span class=\"v\">u<sub>0</sub></span> à <span class=\"v\">u<sub>10</sub></span> → 10 − 0 + 1 = <b>11 termes</b><br>De <span class=\"v\">u<sub>3</sub></span> à <span class=\"v\">u<sub>10</sub></span> → 10 − 3 + 1 = <b>8 termes</b><br>De <span class=\"v\">u<sub>1</sub></span> à <span class=\"v\">u<sub>n</sub></span> → <span class=\"v\">n</span> termes</p>"}},
+
+  {k:"piege", n:{ru:"Откуда начинается нумерация", fr:"Où commence la numérotation"}, h:{
+    ru:"<p>Последовательность может начинаться с <span class=\"v\">u<sub>0</sub></span>, а может с <span class=\"v\">u<sub>1</sub></span>. Это решает автор задачи, и это всегда написано в условии.</p><p>Если начали с <span class=\"v\">u<sub>1</sub></span>, а ты посчитал от <span class=\"v\">u<sub>0</sub></span> — все ответы сдвинутся на один шаг. Перечитывай условие перед тем, как подставлять.</p>",
+    fr:"<p>Une suite peut commencer à <span class=\"v\">u<sub>0</sub></span> ou à <span class=\"v\">u<sub>1</sub></span>. C'est l'énoncé qui le décide, et c'est toujours précisé.</p><p>Si elle commence à <span class=\"v\">u<sub>1</sub></span> et que tu comptes depuis <span class=\"v\">u<sub>0</sub></span>, tous tes résultats sont décalés d'un cran. Relis l'énoncé avant de remplacer.</p>"}}
+]},
+
+/* ══════════ 4 ══════════ */
+{ n:4,
+  t:{ru:"График последовательности", fr:"Représentation graphique"},
+  st:{ru:"Почему точки, а не линия", fr:"Pourquoi des points, et non une courbe"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Глазами часто видно то, что из формулы не очевидно: растёт ли, упирается ли в потолок, скачет ли туда-сюда. Плюс на контрольной часто просят «предположить поведение по графику» — это отдельный тип задания.",
+    fr:"<b>À quoi ça sert.</b> L'œil voit souvent ce que la formule ne montre pas : ça monte, ça plafonne, ça oscille. Et en devoir on demande souvent de « conjecturer à partir du graphique » — c'est un type d'exercice à part."}},
+
+  {k:"p", h:{
+    ru:"По горизонтали откладывают ранг <span class=\"v\">n</span>, по вертикали — значение <span class=\"v\">u<sub>n</sub></span>. Получаются точки с координатами (<span class=\"v\">n</span> ; <span class=\"v\">u<sub>n</sub></span>).",
+    fr:"En abscisse on met le rang <span class=\"v\">n</span>, en ordonnée la valeur <span class=\"v\">u<sub>n</sub></span>. On obtient des points de coordonnées (<span class=\"v\">n</span> ; <span class=\"v\">u<sub>n</sub></span>)."}},
+
+  {k:"image", h:{
+    ru:"<p>Представь <b>ступеньки на фотографии</b>. Ты видишь отдельные ступени — и между ними ничего нет. Наступить между второй и третьей нельзя.</p><p>С последовательностью так же: <span class=\"v\">u<sub>2</sub></span> и <span class=\"v\">u<sub>3</sub></span> существуют, а <span class=\"v\">u<sub>2,5</sub></span> — нет. Ранг бывает только целым.</p>",
+    fr:"<p>Imagine <b>des marches d'escalier sur une photo</b>. Tu vois des marches séparées — et entre elles, rien. On ne peut pas poser le pied entre la deuxième et la troisième.</p><p>Pour une suite c'est pareil : <span class=\"v\">u<sub>2</sub></span> et <span class=\"v\">u<sub>3</sub></span> existent, mais <span class=\"v\">u<sub>2,5</sub></span> n'existe pas. Le rang est toujours entier.</p>"}},
+
+  {k:"piege", n:{ru:"Не соединяй точки линией", fr:"Ne relie pas les points"}, h:{
+    ru:"<p>Это самая частая потеря балла на построении. Соединённая линия означает, что между точками тоже есть значения — а их нет.</p><p>Если очень хочется показать, куда идёт последовательность, рисуют <b>пунктир</b> и подписывают, что он только для наглядности.</p>",
+    fr:"<p>C'est la perte de point la plus fréquente sur un graphique. Une ligne continue laisserait croire qu'il existe des valeurs entre les points — or il n'y en a pas.</p><p>Si tu veux montrer la tendance, trace des <b>pointillés</b> en précisant qu'ils ne servent qu'à guider l'œil.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Что можно увидеть на графике.</b> Точки идут вверх — последовательность растёт. Вниз — убывает. Скачут вверх-вниз — не монотонна. Постепенно прижимаются к горизонтальной прямой — скорее всего, есть предел.",
+    fr:"<b>Ce que le graphique montre.</b> Les points montent : la suite croît. Ils descendent : elle décroît. Ils alternent : elle n'est pas monotone. Ils s'approchent d'une droite horizontale : il y a probablement une limite."}},
+
+  {k:"ds", h:{
+    ru:"<p>Важное слово — <b>conjecturer</b> (предположить). Это не то же самое, что доказать.</p><p><i>On peut conjecturer que la suite est croissante.</i></p><p>По графику можно только предположить. Доказывают потом, через знак разности — об этом следующий раздел.</p>",
+    fr:"<p>Le mot clé est <b>conjecturer</b>. Ce n'est pas la même chose que démontrer.</p><p><i>On peut conjecturer que la suite est croissante.</i></p><p>Le graphique permet seulement de supposer. La démonstration vient ensuite, par le signe de la différence — c'est la partie suivante.</p>"}}
+]},
+
+/* ══════════ 5 ══════════ */
+{ n:5,
+  t:{ru:"Растёт или падает — sens de variation", fr:"Sens de variation"},
+  st:{ru:"Метод, который спрашивают чаще всего", fr:"La méthode la plus demandée en devoir"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Это самый частый вопрос по теме на контрольных. И он почти всегда звучит как «<i>montrer que</i>» — то есть нужно доказательство, а не наблюдение по первым трём членам.",
+    fr:"<b>À quoi ça sert.</b> C'est la question la plus posée en devoir. Et elle commence presque toujours par « <i>montrer que</i> » — il faut donc une démonstration, pas une observation sur les trois premiers termes."}},
+
+  {k:"p", h:{
+    ru:"Последовательность <b>возрастает</b> (croissante), если каждый следующий член больше предыдущего. <b>Убывает</b> (décroissante) — если меньше.",
+    fr:"Une suite est <b>croissante</b> si chaque terme est plus grand que le précédent. Elle est <b>décroissante</b> s'il est plus petit."}},
+
+  {k:"f", h:"Возрастает: <span class=\"v\">u<sub>n+1</sub></span> ⩾ <span class=\"v\">u<sub>n</sub></span> для всех <span class=\"v\">n</span>"},
+
+  {k:"p", h:{
+    ru:"<b>Метод номер один — знак разности.</b> Работает всегда, без условий. Это метод по умолчанию.",
+    fr:"<b>Méthode numéro un — le signe de la différence.</b> Elle marche toujours, sans condition. C'est la méthode par défaut."}},
+
+  {k:"f", h:"Считаем <span class=\"v\">u<sub>n+1</sub></span> − <span class=\"v\">u<sub>n</sub></span> и смотрим знак"},
+
+  {k:"image", h:{
+    ru:"<p>Представь, что ты <b>встаёшь на весы</b> каждое утро и записываешь разницу со вчерашним днём.</p><p>Разница всё время со знаком плюс — ты набираешь. Всё время минус — худеешь. Если знак прыгает — ни то, ни другое.</p><p>Весь метод в одной фразе: не смотри на сами значения, смотри на <b>разницу между соседними</b>.</p>",
+    fr:"<p>Imagine que tu <b>montes sur la balance</b> chaque matin et que tu notes l'écart avec la veille.</p><p>L'écart est toujours positif : tu prends du poids. Toujours négatif : tu en perds. Si le signe change : ni l'un ni l'autre.</p><p>Toute la méthode tient là : ne regarde pas les valeurs, regarde <b>l'écart entre voisins</b>.</p>"}},
+
+  {k:"ex", n:{ru:"Полный разбор", fr:"Exemple rédigé"}, h:{
+    ru:"<p><span class=\"v\">u<sub>n</sub></span> = 5<span class=\"v\">n</span> + 2</p><p><b>Шаг 1.</b> Пишем <span class=\"v\">u<sub>n+1</sub></span>, подставляя <span class=\"v\">n</span>+1 везде:<br>5(<span class=\"v\">n</span>+1) + 2 = 5<span class=\"v\">n</span> + 7</p><p><b>Шаг 2.</b> Вычитаем:<br>(5<span class=\"v\">n</span> + 7) − (5<span class=\"v\">n</span> + 2) = 5</p><p><b>Шаг 3.</b> 5 > 0, значит разность положительна при любом <span class=\"v\">n</span>.</p><p><b>Вывод:</b> последовательность возрастает.</p>",
+    fr:"<p><span class=\"v\">u<sub>n</sub></span> = 5<span class=\"v\">n</span> + 2</p><p><b>Étape 1.</b> On écrit <span class=\"v\">u<sub>n+1</sub></span> en remplaçant <span class=\"v\">n</span> par <span class=\"v\">n</span>+1 partout :<br>5(<span class=\"v\">n</span>+1) + 2 = 5<span class=\"v\">n</span> + 7</p><p><b>Étape 2.</b> On soustrait :<br>(5<span class=\"v\">n</span> + 7) − (5<span class=\"v\">n</span> + 2) = 5</p><p><b>Étape 3.</b> 5 > 0, donc la différence est positive pour tout <span class=\"v\">n</span>.</p><p><b>Conclusion :</b> la suite est croissante.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Метод номер два — частное.</b> Удобен, когда в формуле есть степени. Но у него есть жёсткое условие.",
+    fr:"<b>Méthode numéro deux — le quotient.</b> Pratique quand il y a des puissances. Mais elle a une condition stricte."}},
+
+  {k:"f", s:true, h:"Только если все члены строго положительны:<br>сравниваем <span class=\"v\">u<sub>n+1</sub></span> / <span class=\"v\">u<sub>n</sub></span> с единицей"},
+
+  {k:"piege", n:{ru:"Условие, про которое забывают", fr:"La condition qu'on oublie"}, h:{
+    ru:"<p>Частное работает <b>только если все члены больше нуля</b>. Если хоть один отрицательный — метод даёт неверный ответ.</p><p>Почему: при делении на отрицательное число знак неравенства переворачивается. Вывод получится обратный правде.</p><p>Поэтому перед применением частного <b>обязательно пишут</b>: <i>tous les termes sont strictement positifs</i>. Без этой фразы теряют балл, даже если ответ верный.</p>",
+    fr:"<p>Le quotient ne marche <b>que si tous les termes sont strictement positifs</b>. S'il y en a un seul négatif, la méthode donne une conclusion fausse.</p><p>Pourquoi : diviser par un nombre négatif inverse le sens de l'inégalité. On conclut alors le contraire de la vérité.</p><p>C'est pourquoi on écrit <b>toujours</b> avant : <i>tous les termes sont strictement positifs</i>. Sans cette phrase, on perd un point même si le résultat est juste.</p>"}},
+
+  {k:"ex", h:{
+    ru:"<p><span class=\"v\">u<sub>n</sub></span> = 3<sup><span class=\"v\">n</span></sup> — все члены положительны, частное применимо.</p><p>3<sup><span class=\"v\">n</span>+1</sup> ÷ 3<sup><span class=\"v\">n</span></sup> = 3</p><p>3 > 1, члены положительны → возрастает.</p><p>Через разность пришлось бы возиться с 3<sup><span class=\"v\">n</span>+1</sup> − 3<sup><span class=\"v\">n</span></sup>. Со степенями частное почти всегда быстрее.</p>",
+    fr:"<p><span class=\"v\">u<sub>n</sub></span> = 3<sup><span class=\"v\">n</span></sup> — tous les termes sont positifs, le quotient s'applique.</p><p>3<sup><span class=\"v\">n</span>+1</sup> ÷ 3<sup><span class=\"v\">n</span></sup> = 3</p><p>3 > 1 et termes positifs → croissante.</p><p>Par la différence, il aurait fallu manipuler 3<sup><span class=\"v\">n</span>+1</sup> − 3<sup><span class=\"v\">n</span></sup>. Avec des puissances, le quotient va presque toujours plus vite.</p>"}},
+
+  {k:"piege", n:{ru:"Три члена ничего не доказывают", fr:"Trois termes ne prouvent rien"}, h:{
+    ru:"<p>Посчитать <span class=\"v\">u<sub>0</sub></span>, <span class=\"v\">u<sub>1</sub></span>, <span class=\"v\">u<sub>2</sub></span>, увидеть рост и написать «возрастает» — это не доказательство.</p><p>Возьми последовательность 1 ; 3 ; 7 ; 2. Первые три растут, четвёртый падает. Три члена не говорят ни о чём.</p><p>Доказательство должно работать для <b>любого</b> <span class=\"v\">n</span> — отсюда и общая формула разности.</p>",
+    fr:"<p>Calculer <span class=\"v\">u<sub>0</sub></span>, <span class=\"v\">u<sub>1</sub></span>, <span class=\"v\">u<sub>2</sub></span>, voir que ça monte et écrire « croissante » — ce n'est pas une démonstration.</p><p>Prends la suite 1 ; 3 ; 7 ; 2. Les trois premiers montent, le quatrième descend. Trois termes ne disent rien.</p><p>Une démonstration doit valoir pour <b>tout</b> <span class=\"v\">n</span> — d'où le calcul général de la différence.</p>"}},
+
+  {k:"ds", h:{
+    ru:"<p>Полная формулировка ответа:</p><p><i>Pour tout entier naturel n, u<sub>n+1</sub> − u<sub>n</sub> = 5 > 0.<br>Donc la suite (u<sub>n</sub>) est croissante.</i></p><p>Два обязательных элемента: <b>pour tout entier naturel n</b> в начале и <b>donc</b> перед выводом. Без них рассуждение считается незаконченным.</p>",
+    fr:"<p>Rédaction complète :</p><p><i>Pour tout entier naturel n, u<sub>n+1</sub> − u<sub>n</sub> = 5 > 0.<br>Donc la suite (u<sub>n</sub>) est croissante.</i></p><p>Deux éléments obligatoires : <b>pour tout entier naturel n</b> au début, et <b>donc</b> avant la conclusion. Sans eux, le raisonnement est jugé incomplet.</p>"}}
+]},
+/* ══════════ 6 ══════════ */
+{ n:6,
+  t:{ru:"Арифметические — suites arithmétiques", fr:"Suites arithmétiques"},
+  st:{ru:"Всегда прибавляем одно и то же", fr:"On ajoute toujours le même nombre"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Это первый из двух типов, которые нужно узнавать с первого взгляда. Зарплата, которая растёт на фиксированную сумму, бак, который теряет по столько-то литров в день, абонемент с ежегодной доплатой — всё это арифметические.",
+    fr:"<b>À quoi ça sert.</b> C'est le premier des deux types qu'il faut reconnaître au premier coup d'œil. Un salaire qui augmente d'une somme fixe, un réservoir qui perd tant de litres par jour, un abonnement avec un supplément annuel — tout cela est arithmétique."}},
+
+  {k:"image", h:{
+    ru:"<p><b>Копилка.</b> Каждую неделю кладёшь ровно 5 евро. Всегда пять — не больше и не меньше.</p><p>Неделя 0 — 20 € · неделя 1 — 25 € · неделя 2 — 30 € · неделя 3 — 35 €</p><p>Вот это и есть арифметическая последовательность. Число 5 — то, что добавляешь каждый раз — называется <b>raison</b>.</p><p><b>Другая картинка:</b> лестница с одинаковыми ступеньками. Высота одной ступеньки — это и есть raison.</p>",
+    fr:"<p><b>La tirelire.</b> Chaque semaine tu mets exactement 5 €. Toujours cinq — ni plus, ni moins.</p><p>Semaine 0 — 20 € · semaine 1 — 25 € · semaine 2 — 30 € · semaine 3 — 35 €</p><p>C'est une suite arithmétique. Le nombre 5 — ce qu'on ajoute à chaque fois — s'appelle la <b>raison</b>.</p><p><b>Autre image :</b> un escalier aux marches régulières. La hauteur d'une marche, c'est la raison.</p>"}},
+
+  {k:"piege", n:{ru:"Слово raison обманывает", fr:"Le mot raison trompe"}, h:{
+    ru:"<p>По-французски <i>raison</i> обычно значит «причина». Здесь — <b>нет</b>.</p><p>Здесь это просто <b>шаг</b>: число, которое прибавляют на каждом переходе. Никакой связи с причинами и следствиями.</p>",
+    fr:"<p>En français courant, <i>raison</i> veut dire « cause ». Ici, <b>non</b>.</p><p>Ici, c'est simplement <b>le pas</b> : le nombre qu'on ajoute à chaque étape. Aucun rapport avec une cause.</p>"}},
+
+  {k:"f", h:"<span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span> + <span class=\"v\">r</span>"},
+
+  {k:"p", h:{
+    ru:"<b>Как проверить, что последовательность арифметическая.</b> Считаем разности между соседями. Если все одинаковые — да.",
+    fr:"<b>Comment vérifier qu'une suite est arithmétique.</b> On calcule les écarts entre voisins. S'ils sont tous égaux — oui."}},
+
+  {k:"ex", h:{
+    ru:"<p>7 ; 11 ; 15 ; 19 ; 23</p><p>11 − 7 = 4 · 15 − 11 = 4 · 19 − 15 = 4 · 23 − 19 = 4</p><p>Все разности равны четырём → арифметическая, <span class=\"v\">r</span> = 4.</p>",
+    fr:"<p>7 ; 11 ; 15 ; 19 ; 23</p><p>11 − 7 = 4 · 15 − 11 = 4 · 19 − 15 = 4 · 23 − 19 = 4</p><p>Tous les écarts valent 4 → arithmétique, <span class=\"v\">r</span> = 4.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Формула общего члена.</b> Чтобы попасть из нулевого вагона в вагон номер <span class=\"v\">n</span>, нужно сделать <span class=\"v\">n</span> шагов по <span class=\"v\">r</span>.",
+    fr:"<b>Formule du terme général.</b> Pour aller du wagon zéro au wagon <span class=\"v\">n</span>, il faut faire <span class=\"v\">n</span> pas de <span class=\"v\">r</span>."}},
+
+  {k:"f", h:"<span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">u<sub>0</sub></span> + <span class=\"v\">n</span> × <span class=\"v\">r</span>"},
+
+  {k:"ex", h:{
+    ru:"<p>Копилка: <span class=\"v\">u<sub>0</sub></span> = 20, <span class=\"v\">r</span> = 5.</p><p>Сколько будет через 30 недель?<br><span class=\"v\">u<sub>30</sub></span> = 20 + 30 × 5 = 20 + 150 = <b>170 €</b></p><p>Тридцать шагов считать не пришлось — формула дала ответ сразу.</p>",
+    fr:"<p>La tirelire : <span class=\"v\">u<sub>0</sub></span> = 20, <span class=\"v\">r</span> = 5.</p><p>Combien après 30 semaines ?<br><span class=\"v\">u<sub>30</sub></span> = 20 + 30 × 5 = 20 + 150 = <b>170 €</b></p><p>Pas besoin de faire trente étapes — la formule répond directement.</p>"}},
+
+  {k:"piege", n:{ru:"Если начинают с u₁", fr:"Si la suite commence à u₁"}, h:{
+    ru:"<p>Когда последовательность начинается с <span class=\"v\">u<sub>1</sub></span>, шагов на один меньше:</p><p><span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">u<sub>1</sub></span> + (<span class=\"v\">n</span> − 1) × <span class=\"v\">r</span></p><p>Причина та же, что с забором: от первого до десятого — девять переходов, а не десять.</p>",
+    fr:"<p>Quand la suite commence à <span class=\"v\">u<sub>1</sub></span>, il y a un pas de moins :</p><p><span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">u<sub>1</sub></span> + (<span class=\"v\">n</span> − 1) × <span class=\"v\">r</span></p><p>Même raison que la clôture : du premier au dixième, il y a neuf pas, pas dix.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Знак raison решает всё.</b>",
+    fr:"<b>Le signe de la raison décide de tout.</b>"}},
+
+  {k:"tab", h:{
+    ru:"<table><tr><th>Raison</th><th>Поведение</th><th>Пример из жизни</th></tr><tr><td><span class=\"v\">r</span> > 0</td><td>Возрастает</td><td>Копилка пополняется</td></tr><tr><td><span class=\"v\">r</span> < 0</td><td>Убывает</td><td>Бак теряет воду</td></tr><tr><td><span class=\"v\">r</span> = 0</td><td>Постоянна</td><td>Ничего не меняется</td></tr></table>",
+    fr:"<table><tr><th>Raison</th><th>Comportement</th><th>Exemple concret</th></tr><tr><td><span class=\"v\">r</span> > 0</td><td>Croissante</td><td>La tirelire se remplit</td></tr><tr><td><span class=\"v\">r</span> < 0</td><td>Décroissante</td><td>Le réservoir se vide</td></tr><tr><td><span class=\"v\">r</span> = 0</td><td>Constante</td><td>Rien ne bouge</td></tr></table>"}},
+
+  {k:"p", h:{
+    ru:"Важное следствие: арифметическая последовательность <b>всегда монотонна</b>. Она не может то расти, то падать — шаг ведь один и тот же.",
+    fr:"Conséquence importante : une suite arithmétique est <b>toujours monotone</b>. Elle ne peut pas monter puis descendre — le pas est toujours le même."}},
+
+  {k:"ds", h:{
+    ru:"<p>Чтобы доказать, что последовательность арифметическая:</p><p><i>Pour tout entier naturel n, u<sub>n+1</sub> − u<sub>n</sub> = 4.<br>Cette différence est constante, donc (u<sub>n</sub>) est arithmétique de raison r = 4.</i></p><p>Ключевое слово — <b>constante</b>. Именно постоянство разности и есть определение.</p>",
+    fr:"<p>Pour démontrer qu'une suite est arithmétique :</p><p><i>Pour tout entier naturel n, u<sub>n+1</sub> − u<sub>n</sub> = 4.<br>Cette différence est constante, donc (u<sub>n</sub>) est arithmétique de raison r = 4.</i></p><p>Le mot clé est <b>constante</b>. C'est la constance de l'écart qui définit tout.</p>"}}
+]},
+
+/* ══════════ 7 ══════════ */
+{ n:7,
+  t:{ru:"Геометрические — suites géométriques", fr:"Suites géométriques"},
+  st:{ru:"Всегда умножаем на одно и то же", fr:"On multiplie toujours par le même nombre"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Второй ключевой тип. И самый важный для реальной жизни: любые проценты — это геометрическая последовательность. Вклад в банке, инфляция, скидки, рост населения, деление клеток.",
+    fr:"<b>À quoi ça sert.</b> Le deuxième type clé, et le plus utile dans la vie réelle : tout pourcentage est une suite géométrique. Un placement bancaire, l'inflation, les soldes, la croissance d'une population, la division cellulaire."}},
+
+  {k:"image", h:{
+    ru:"<p><b>Лист бумаги, который складывают пополам.</b> Толщина каждый раз удваивается: 1 → 2 → 4 → 8 → 16 …</p><p>Здесь ничего не прибавляют. Здесь <b>умножают</b> — каждый раз на одно и то же число.</p><p>Это число называется <b>raison</b> и обозначается <span class=\"v\">q</span> (от <i>quotient</i> — частное).</p>",
+    fr:"<p><b>Une feuille qu'on plie en deux.</b> L'épaisseur double à chaque fois : 1 → 2 → 4 → 8 → 16 …</p><p>Ici on n'ajoute rien. On <b>multiplie</b> — toujours par le même nombre.</p><p>Ce nombre s'appelle aussi <b>raison</b> et se note <span class=\"v\">q</span> (pour <i>quotient</i>).</p>"}},
+
+  {k:"f", h:"<span class=\"v\">u<sub>n+1</sub></span> = <span class=\"v\">u<sub>n</sub></span> × <span class=\"v\">q</span>"},
+
+  {k:"p", h:{
+    ru:"<b>Как проверить.</b> Делим каждый член на предыдущий. Все частные одинаковые — значит геометрическая.",
+    fr:"<b>Comment vérifier.</b> On divise chaque terme par le précédent. Si tous les quotients sont égaux, c'est géométrique."}},
+
+  {k:"ex", h:{
+    ru:"<p>5 ; 15 ; 45 ; 135</p><p>15 ÷ 5 = 3 · 45 ÷ 15 = 3 · 135 ÷ 45 = 3</p><p>Все частные равны трём → геометрическая, <span class=\"v\">q</span> = 3.</p>",
+    fr:"<p>5 ; 15 ; 45 ; 135</p><p>15 ÷ 5 = 3 · 45 ÷ 15 = 3 · 135 ÷ 45 = 3</p><p>Tous les quotients valent 3 → géométrique, <span class=\"v\">q</span> = 3.</p>"}},
+
+  {k:"f", h:"<span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">u<sub>0</sub></span> × <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup>"},
+
+  {k:"p", h:{
+    ru:"Показатель степени — это <b>число шагов</b>, а не номер последнего члена. От <span class=\"v\">u<sub>0</sub></span> до <span class=\"v\">u<sub>n</sub></span> ровно <span class=\"v\">n</span> умножений.",
+    fr:"L'exposant, c'est <b>le nombre de pas</b>, pas le rang du dernier terme. De <span class=\"v\">u<sub>0</sub></span> à <span class=\"v\">u<sub>n</sub></span>, il y a exactement <span class=\"v\">n</span> multiplications."}},
+
+  {k:"p", h:{
+    ru:"<b>Проценты — это всегда геометрическая.</b> Вот как переводить проценты в множитель:",
+    fr:"<b>Les pourcentages sont toujours géométriques.</b> Voici comment les traduire en coefficient :"}},
+
+  {k:"tab", h:{
+    ru:"<table><tr><th>Изменение</th><th>Множитель <span class=\"v\">q</span></th><th>Почему</th></tr><tr><td>+5 %</td><td>1,05</td><td>было 100 %, стало 105 %</td></tr><tr><td>+20 %</td><td>1,2</td><td>100 % + 20 %</td></tr><tr><td>−10 %</td><td>0,9</td><td>осталось 90 %</td></tr><tr><td>−25 %</td><td>0,75</td><td>осталось три четверти</td></tr><tr><td>удвоение</td><td>2</td><td>200 %</td></tr></table>",
+    fr:"<table><tr><th>Évolution</th><th>Coefficient <span class=\"v\">q</span></th><th>Pourquoi</th></tr><tr><td>+5 %</td><td>1,05</td><td>on passe de 100 % à 105 %</td></tr><tr><td>+20 %</td><td>1,2</td><td>100 % + 20 %</td></tr><tr><td>−10 %</td><td>0,9</td><td>il reste 90 %</td></tr><tr><td>−25 %</td><td>0,75</td><td>il reste trois quarts</td></tr><tr><td>doublement</td><td>2</td><td>200 %</td></tr></table>"}},
+
+  {k:"piege", n:{ru:"Проценты не складываются", fr:"Les pourcentages ne s'additionnent pas"}, h:{
+    ru:"<p>Цена упала на 30 %, потом выросла на 30 %. Вернулась ли она к начальной?</p><p><b>Нет.</b> Проверим на 100 €:<br>100 → −30 % → 70 €<br>70 → +30 % → 91 €</p><p>Не хватает 9 %. Множители перемножаются: 0,7 × 1,3 = 0,91.</p><p>Это самая частая ловушка в задачах на проценты. Всегда считай через множители, а не через сложение процентов.</p>",
+    fr:"<p>Un prix baisse de 30 %, puis remonte de 30 %. Revient-il au départ ?</p><p><b>Non.</b> Vérifions sur 100 € :<br>100 → −30 % → 70 €<br>70 → +30 % → 91 €</p><p>Il manque 9 %. Les coefficients se multiplient : 0,7 × 1,3 = 0,91.</p><p>C'est le piège le plus fréquent. Calcule toujours avec les coefficients, jamais en additionnant les pourcentages.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Как ведёт себя геометрическая</b> — зависит от <span class=\"v\">q</span> (при положительном первом члене):",
+    fr:"<b>Le comportement d'une suite géométrique</b> dépend de <span class=\"v\">q</span> (avec un premier terme positif) :"}},
+
+  {k:"tab", h:{
+    ru:"<table><tr><th>Значение <span class=\"v\">q</span></th><th>Поведение</th><th>Пример</th></tr><tr><td><span class=\"v\">q</span> > 1</td><td>Растёт всё быстрее</td><td>вклад под проценты</td></tr><tr><td>0 < <span class=\"v\">q</span> < 1</td><td>Убывает к нулю</td><td>лекарство выводится</td></tr><tr><td><span class=\"v\">q</span> = 1</td><td>Постоянна</td><td>ничего не меняется</td></tr><tr><td><span class=\"v\">q</span> < 0</td><td>Скачет через знак</td><td>редко в задачах</td></tr></table>",
+    fr:"<table><tr><th>Valeur de <span class=\"v\">q</span></th><th>Comportement</th><th>Exemple</th></tr><tr><td><span class=\"v\">q</span> > 1</td><td>Croît de plus en plus vite</td><td>placement à intérêts</td></tr><tr><td>0 < <span class=\"v\">q</span> < 1</td><td>Décroît vers zéro</td><td>élimination d'un médicament</td></tr><tr><td><span class=\"v\">q</span> = 1</td><td>Constante</td><td>rien ne change</td></tr><tr><td><span class=\"v\">q</span> < 0</td><td>Alterne de signe</td><td>rare en exercice</td></tr></table>"}},
+
+  {k:"ds", h:{
+    ru:"<p><i>Pour tout entier naturel n, u<sub>n+1</sub> = 1,05 × u<sub>n</sub>.<br>Donc (u<sub>n</sub>) est géométrique de raison q = 1,05 et de premier terme u<sub>0</sub> = 2000.</i></p><p>Указывают <b>и raison, и первый член</b> — без первого члена последовательность не определена.</p>",
+    fr:"<p><i>Pour tout entier naturel n, u<sub>n+1</sub> = 1,05 × u<sub>n</sub>.<br>Donc (u<sub>n</sub>) est géométrique de raison q = 1,05 et de premier terme u<sub>0</sub> = 2000.</i></p><p>On précise <b>la raison et le premier terme</b> — sans le premier terme, la suite n'est pas définie.</p>"}}
+]},
+
+/* ══════════ 8 ══════════ */
+{ n:8,
+  t:{ru:"Как различить эти два типа", fr:"Distinguer les deux types"},
+  st:{ru:"Первое, что нужно сделать в любой задаче", fr:"Le premier réflexe dans tout exercice"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> На контрольной условия часто выглядят почти одинаково, а решаются по-разному. Ошибиться в типе — значит получить ноль за всё задание, даже если вычисления безупречны.",
+    fr:"<b>À quoi ça sert.</b> En devoir, les énoncés se ressemblent beaucoup mais se traitent différemment. Se tromper de type, c'est perdre tout l'exercice, même avec des calculs parfaits."}},
+
+  {k:"image", h:{
+    ru:"<p><b>Лестница и горка.</b></p><p>Арифметическая — лестница. Ступеньки одинаковые, идёшь ровно.</p><p>Геометрическая — горка, которая всё круче. Каждый шаг больше предыдущего, потому что умножается сама на себя.</p>",
+    fr:"<p><b>L'escalier et le toboggan.</b></p><p>Arithmétique — un escalier. Les marches sont égales, la montée est régulière.</p><p>Géométrique — un toboggan de plus en plus raide. Chaque pas est plus grand, parce qu'on multiplie.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Тест за три секунды.</b> Возьми три соседних члена и проверь обе вещи:",
+    fr:"<b>Le test en trois secondes.</b> Prends trois termes voisins et vérifie les deux choses :"}},
+
+  {k:"ol", items:[
+    {ru:"Вычти: если разности равны — арифметическая",
+     fr:"Soustrais : si les écarts sont égaux, c'est arithmétique"},
+    {ru:"Раздели: если частные равны — геометрическая",
+     fr:"Divise : si les quotients sont égaux, c'est géométrique"},
+    {ru:"Ни то, ни другое — бывает и так, это нормальный ответ",
+     fr:"Ni l'un ni l'autre — ça arrive, c'est une réponse valable"}
+  ]},
+
+  {k:"ex", n:{ru:"Три похожих списка", fr:"Trois listes qui se ressemblent"}, h:{
+    ru:"<p><b>4 ; 12 ; 36 ; 108</b><br>Разности: 8, 24, 72 — разные.<br>Частные: 3, 3, 3 — равные. → <b>геометрическая</b>, <span class=\"v\">q</span> = 3</p><p><b>4 ; 12 ; 20 ; 28</b><br>Разности: 8, 8, 8 — равные. → <b>арифметическая</b>, <span class=\"v\">r</span> = 8</p><p><b>4 ; 12 ; 24 ; 40</b><br>Разности: 8, 12, 16 — разные.<br>Частные: 3 ; 2 ; 1,67 — разные. → <b>ни то, ни другое</b></p><p>Все три начинаются одинаково: 4 и 12. Смотреть только на первые два члена бесполезно.</p>",
+    fr:"<p><b>4 ; 12 ; 36 ; 108</b><br>Écarts : 8, 24, 72 — différents.<br>Quotients : 3, 3, 3 — égaux. → <b>géométrique</b>, <span class=\"v\">q</span> = 3</p><p><b>4 ; 12 ; 20 ; 28</b><br>Écarts : 8, 8, 8 — égaux. → <b>arithmétique</b>, <span class=\"v\">r</span> = 8</p><p><b>4 ; 12 ; 24 ; 40</b><br>Écarts : 8, 12, 16 — différents.<br>Quotients : 3 ; 2 ; 1,67 — différents. → <b>ni l'un ni l'autre</b></p><p>Les trois commencent pareil : 4 et 12. Regarder seulement les deux premiers termes ne sert à rien.</p>"}},
+
+  {k:"piege", n:{ru:"Ловушка в словах условия", fr:"Le piège dans l'énoncé"}, h:{
+    ru:"<p>«Цена растёт на <b>5 евро</b> в год» → фиксированная сумма → <b>арифметическая</b></p><p>«Цена растёт на <b>5 %</b> в год» → процент от текущей цены → <b>геометрическая</b></p><p>Разница в одном символе. Единица измерения (евро, литры, сантиметры) означает сложение. Процент означает умножение.</p>",
+    fr:"<p>« Le prix augmente de <b>5 euros</b> par an » → somme fixe → <b>arithmétique</b></p><p>« Le prix augmente de <b>5 %</b> par an » → pourcentage du prix actuel → <b>géométrique</b></p><p>La différence tient à un symbole. Une unité (euros, litres, centimètres) signale une addition. Un pourcentage signale une multiplication.</p>"}},
+
+  {k:"tab", h:{
+    ru:"<table><tr><th>&nbsp;</th><th>Арифметическая</th><th>Геометрическая</th></tr><tr><td>Переход</td><td>+ <span class=\"v\">r</span></td><td>× <span class=\"v\">q</span></td></tr><tr><td>Проверка</td><td>разность</td><td>частное</td></tr><tr><td>Формула</td><td><span class=\"v\">u<sub>0</sub></span> + <span class=\"v\">nr</span></td><td><span class=\"v\">u<sub>0</sub></span> × <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup></td></tr><tr><td>Где <span class=\"v\">n</span></td><td>множитель</td><td>показатель степени</td></tr><tr><td>Образ</td><td>лестница</td><td>горка</td></tr></table>",
+    fr:"<table><tr><th>&nbsp;</th><th>Arithmétique</th><th>Géométrique</th></tr><tr><td>Passage</td><td>+ <span class=\"v\">r</span></td><td>× <span class=\"v\">q</span></td></tr><tr><td>Vérification</td><td>différence</td><td>quotient</td></tr><tr><td>Formule</td><td><span class=\"v\">u<sub>0</sub></span> + <span class=\"v\">nr</span></td><td><span class=\"v\">u<sub>0</sub></span> × <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup></td></tr><tr><td>Position de <span class=\"v\">n</span></td><td>facteur</td><td>exposant</td></tr><tr><td>Image</td><td>escalier</td><td>toboggan</td></tr></table>"}},
+
+  {k:"p", h:{
+    ru:"<b>Ещё один быстрый признак.</b> Посмотри на явную формулу: где стоит <span class=\"v\">n</span>?",
+    fr:"<b>Un autre repère rapide.</b> Regarde la forme explicite : où se trouve <span class=\"v\">n</span> ?"}},
+
+  {k:"f", s:true, h:{
+    ru:"<span class=\"v\">u<sub>n</sub></span> = 3 + 2<span class=\"v\">n</span> → <span class=\"v\">n</span> умножается → арифметическая<br><span class=\"v\">u<sub>n</sub></span> = 3 × 2<sup><span class=\"v\">n</span></sup> → <span class=\"v\">n</span> в степени → геометрическая",
+    fr:"<span class=\"v\">u<sub>n</sub></span> = 3 + 2<span class=\"v\">n</span> → <span class=\"v\">n</span> est facteur → arithmétique<br><span class=\"v\">u<sub>n</sub></span> = 3 × 2<sup><span class=\"v\">n</span></sup> → <span class=\"v\">n</span> est exposant → géométrique"}}
+]},
+
+/* ══════════ 9 ══════════ */
+{ n:9,
+  t:{ru:"Ограниченность — majorée, minorée, bornée", fr:"Majorée, minorée, bornée"},
+  st:{ru:"Есть ли у последовательности потолок и пол", fr:"La suite a-t-elle un plafond et un plancher"},
+  neuf:true,
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Это вход в тему пределов. Плюс есть теорема, которая позволяет доказать, что последовательность к чему-то сходится, даже не зная, к чему именно. В программе это отдельный пункт, и его часто спрашивают.",
+    fr:"<b>À quoi ça sert.</b> C'est la porte d'entrée vers les limites. Et il existe un théorème qui permet de prouver qu'une suite converge sans savoir vers quoi. C'est un point du programme, souvent demandé."}},
+
+  {k:"image", h:{
+    ru:"<p><b>Комната с потолком и полом.</b></p><p>Если последовательность никогда не поднимается выше какого-то числа — у неё есть <b>потолок</b>. По-французски она <i>majorée</i>, а число — <i>un majorant</i>.</p><p>Если никогда не опускается ниже — есть <b>пол</b>. Она <i>minorée</i>, число — <i>un minorant</i>.</p><p>Есть и то, и другое — она <i>bornée</i>, заперта между полом и потолком.</p>",
+    fr:"<p><b>Une pièce avec un plafond et un plancher.</b></p><p>Si la suite ne monte jamais au-dessus d'un certain nombre, elle a un <b>plafond</b> : elle est <i>majorée</i>, et ce nombre est <i>un majorant</i>.</p><p>Si elle ne descend jamais en dessous, elle a un <b>plancher</b> : elle est <i>minorée</i>, et ce nombre est <i>un minorant</i>.</p><p>Les deux à la fois : elle est <i>bornée</i>, enfermée entre plancher et plafond.</p>"}},
+
+  {k:"f", s:true, h:{
+    ru:"Majorée: <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">M</span> для всех <span class=\"v\">n</span><br>Minorée: <span class=\"v\">u<sub>n</sub></span> ⩾ <span class=\"v\">m</span> для всех <span class=\"v\">n</span><br>Bornée: <span class=\"v\">m</span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">M</span>",
+    fr:"Majorée : <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">M</span> pour tout <span class=\"v\">n</span><br>Minorée : <span class=\"v\">u<sub>n</sub></span> ⩾ <span class=\"v\">m</span> pour tout <span class=\"v\">n</span><br>Bornée : <span class=\"v\">m</span> ⩽ <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">M</span>"}},
+
+  {k:"piege", n:{ru:"Потолок не обязан достигаться", fr:"Le plafond n'est pas forcément atteint"}, h:{
+    ru:"<p>Возьмём <span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">n</span> ÷ (<span class=\"v\">n</span>+1): это 0 ; 0,5 ; 0,67 ; 0,75 ; 0,8 …</p><p>Она всегда меньше единицы, но никогда её не достигает. Единица — законный majorant.</p><p>Потолок — это граница, которую не переходят. Касаться её не обязательно.</p>",
+    fr:"<p>Prenons <span class=\"v\">u<sub>n</sub></span> = <span class=\"v\">n</span> ÷ (<span class=\"v\">n</span>+1) : 0 ; 0,5 ; 0,67 ; 0,75 ; 0,8 …</p><p>Elle reste toujours inférieure à 1 sans jamais l'atteindre. 1 est bien un majorant.</p><p>Un plafond est une limite qu'on ne franchit pas. On n'est pas obligé de le toucher.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Как доказать, что последовательность мажорирована.</b> Метод тот же, что был с монотонностью: смотрим на знак разности.",
+    fr:"<b>Comment démontrer qu'une suite est majorée.</b> Même méthode que pour la monotonie : on étudie un signe."}},
+
+  {k:"f", h:{
+    ru:"Показать <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">M</span> — значит показать, что <span class=\"v\">u<sub>n</sub></span> − <span class=\"v\">M</span> ⩽ 0",
+    fr:"Montrer <span class=\"v\">u<sub>n</sub></span> ⩽ <span class=\"v\">M</span>, c'est montrer que <span class=\"v\">u<sub>n</sub></span> − <span class=\"v\">M</span> ⩽ 0"}},
+
+  {k:"ex", n:{ru:"Полный разбор", fr:"Exemple rédigé"}, h:{
+    ru:"<p><span class=\"v\">u<sub>n</sub></span> = 5 − 2 ÷ (<span class=\"v\">n</span>+1). Показать, что она мажорирована пятёркой.</p><p><b>Шаг 1.</b> Считаем <span class=\"v\">u<sub>n</sub></span> − 5:<br>5 − 2/(<span class=\"v\">n</span>+1) − 5 = −2/(<span class=\"v\">n</span>+1)</p><p><b>Шаг 2.</b> При <span class=\"v\">n</span> ⩾ 0 знаменатель <span class=\"v\">n</span>+1 всегда положителен, значит 2/(<span class=\"v\">n</span>+1) > 0, значит −2/(<span class=\"v\">n</span>+1) < 0.</p><p><b>Вывод.</b> <span class=\"v\">u<sub>n</sub></span> − 5 < 0, то есть <span class=\"v\">u<sub>n</sub></span> < 5. Пятёрка — majorant.</p>",
+    fr:"<p><span class=\"v\">u<sub>n</sub></span> = 5 − 2 ÷ (<span class=\"v\">n</span>+1). Montrer qu'elle est majorée par 5.</p><p><b>Étape 1.</b> On calcule <span class=\"v\">u<sub>n</sub></span> − 5 :<br>5 − 2/(<span class=\"v\">n</span>+1) − 5 = −2/(<span class=\"v\">n</span>+1)</p><p><b>Étape 2.</b> Pour <span class=\"v\">n</span> ⩾ 0, le dénominateur <span class=\"v\">n</span>+1 est positif, donc 2/(<span class=\"v\">n</span>+1) > 0, donc −2/(<span class=\"v\">n</span>+1) < 0.</p><p><b>Conclusion.</b> <span class=\"v\">u<sub>n</sub></span> − 5 < 0, donc <span class=\"v\">u<sub>n</sub></span> < 5. La suite est majorée par 5.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Простое наблюдение, которое экономит время.</b> Если последовательность возрастает — она автоматически мажорирована снизу своим первым членом. Если убывает — мажорирована сверху первым членом.",
+    fr:"<b>Une remarque qui fait gagner du temps.</b> Si une suite est croissante, elle est automatiquement minorée par son premier terme. Si elle est décroissante, elle est majorée par son premier terme."}},
+
+  {k:"p", h:{
+    ru:"<b>Теорема о монотонной ограниченной последовательности.</b> Главный результат этого раздела.",
+    fr:"<b>Théorème de la limite monotone.</b> Le résultat principal de cette partie."}},
+
+  {k:"f", s:true, h:{
+    ru:"Возрастающая и мажорированная → сходится<br>Убывающая и минорированная → сходится",
+    fr:"Croissante et majorée → converge<br>Décroissante et minorée → converge"}},
+
+  {k:"image", h:{
+    ru:"<p>Представь <b>лифт, который едет вверх, но упирается в потолок здания</b>.</p><p>Он поднимается и поднимается, но выше потолка не может. Значит, он где-то остановится. Где именно — теорема не говорит. Но что остановится — гарантирует.</p>",
+    fr:"<p>Imagine un <b>ascenseur qui monte, mais bute contre le plafond de l'immeuble</b>.</p><p>Il monte, monte, mais ne peut pas dépasser. Donc il s'arrêtera quelque part. Où exactement, le théorème ne le dit pas. Mais qu'il s'arrête, c'est garanti.</p>"}},
+
+  {k:"piege", n:{ru:"Предел ≠ потолок", fr:"La limite n'est pas le majorant"}, h:{
+    ru:"<p>Последовательность возрастает и мажорирована десяткой. Это <b>не значит</b>, что она стремится к десяти.</p><p>Она может остановиться на семи, на девяти, на 9,99. Теорема гарантирует только, что предел существует и не превышает десяти.</p><p>Писать «donc elle converge vers 10» — ошибка.</p>",
+    fr:"<p>Une suite croissante majorée par 10 ne tend <b>pas forcément</b> vers 10.</p><p>Elle peut s'arrêter à 7, à 9, à 9,99. Le théorème garantit seulement que la limite existe et ne dépasse pas 10.</p><p>Écrire « donc elle converge vers 10 » est une erreur.</p>"}},
+
+  {k:"ds", h:{
+    ru:"<p><i>Pour tout entier naturel n, u<sub>n</sub> − 5 = −2/(n+1) < 0.<br>Donc u<sub>n</sub> < 5 : la suite (u<sub>n</sub>) est majorée par 5.</i></p><p>И для теоремы:</p><p><i>La suite (u<sub>n</sub>) est croissante et majorée, donc elle converge.</i></p>",
+    fr:"<p><i>Pour tout entier naturel n, u<sub>n</sub> − 5 = −2/(n+1) < 0.<br>Donc u<sub>n</sub> < 5 : la suite (u<sub>n</sub>) est majorée par 5.</i></p><p>Et pour le théorème :</p><p><i>La suite (u<sub>n</sub>) est croissante et majorée, donc elle converge.</i></p>"}}
+]},
+
+/* ══════════ 10 ══════════ */
+{ n:10,
+  t:{ru:"Суммы членов — sommes de termes", fr:"Sommes de termes"},
+  st:{ru:"Когда нужно сложить всё разом", fr:"Quand il faut tout additionner d'un coup"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Слова «в общей сложности», «всего», «накопилось» в условии означают сумму. Считать сто слагаемых вручную невозможно — для этого и есть формулы.",
+    fr:"<b>À quoi ça sert.</b> Les mots « au total », « en tout », « cumulé » dans un énoncé signalent une somme. Additionner cent termes à la main est impossible — d'où les formules."}},
+
+  {k:"p", h:{
+    ru:"<b>Сумма Гаусса.</b> Самая знаменитая формула в теме.",
+    fr:"<b>La somme de Gauss.</b> La formule la plus célèbre du chapitre."}},
+
+  {k:"f", h:"1 + 2 + 3 + … + <span class=\"v\">n</span> = <span class=\"v\">n</span>(<span class=\"v\">n</span>+1) ÷ 2"},
+
+  {k:"image", h:{
+    ru:"<p>История настоящая. Учитель дал классу сложить все числа от 1 до 100, чтобы занять детей на час. Девятилетний Гаусс ответил через минуту.</p><p>Он сложил <b>первое с последним</b>: 1 + 100 = 101.<br>Потом второе с предпоследним: 2 + 99 = 101.<br>И так далее — всегда 101.</p><p>Таких пар ровно 50. Значит 50 × 101 = <b>5050</b>.</p><p>Формула — это и есть та же идея: количество членов умножить на среднее из первого и последнего.</p>",
+    fr:"<p>L'histoire est vraie. Un maître demande à sa classe d'additionner tous les nombres de 1 à 100, pour les occuper une heure. Gauss, neuf ans, répond en une minute.</p><p>Il additionne <b>le premier avec le dernier</b> : 1 + 100 = 101.<br>Puis le deuxième avec l'avant-dernier : 2 + 99 = 101.<br>Et ainsi de suite — toujours 101.</p><p>Il y a exactement 50 paires. Donc 50 × 101 = <b>5050</b>.</p><p>La formule, c'est cette idée : le nombre de termes multiplié par la moyenne du premier et du dernier.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Сумма арифметической последовательности.</b> Та же логика Гаусса, в общем виде.",
+    fr:"<b>Somme d'une suite arithmétique.</b> La même idée de Gauss, en général."}},
+
+  {k:"f", h:{
+    ru:"Сумма = (число членов) × (первый + последний) ÷ 2",
+    fr:"Somme = (nombre de termes) × (premier + dernier) ÷ 2"}},
+
+  {k:"ex", h:{
+    ru:"<p>Арифметическая: <span class=\"v\">u<sub>0</sub></span> = 2, <span class=\"v\">r</span> = 6. Найти сумму от <span class=\"v\">u<sub>0</sub></span> до <span class=\"v\">u<sub>10</sub></span>.</p><p><b>Шаг 1.</b> Последний член: <span class=\"v\">u<sub>10</sub></span> = 2 + 10×6 = 62<br><b>Шаг 2.</b> Число членов: 10 − 0 + 1 = 11<br><b>Шаг 3.</b> Среднее: (2 + 62) ÷ 2 = 32<br><b>Шаг 4.</b> Сумма: 11 × 32 = <b>352</b></p>",
+    fr:"<p>Suite arithmétique : <span class=\"v\">u<sub>0</sub></span> = 2, <span class=\"v\">r</span> = 6. Calculer la somme de <span class=\"v\">u<sub>0</sub></span> à <span class=\"v\">u<sub>10</sub></span>.</p><p><b>Étape 1.</b> Dernier terme : <span class=\"v\">u<sub>10</sub></span> = 2 + 10×6 = 62<br><b>Étape 2.</b> Nombre de termes : 10 − 0 + 1 = 11<br><b>Étape 3.</b> Moyenne : (2 + 62) ÷ 2 = 32<br><b>Étape 4.</b> Somme : 11 × 32 = <b>352</b></p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Сумма геометрической последовательности.</b> Здесь формула другая — складывать степени иначе не получится.",
+    fr:"<b>Somme d'une suite géométrique.</b> Ici la formule est différente — on ne peut pas additionner des puissances autrement."}},
+
+  {k:"f", h:{
+    ru:"1 + <span class=\"v\">q</span> + <span class=\"v\">q</span>² + … + <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup> = (1 − <span class=\"v\">q</span><sup><span class=\"v\">n</span>+1</sup>) ÷ (1 − <span class=\"v\">q</span>)",
+    fr:"1 + <span class=\"v\">q</span> + <span class=\"v\">q</span>² + … + <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup> = (1 − <span class=\"v\">q</span><sup><span class=\"v\">n</span>+1</sup>) ÷ (1 − <span class=\"v\">q</span>)"}},
+
+  {k:"piege", n:{ru:"Показатель — число членов", fr:"L'exposant, c'est le nombre de termes"}, h:{
+    ru:"<p>В формуле стоит <span class=\"v\">q</span><sup><span class=\"v\">n</span>+1</sup>, а не <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup>. Это самая частая ошибка.</p><p>Причина: от <span class=\"v\">q</span><sup>0</sup> до <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup> всего <span class=\"v\">n</span>+1 слагаемое, а не <span class=\"v\">n</span>. Снова тот же забор.</p><p><b>Проверь на малом:</b> 1 + 2 + 4 = 7. По формуле: (1 − 2³) ÷ (1 − 2) = (−7) ÷ (−1) = 7 ✓. Три члена, показатель 3.</p>",
+    fr:"<p>La formule contient <span class=\"v\">q</span><sup><span class=\"v\">n</span>+1</sup>, pas <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup>. C'est l'erreur la plus fréquente.</p><p>Raison : de <span class=\"v\">q</span><sup>0</sup> à <span class=\"v\">q</span><sup><span class=\"v\">n</span></sup> il y a <span class=\"v\">n</span>+1 termes, pas <span class=\"v\">n</span>. Encore la clôture.</p><p><b>Vérifie sur un petit cas :</b> 1 + 2 + 4 = 7. Par la formule : (1 − 2³) ÷ (1 − 2) = (−7) ÷ (−1) = 7 ✓. Trois termes, exposant 3.</p>"}},
+
+  {k:"ex", h:{
+    ru:"<p>Посчитать 1 + 5 + 25 + 125.</p><p>Это <span class=\"v\">q</span> = 5, четыре члена → показатель 4.</p><p>(1 − 5⁴) ÷ (1 − 5) = (1 − 625) ÷ (−4) = (−624) ÷ (−4) = <b>156</b></p><p>Проверка вручную: 1 + 5 + 25 + 125 = 156 ✓</p>",
+    fr:"<p>Calculer 1 + 5 + 25 + 125.</p><p>Ici <span class=\"v\">q</span> = 5, quatre termes → exposant 4.</p><p>(1 − 5⁴) ÷ (1 − 5) = (1 − 625) ÷ (−4) = (−624) ÷ (−4) = <b>156</b></p><p>Vérification à la main : 1 + 5 + 25 + 125 = 156 ✓</p>"}},
+
+  {k:"p", h:{
+    ru:"Если первый член не единица, а <span class=\"v\">u<sub>0</sub></span> — просто выносим его за скобку:",
+    fr:"Si le premier terme n'est pas 1 mais <span class=\"v\">u<sub>0</sub></span>, on le met en facteur :"}},
+
+  {k:"f", s:true, h:"Сумма = <span class=\"v\">u<sub>0</sub></span> × (1 − <span class=\"v\">q</span><sup><span class=\"v\">n</span>+1</sup>) ÷ (1 − <span class=\"v\">q</span>)"},
+
+  {k:"ds", h:{
+    ru:"<p>Перед формулой всегда указывают, сколько членов складывается:</p><p><i>La somme comporte 11 termes, de u<sub>0</sub> à u<sub>10</sub>.<br>S = 11 × (2 + 62)/2 = 352.</i></p><p>Эта первая строчка — половина балла. Она показывает, что ты не перепутал количество.</p>",
+    fr:"<p>On précise toujours le nombre de termes avant d'appliquer la formule :</p><p><i>La somme comporte 11 termes, de u<sub>0</sub> à u<sub>10</sub>.<br>S = 11 × (2 + 62)/2 = 352.</i></p><p>Cette première ligne vaut la moitié des points : elle montre que le comptage est juste.</p>"}}
+]},
+/* ══════════ 11 ══════════ */
+{ n:11,
+  t:{ru:"Алгоритмы и порог — seuil", fr:"Algorithmique et seuil"},
+  st:{ru:"Когда спрашивают «начиная с какого шага»", fr:"Quand on demande « à partir de quel rang »"},
+  neuf:true,
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Это пункт программы, и он встречается на экзамене. Вопрос звучит так: «начиная с какого года население превысит 50 000?» Формулой такое решается не всегда — тогда пишут маленькую программу.",
+    fr:"<b>À quoi ça sert.</b> C'est un point du programme et ça tombe au bac. La question type : « à partir de quelle année la population dépasse-t-elle 50 000 ? » Une formule ne suffit pas toujours — on écrit alors un petit programme."}},
+
+  {k:"image", h:{
+    ru:"<p><b>Подъём по лестнице с отметкой на стене.</b></p><p>Ты шагаешь вверх и после каждой ступеньки смотришь: достал до отметки или нет? Не достал — шагаешь ещё. Достал — останавливаешься и считаешь, сколько шагов сделал.</p><p>Вот и весь алгоритм порога. Две вещи нужно отслеживать: <b>где ты сейчас</b> и <b>сколько шагов сделал</b>.</p>",
+    fr:"<p><b>Monter un escalier avec un repère sur le mur.</b></p><p>Tu montes et après chaque marche tu regardes : as-tu atteint le repère ? Non — tu montes encore. Oui — tu t'arrêtes et tu comptes tes pas.</p><p>C'est tout l'algorithme de seuil. Deux choses à suivre : <b>où tu es</b> et <b>combien de pas tu as faits</b>.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Структура всегда одна и та же.</b> Две переменные, цикл <span style=\"font-family:monospace\">while</span>, две строчки внутри.",
+    fr:"<b>La structure est toujours la même.</b> Deux variables, une boucle <span style=\"font-family:monospace\">while</span>, deux lignes à l'intérieur."}},
+
+  {k:"code", h:{
+    ru:"<span class=\"cm\"># копилка: 20 €, +5 € в неделю</span><br><span class=\"cm\"># когда перевалит за 100 €?</span><br><br>u = 20&nbsp;&nbsp;&nbsp;<span class=\"cm\"># где мы сейчас</span><br>n = 0&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"cm\"># сколько шагов сделали</span><br><br><span class=\"kw\">while</span> u &lt; 100 :<br>&nbsp;&nbsp;&nbsp;&nbsp;u = u + 5&nbsp;&nbsp;&nbsp;<span class=\"cm\"># шаг</span><br>&nbsp;&nbsp;&nbsp;&nbsp;n = n + 1&nbsp;&nbsp;&nbsp;<span class=\"cm\"># считаем</span><br><br><span class=\"kw\">print</span>(n)",
+    fr:"<span class=\"cm\"># tirelire : 20 €, +5 € par semaine</span><br><span class=\"cm\"># quand dépasse-t-elle 100 € ?</span><br><br>u = 20&nbsp;&nbsp;&nbsp;<span class=\"cm\"># où on en est</span><br>n = 0&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"cm\"># combien de pas</span><br><br><span class=\"kw\">while</span> u &lt; 100 :<br>&nbsp;&nbsp;&nbsp;&nbsp;u = u + 5&nbsp;&nbsp;&nbsp;<span class=\"cm\"># le pas</span><br>&nbsp;&nbsp;&nbsp;&nbsp;n = n + 1&nbsp;&nbsp;&nbsp;<span class=\"cm\"># on compte</span><br><br><span class=\"kw\">print</span>(n)"}},
+
+  {k:"ex", n:{ru:"Прогоним вручную", fr:"Déroulons à la main"}, h:{
+    ru:"<p>Начало: u = 20, n = 0. Условие 20 &lt; 100 — верно, заходим.</p><p>Тур 1: u = 25, n = 1<br>Тур 2: u = 30, n = 2<br>…<br>Тур 15: u = 95, n = 15 → 95 &lt; 100 ещё верно<br>Тур 16: u = 100, n = 16 → 100 &lt; 100 <b>ложно</b>, выходим</p><p>Ответ: <b>16 недель</b>.</p><p>Заметь: цикл проверяет условие <b>до</b> входа, а не после. Поэтому последний тур, который сделал u = 100, всё-таки выполнился.</p>",
+    fr:"<p>Départ : u = 20, n = 0. Condition 20 &lt; 100 — vraie, on entre.</p><p>Tour 1 : u = 25, n = 1<br>Tour 2 : u = 30, n = 2<br>…<br>Tour 15 : u = 95, n = 15 → 95 &lt; 100 encore vrai<br>Tour 16 : u = 100, n = 16 → 100 &lt; 100 <b>faux</b>, on sort</p><p>Réponse : <b>16 semaines</b>.</p><p>Remarque : la boucle teste la condition <b>avant</b> d'entrer, pas après. C'est pourquoi le tour qui amène u à 100 s'exécute quand même.</p>"}},
+
+  {k:"piege", n:{ru:"Забыл изменить u — вечный цикл", fr:"Oublier de modifier u = boucle infinie"}, h:{
+    ru:"<p>Если внутри цикла не менять <span style=\"font-family:monospace\">u</span>, условие никогда не станет ложным. Программа зависнет навсегда.</p><p>Правило: переменная, которая стоит <b>в условии</b>, обязана меняться <b>внутри</b> цикла.</p>",
+    fr:"<p>Si <span style=\"font-family:monospace\">u</span> n'est pas modifié dans la boucle, la condition ne deviendra jamais fausse. Le programme tourne à l'infini.</p><p>Règle : la variable qui apparaît <b>dans la condition</b> doit changer <b>à l'intérieur</b> de la boucle.</p>"}},
+
+  {k:"p", h:{
+    ru:"<b>Для геометрической</b> меняется одна строчка — вместо сложения умножение:",
+    fr:"<b>Pour une suite géométrique</b>, une seule ligne change — la multiplication remplace l'addition :"}},
+
+  {k:"code", h:{
+    ru:"<span class=\"cm\"># вклад 1500 € под 6 % годовых</span><br><span class=\"cm\"># когда станет больше 2000 €?</span><br><br>u = 1500<br>n = 0<br><br><span class=\"kw\">while</span> u &lt; 2000 :<br>&nbsp;&nbsp;&nbsp;&nbsp;u = u * 1.06<br>&nbsp;&nbsp;&nbsp;&nbsp;n = n + 1<br><br><span class=\"kw\">print</span>(n)&nbsp;&nbsp;<span class=\"cm\"># → 5 лет</span>",
+    fr:"<span class=\"cm\"># placement 1500 € à 6 % par an</span><br><span class=\"cm\"># quand dépasse-t-il 2000 € ?</span><br><br>u = 1500<br>n = 0<br><br><span class=\"kw\">while</span> u &lt; 2000 :<br>&nbsp;&nbsp;&nbsp;&nbsp;u = u * 1.06<br>&nbsp;&nbsp;&nbsp;&nbsp;n = n + 1<br><br><span class=\"kw\">print</span>(n)&nbsp;&nbsp;<span class=\"cm\"># → 5 ans</span>"}},
+
+  {k:"p", h:{
+    ru:"<b>Когда можно обойтись без программы.</b> Для арифметической порог считается неравенством — быстрее и точнее.",
+    fr:"<b>Quand on peut se passer du programme.</b> Pour une suite arithmétique, le seuil se calcule par une inéquation — plus rapide et plus sûr."}},
+
+  {k:"ex", h:{
+    ru:"<p>Та же копилка: 20 + 5<span class=\"v\">n</span> ⩾ 100</p><p>5<span class=\"v\">n</span> ⩾ 80<br><span class=\"v\">n</span> ⩾ 16</p><p>Ответ тот же — <b>16</b>. Совпало с программой, значит обе дороги верны.</p><p>Если получается дробь, округляют <b>вверх</b>: неделя 15,4 не существует, нужна шестнадцатая.</p>",
+    fr:"<p>La même tirelire : 20 + 5<span class=\"v\">n</span> ⩾ 100</p><p>5<span class=\"v\">n</span> ⩾ 80<br><span class=\"v\">n</span> ⩾ 16</p><p>Même réponse — <b>16</b>. Les deux chemins concordent.</p><p>Si on obtient un décimal, on arrondit <b>au-dessus</b> : la semaine 15,4 n'existe pas, il faut la seizième.</p>"}},
+
+  {k:"ds", h:{
+    ru:"<p>Если просят объяснить, что делает алгоритм:</p><p><i>Cet algorithme détermine le plus petit entier n tel que u<sub>n</sub> ⩾ 100.<br>La variable u contient la valeur de la suite, la variable n compte les étapes.</i></p><p>Два предложения: что ищем и что делает каждая переменная.</p>",
+    fr:"<p>Si on demande d'expliquer l'algorithme :</p><p><i>Cet algorithme détermine le plus petit entier n tel que u<sub>n</sub> ⩾ 100.<br>La variable u contient la valeur de la suite, la variable n compte les étapes.</i></p><p>Deux phrases : ce qu'on cherche, et le rôle de chaque variable.</p>"}}
+]},
+
+/* ══════════ 12 ══════════ */
+{ n:12,
+  t:{ru:"Двенадцать ловушек", fr:"Douze pièges classiques"},
+  st:{ru:"Где теряют баллы чаще всего", fr:"Où l'on perd des points le plus souvent"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Большая часть потерянных баллов — не от незнания темы, а от одних и тех же повторяющихся промахов. Прочитай этот список перед контрольной, он экономит больше, чем повторение теории.",
+    fr:"<b>À quoi ça sert.</b> La plupart des points perdus ne viennent pas d'une méconnaissance du cours, mais des mêmes erreurs répétées. Relis cette liste avant un devoir : elle rapporte plus qu'une révision de théorie."}},
+
+  {k:"piege", n:{ru:"1 · Индекс", fr:"1 · L'indice"}, h:{
+    ru:"<p><span class=\"v\">u<sub>n+1</sub></span> — это следующий член. <span class=\"v\">u<sub>n</sub></span> + 1 — это текущий член плюс единица. <b>Разные вещи.</b></p><p>Проверка: для <span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span> имеем <span class=\"v\">u<sub>2</sub></span>+1 = 7, а <span class=\"v\">u<sub>3</sub></span> = 9.</p>",
+    fr:"<p><span class=\"v\">u<sub>n+1</sub></span> est le terme suivant. <span class=\"v\">u<sub>n</sub></span> + 1 est le terme actuel plus un. <b>Ce n'est pas pareil.</b></p><p>Test : avec <span class=\"v\">u<sub>n</sub></span> = 3<span class=\"v\">n</span>, on a <span class=\"v\">u<sub>2</sub></span>+1 = 7 alors que <span class=\"v\">u<sub>3</sub></span> = 9.</p>"}},
+
+  {k:"piege", n:{ru:"2 · Подстановка", fr:"2 · La substitution"}, h:{
+    ru:"<p>Для <span class=\"v\">u<sub>n</sub></span> = 4<span class=\"v\">n</span>+1: <span class=\"v\">u<sub>n+1</sub></span> = 4(<span class=\"v\">n</span>+1)+1 = 4<span class=\"v\">n</span>+5, а <b>не</b> 4<span class=\"v\">n</span>+2.</p><p>Множитель действует на всю скобку.</p>",
+    fr:"<p>Avec <span class=\"v\">u<sub>n</sub></span> = 4<span class=\"v\">n</span>+1 : <span class=\"v\">u<sub>n+1</sub></span> = 4(<span class=\"v\">n</span>+1)+1 = 4<span class=\"v\">n</span>+5, et <b>non</b> 4<span class=\"v\">n</span>+2.</p><p>Le facteur agit sur toute la parenthèse.</p>"}},
+
+  {k:"piege", n:{ru:"3 · Счёт членов", fr:"3 · Le comptage"}, h:{
+    ru:"<p>От <span class=\"v\">u<sub>0</sub></span> до <span class=\"v\">u<sub>10</sub></span> — одиннадцать членов, не десять. Считай столбы, а не пролёты.</p>",
+    fr:"<p>De <span class=\"v\">u<sub>0</sub></span> à <span class=\"v\">u<sub>10</sub></span>, il y a onze termes, pas dix. Compte les piquets, pas les intervalles.</p>"}},
+
+  {k:"piege", n:{ru:"4 · Три примера", fr:"4 · Trois exemples"}, h:{
+    ru:"<p>Посчитать первые члены — это <i>conjecturer</i>, а не <i>démontrer</i>. Доказательство требует общей формулы для любого <span class=\"v\">n</span>.</p>",
+    fr:"<p>Calculer les premiers termes, c'est <i>conjecturer</i>, pas <i>démontrer</i>. Une preuve exige un calcul général valable pour tout <span class=\"v\">n</span>.</p>"}},
+
+  {k:"piege", n:{ru:"5 · Частное без условия", fr:"5 · Le quotient sans condition"}, h:{
+    ru:"<p>Метод частного применим только при строго положительных членах. Не написал эту фразу — теряешь балл, даже если ответ верный.</p>",
+    fr:"<p>La méthode du quotient exige des termes strictement positifs. Sans cette phrase, le point saute même si la conclusion est juste.</p>"}},
+
+  {k:"piege", n:{ru:"6 · Проценты туда-обратно", fr:"6 · Les pourcentages qui se compensent"}, h:{
+    ru:"<p>−30 % и потом +30 % не возвращают к началу: 0,7 × 1,3 = 0,91. Не хватает 9 %.</p>",
+    fr:"<p>−30 % puis +30 % ne ramènent pas au départ : 0,7 × 1,3 = 0,91. Il manque 9 %.</p>"}},
+
+  {k:"piege", n:{ru:"7 · Показатель в сумме", fr:"7 · L'exposant de la somme"}, h:{
+    ru:"<p>В формуле суммы стоит <span class=\"v\">q</span><sup><span class=\"v\">n</span>+1</sup> — это число слагаемых, а не последний ранг. Проверяй на маленьком примере.</p>",
+    fr:"<p>Dans la formule de somme, l'exposant est <span class=\"v\">n</span>+1 — c'est le nombre de termes, pas le dernier rang. Vérifie sur un petit cas.</p>"}},
+
+  {k:"piege", n:{ru:"8 · Формула Гаусса", fr:"8 · La formule de Gauss"}, h:{
+    ru:"<p><span class=\"v\">n</span>(<span class=\"v\">n</span>+1) ÷ 2, а не <span class=\"v\">n</span>² ÷ 2. Проверка на 1+2+3: 3×4÷2 = 6 ✓</p>",
+    fr:"<p><span class=\"v\">n</span>(<span class=\"v\">n</span>+1) ÷ 2, et non <span class=\"v\">n</span>² ÷ 2. Test sur 1+2+3 : 3×4÷2 = 6 ✓</p>"}},
+
+  {k:"piege", n:{ru:"9 · Pour tout в индукции", fr:"9 · « Pour tout » en récurrence"}, h:{
+    ru:"<p>На шаге наследственности предполагают для <b>одного фиксированного</b> <span class=\"v\">n</span>. Написать «pour tout n» — значит предположить то, что доказываешь.</p>",
+    fr:"<p>Dans l'hérédité, on suppose pour <b>un entier fixé</b>. Écrire « pour tout n » revient à supposer ce qu'on veut démontrer.</p>"}},
+
+  {k:"piege", n:{ru:"10 · Расходимость", fr:"10 · La divergence"}, h:{
+    ru:"<p>(−1)<sup><span class=\"v\">n</span></sup> расходится, но остаётся между −1 и 1. Расходиться — значит не иметь предела, а не улетать в бесконечность.</p>",
+    fr:"<p>(−1)<sup><span class=\"v\">n</span></sup> diverge tout en restant entre −1 et 1. Diverger, c'est ne pas avoir de limite, pas forcément partir à l'infini.</p>"}},
+
+  {k:"piege", n:{ru:"11 · Потолок как предел", fr:"11 · Le majorant pris pour limite"}, h:{
+    ru:"<p>Возрастающая и мажорированная десяткой сходится — но не обязательно к десяти. Теорема даёт существование предела, не его значение.</p>",
+    fr:"<p>Croissante et majorée par 10 : elle converge — mais pas forcément vers 10. Le théorème donne l'existence, pas la valeur.</p>"}},
+
+  {k:"piege", n:{ru:"12 · Начальный ранг", fr:"12 · Le rang de départ"}, h:{
+    ru:"<p>Если последовательность начинается с <span class=\"v\">u<sub>1</sub></span>, формула общего члена содержит (<span class=\"v\">n</span>−1), а не <span class=\"v\">n</span>. Перечитывай условие.</p>",
+    fr:"<p>Si la suite commence à <span class=\"v\">u<sub>1</sub></span>, la formule contient (<span class=\"v\">n</span>−1) et non <span class=\"v\">n</span>. Relis l'énoncé.</p>"}}
+]},
+
+/* ══════════ 16 ══════════ */
+{ n:13,
+  t:{ru:"Четыре задачи с полным решением", fr:"Quatre problèmes rédigés"},
+  st:{ru:"Как выглядит работа целиком", fr:"À quoi ressemble une copie complète"},
+  b:[
+  {k:"pourquoi", h:{
+    ru:"<b>Зачем это нужно.</b> Отдельные приёмы знать мало — на контрольной нужно собрать их в одно связное решение. Вот четыре типичных задания в том виде, в каком их ждут проверяющие.",
+    fr:"<b>À quoi ça sert.</b> Connaître les méthodes isolément ne suffit pas — en devoir il faut les enchaîner. Voici quatre sujets types, rédigés comme on les attend."}},
+
+  {k:"ex", n:{ru:"Задача 1 · Абонемент", fr:"Problème 1 · L'abonnement"}, h:{
+    ru:"<p><b>Условие.</b> Абонемент стоит 240 € и дорожает на 12 € в год.<br>а) Определить природу последовательности.<br>б) Выразить <span class=\"v\">u<sub>n</sub></span>.<br>в) Через сколько лет превысит 400 €?</p><p><b>Решение.</b></p><p>а) Каждый год прибавляется фиксированная сумма → последовательность арифметическая, <span class=\"v\">r</span> = 12, <span class=\"v\">u<sub>0</sub></span> = 240.</p><p>б) <span class=\"v\">u<sub>n</sub></span> = 240 + 12<span class=\"v\">n</span></p><p>в) 240 + 12<span class=\"v\">n</span> > 400<br>12<span class=\"v\">n</span> > 160<br><span class=\"v\">n</span> > 13,33<br>Первое целое: <span class=\"v\">n</span> = <b>14 лет</b></p>",
+    fr:"<p><b>Énoncé.</b> Un abonnement coûte 240 € et augmente de 12 € par an.<br>a) Déterminer la nature de la suite.<br>b) Exprimer <span class=\"v\">u<sub>n</sub></span>.<br>c) Au bout de combien d'années dépasse-t-il 400 € ?</p><p><b>Solution.</b></p><p>a) Chaque année on ajoute une somme fixe → suite arithmétique, <span class=\"v\">r</span> = 12, <span class=\"v\">u<sub>0</sub></span> = 240.</p><p>b) <span class=\"v\">u<sub>n</sub></span> = 240 + 12<span class=\"v\">n</span></p><p>c) 240 + 12<span class=\"v\">n</span> > 400<br>12<span class=\"v\">n</span> > 160<br><span class=\"v\">n</span> > 13,33<br>Premier entier : <span class=\"v\">n</span> = <b>14 ans</b></p>"}},
+
+  {k:"ex", n:{ru:"Задача 2 · Население", fr:"Problème 2 · La population"}, h:{
+    ru:"<p><b>Условие.</b> Город: 80 000 жителей, убыль 2 % в год.<br>а) Природа последовательности.<br>б) Население через 10 лет.<br>в) Предел.</p><p><b>Решение.</b></p><p>а) Убыль в процентах → умножение на 0,98 → геометрическая, <span class=\"v\">q</span> = 0,98.</p><p>б) <span class=\"v\">u<sub>10</sub></span> = 80000 × 0,98¹⁰ ≈ 80000 × 0,8171 ≈ <b>65 368 жителей</b></p><p>в) Так как −1 &lt; 0,98 &lt; 1, предел 0,98<sup><span class=\"v\">n</span></sup> равен нулю.<br>Значит <span class=\"v\">u<sub>n</sub></span> → 0.</p><p><i>Замечание для ответа:</i> математически предел нулевой, но модель описывает реальность лишь на обозримом сроке.</p>",
+    fr:"<p><b>Énoncé.</b> Une ville de 80 000 habitants perd 2 % par an.<br>a) Nature de la suite.<br>b) Population dans 10 ans.<br>c) Limite.</p><p><b>Solution.</b></p><p>a) Baisse en pourcentage → multiplication par 0,98 → géométrique, <span class=\"v\">q</span> = 0,98.</p><p>b) <span class=\"v\">u<sub>10</sub></span> = 80000 × 0,98¹⁰ ≈ <b>65 368 habitants</b></p><p>c) Comme −1 &lt; 0,98 &lt; 1, lim 0,98<sup><span class=\"v\">n</span></sup> = 0.<br>Donc <span class=\"v\">u<sub>n</sub></span> tend vers 0.</p><p><i>Remarque :</i> la limite est nulle mathématiquement, mais le modèle n'est réaliste que sur une durée limitée.</p>"}},
+
+  {k:"ex", n:{ru:"Задача 3 · Накопленная сумма", fr:"Problème 3 · Le cumul"}, h:{
+    ru:"<p><b>Условие.</b> В первый месяц откладывают 50 €, каждый следующий на 10 € больше.<br>а) Сколько отложат в 12-й месяц?<br>б) Сколько всего за год?</p><p><b>Решение.</b></p><p>а) Арифметическая, <span class=\"v\">u<sub>1</sub></span> = 50, <span class=\"v\">r</span> = 10.<br>Начинаем с ранга 1, значит:<br><span class=\"v\">u<sub>12</sub></span> = 50 + (12−1)×10 = 50 + 110 = <b>160 €</b></p><p>б) Сумма: 12 членов, первый 50, последний 160.<br>S = 12 × (50 + 160) ÷ 2 = 12 × 105 = <b>1 260 €</b></p>",
+    fr:"<p><b>Énoncé.</b> Le premier mois on épargne 50 €, puis 10 € de plus chaque mois.<br>a) Combien le 12<sup>e</sup> mois ?<br>b) Combien au total sur l'année ?</p><p><b>Solution.</b></p><p>a) Suite arithmétique, <span class=\"v\">u<sub>1</sub></span> = 50, <span class=\"v\">r</span> = 10.<br>Le rang part de 1, donc :<br><span class=\"v\">u<sub>12</sub></span> = 50 + (12−1)×10 = <b>160 €</b></p><p>b) Somme : 12 termes, premier 50, dernier 160.<br>S = 12 × (50 + 160) ÷ 2 = <b>1 260 €</b></p>"}},
+
+  {k:"ex", n:{ru:"Задача 4 · Вклад с пополнением", fr:"Problème 4 · Le placement alimenté"}, h:{
+    ru:"<p><b>Условие.</b> 5000 € под 3 % годовых, плюс 200 € ежегодно.<br>а) Записать рекуррентное соотношение.<br>б) Вычислить <span class=\"v\">u<sub>1</sub></span> и <span class=\"v\">u<sub>2</sub></span>.<br>в) Показать, что <span class=\"v\">v<sub>n</sub></span> = <span class=\"v\">u<sub>n</sub></span> + 6666,67 геометрическая.</p><p><b>Решение.</b></p><p>а) <span class=\"v\">u<sub>n+1</sub></span> = 1,03 <span class=\"v\">u<sub>n</sub></span> + 200, <span class=\"v\">u<sub>0</sub></span> = 5000</p><p>б) <span class=\"v\">u<sub>1</sub></span> = 5000×1,03 + 200 = 5350<br><span class=\"v\">u<sub>2</sub></span> = 5350×1,03 + 200 = 5710,50 €</p><p>в) Неподвижная точка: <span class=\"v\">x</span> = 1,03<span class=\"v\">x</span> + 200 → −0,03<span class=\"v\">x</span> = 200 → <span class=\"v\">x</span> ≈ −6666,67</p><p><span class=\"v\">v<sub>n+1</sub></span> = <span class=\"v\">u<sub>n+1</sub></span> + 6666,67 = 1,03<span class=\"v\">u<sub>n</sub></span> + 200 + 6666,67<br>= 1,03(<span class=\"v\">u<sub>n</sub></span> + 6666,67) = 1,03 <span class=\"v\">v<sub>n</sub></span></p><p>Значит <span class=\"v\">(v<sub>n</sub>)</span> геометрическая с raison 1,03.</p>",
+    fr:"<p><b>Énoncé.</b> 5000 € à 3 % par an, plus 200 € versés chaque année.<br>a) Écrire la relation de récurrence.<br>b) Calculer <span class=\"v\">u<sub>1</sub></span> et <span class=\"v\">u<sub>2</sub></span>.<br>c) Montrer que <span class=\"v\">v<sub>n</sub></span> = <span class=\"v\">u<sub>n</sub></span> + 6666,67 est géométrique.</p><p><b>Solution.</b></p><p>a) <span class=\"v\">u<sub>n+1</sub></span> = 1,03 <span class=\"v\">u<sub>n</sub></span> + 200, <span class=\"v\">u<sub>0</sub></span> = 5000</p><p>b) <span class=\"v\">u<sub>1</sub></span> = 5350<br><span class=\"v\">u<sub>2</sub></span> = 5710,50 €</p><p>c) Point fixe : <span class=\"v\">x</span> = 1,03<span class=\"v\">x</span> + 200 → <span class=\"v\">x</span> ≈ −6666,67</p><p><span class=\"v\">v<sub>n+1</sub></span> = 1,03<span class=\"v\">u<sub>n</sub></span> + 200 + 6666,67<br>= 1,03(<span class=\"v\">u<sub>n</sub></span> + 6666,67) = 1,03 <span class=\"v\">v<sub>n</sub></span></p><p>Donc <span class=\"v\">(v<sub>n</sub>)</span> est géométrique de raison 1,03.</p>"}},
+
+  {k:"ds", h:{
+    ru:"<p><b>Общее правило оформления.</b> За голый ответ баллов почти не дают. Ценится путь:</p><p>назвал природу последовательности → выписал формулу → подставил → сделал вывод словами.</p><p>Последняя фраза обязательна. <i>Donc le prix dépassera 400 € au bout de 14 ans.</i> Без неё решение считается незавершённым.</p>",
+    fr:"<p><b>Règle générale de rédaction.</b> Un résultat seul ne rapporte presque rien. C'est le chemin qui compte :</p><p>nature de la suite → formule → calcul → conclusion en français.</p><p>La dernière phrase est obligatoire. <i>Donc le prix dépassera 400 € au bout de 14 ans.</i> Sans elle, la réponse est jugée incomplète.</p>"}}
+]}
+
+];
+
+
+
+/* ── направление перехода: вперёд по ссылке, назад по кнопке браузера ── */
+(function(){
+  const H = document.documentElement;
+
+  /* ссылка внутрь → вперёд */
+  document.addEventListener("click", e=>{
+    const a = e.target.closest("a[href]");
+    if(!a) return;
+    const href = a.getAttribute("href");
+    if(!href || href.startsWith("#")) return;
+    H.classList.remove("retour");
+    try{ sessionStorage.setItem("nav.dir", "avant"); }catch(err){}
+  }, true);
+
+  /* кнопка «назад» браузера */
+  addEventListener("popstate", ()=>{
+    H.classList.add("retour");
+    try{ sessionStorage.setItem("nav.dir", "retour"); }catch(err){}
+  });
+
+  /* au chargement : on applique le sens mémorisé */
+  let dir = "avant";
+  try{ dir = sessionStorage.getItem("nav.dir") || "avant"; }catch(err){}
+
+  const nav = performance.getEntriesByType &&
+              performance.getEntriesByType("navigation")[0];
+  if((nav && nav.type === "back_forward") || dir === "retour"){
+    H.classList.add("retour");
+  }
+  /* on nettoie après l'animation pour ne pas figer l'état */
+  setTimeout(()=>{
+    H.classList.remove("retour");
+    try{ sessionStorage.setItem("nav.dir", "avant"); }catch(err){}
+  }, 950);
+})();
+
+/* ═══════════ ОТРИСОВКА ═══════════ */
+
+const $ = id => document.getElementById(id);
+const LKEY = "suites.cours.lang";
+
+let L = "ru";
+try{ L = localStorage.getItem(LKEY) || "ru"; }catch(e){}
+
+const T = {
+  ru:{ sub:"Première", toc:"Содержание",
+       titre:"Последовательности<br>с самого начала",
+       sous:"Всё, что нужно знать по теме, разобрано на пальцах — с примерами из жизни и готовыми формулировками для контрольной.",
+       up:"Содержание", foot:"Перейти к упражнениям", neuf:"НОВОЕ",
+       prev:"Назад", next:"Далее", exo:"Задания" },
+  fr:{ sub:"Première", toc:"Sommaire",
+       titre:"Les suites,<br>depuis le début",
+       sous:"Tout le programme expliqué simplement — avec des images concrètes et les formulations à écrire en devoir.",
+       up:"Sommaire", foot:"Aux exercices", neuf:"NOUVEAU",
+       prev:"Retour", next:"Suite", exo:"Exercices" }
+};
+
+function txt(o){ return (o && typeof o === "object") ? (o[L] || o.ru || "") : (o || ""); }
+
+function bloc(b){
+  const t = txt(b.h !== undefined ? b.h : b);
+  switch(b.k){
+    case "pourquoi": return `<div class="pourquoi">${t}</div>`;
+    case "image":    return `<div class="image"><span class="lbl">${L==="ru"?"Представь себе":"Image mentale"}</span>${t}</div>`;
+    case "f":        return `<div class="f${b.s?" small":""}">${t}</div>`;
+    case "ex":       return `<div class="ex"><span class="lbl">${txt(b.n) || (L==="ru"?"Пример":"Exemple")}</span>${t}</div>`;
+    case "piege":    return `<div class="piege"><span class="lbl">${txt(b.n) || (L==="ru"?"Ловушка":"Piège")}</span>${t}</div>`;
+    case "ds":       return `<div class="ds"><span class="lbl">${L==="ru"?"Как писать на контрольной":"À écrire en devoir"}</span>${t}</div>`;
+    case "tab":      return `<div class="scroll">${t}</div>`;
+    case "code":     return `<div class="code">${t}</div>`;
+    case "ul":       return `<ul>${(b.items||[]).map(i=>`<li>${txt(i)}</li>`).join("")}</ul>`;
+    case "ol":       return `<ol>${(b.items||[]).map(i=>`<li>${txt(i)}</li>`).join("")}</ol>`;
+    default:         return `<p>${t}</p>`;
+  }
+}
+
+function dessine(){
+  document.documentElement.lang = L;
+  $("b-ru").classList.toggle("on", L==="ru");
+  $("b-fr").classList.toggle("on", L==="fr");
+  $("bar-sub").textContent = T[L].sub;
+  $("toc-t").textContent   = T[L].toc;
+  $("h-titre").innerHTML   = T[L].titre;
+  $("h-sous").textContent  = T[L].sous;
+  $("f-txt").textContent   = T[L].foot;
+
+  $("toc-l").innerHTML = COURS.map(s=>
+    `<li><a href="#s${s.n}">${txt(s.t)}${s.neuf?`<span class="neuf">${T[L].neuf}</span>`:""}</a></li>`
+  ).join("");
+
+  $("corps").innerHTML = COURS.map(s=>`
+    <section class="sec" id="s${s.n}">
+      <span class="sec-n">${L==="ru"?"РАЗДЕЛ":"PARTIE"} ${s.n}</span>
+      <h2>${txt(s.t)}</h2>
+      ${s.st ? `<p class="sec-s">${txt(s.st)}</p>` : ""}
+      ${(s.b||[]).map(bloc).join("")}
+      <a class="up" href="#toc">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+        ${T[L].up}
+      </a>
+    </section>`).join("");
+}
+
+function setLang(l){
+  L = l;
+  try{ localStorage.setItem(LKEY, l); }catch(e){}
+  const y = window.scrollY;
+  dessine();
+  window.scrollTo(0, y);
+}
+
+$("b-ru").onclick = ()=> setLang("ru");
+$("b-fr").onclick = ()=> setLang("fr");
+
+
+/* ── плавающая кнопка: появляется после первого экрана ── */
+(function(){
+  const fab = $("fab");
+  if(!fab) return;
+
+  const seuil = ()=> Math.max(320, innerHeight * 0.75);
+
+  const check = ()=>{
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    fab.classList.toggle("on", y > seuil());
+  };
+
+  let tick = false;
+  const onScroll = ()=>{
+    if(tick) return;
+    tick = true;
+    requestAnimationFrame(()=>{ check(); tick = false; });
+  };
+
+  addEventListener("scroll", onScroll, {passive:true});
+  addEventListener("resize", check, {passive:true});
+  check();
+
+  fab.addEventListener("click", e=>{
+    e.preventDefault();
+    const toc = $("toc");
+    if(toc) toc.scrollIntoView({behavior:"smooth", block:"start"});
+    history.replaceState(null, "", "#toc");
+  });
+})();
+
+/* ── клавиши на ноутбуке ── */
+addEventListener("keydown", e=>{
+  if(e.metaKey || e.ctrlKey || e.altKey) return;
+  const actif = document.activeElement;
+  if(actif && /INPUT|TEXTAREA|SELECT/.test(actif.tagName)) return;
+
+  /* Échap ou Début → sommaire */
+  if(e.key === "Escape" || e.key === "Home"){
+    e.preventDefault();
+    $("toc").scrollIntoView({behavior:"smooth", block:"start"});
+    return;
+  }
+
+  /* flèches gauche / droite → partie précédente / suivante */
+  if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
+    const secs = [...document.querySelectorAll(".sec")];
+    if(!secs.length) return;
+    /* quelle partie occupe le haut de l'écran ? */
+    let idx = 0;
+    secs.forEach((s,i)=>{ if(s.getBoundingClientRect().top <= 90) idx = i; });
+    const cible = e.key === "ArrowRight"
+      ? Math.min(idx+1, secs.length-1)
+      : Math.max(idx-1, 0);
+    if(cible !== idx){
+      e.preventDefault();
+      secs[cible].scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  }
+});
+
+/* ── défilement doux pour tous les liens internes ── */
+document.addEventListener("click", e=>{
+  const a = e.target.closest('a[href^="#"]');
+  if(!a) return;
+  const cible = document.querySelector(a.getAttribute("href"));
+  if(!cible) return;
+  e.preventDefault();
+  cible.scrollIntoView({behavior:"smooth", block:"start"});
+  history.replaceState(null, "", a.getAttribute("href"));
+});
+
+
+dessine();
+</script>
+<a class="fab" id="fab" href="#toc" aria-label="Sommaire">
+  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6h16M4 12h16M4 18h10"/>
+  </svg>
+</a>
+</body>
+</html>

@@ -434,6 +434,18 @@ to{opacity:1;transform:translateX(0)}
 
 /* десктоп */
 
+.revtag{display:inline-block;margin-left:9px;padding:3px 8px;border-radius:20px;
+  background:var(--warm);color:var(--ember);
+  font:600 9.5px/1 "Inter",sans-serif;letter-spacing:.07em;vertical-align:middle}
+
+.memo{background:#fff;border:1px solid var(--mist);border-radius:16px;
+  padding:16px 18px;margin:0 0 12px}
+.memo-row{display:flex;align-items:baseline;gap:9px;margin-bottom:6px}
+.memo-n{font:600 19px/1 "Inter",sans-serif;color:var(--ember);min-width:26px}
+.memo-t{font-size:13.5px;color:var(--charcoal)}
+.memo-x{margin:10px 0 0;padding-top:10px;border-top:1px solid var(--mist);
+  font-size:12px;line-height:1.5;color:var(--soft)}
+
 /* ── révision mêlée ── */
 .revcard{display:block;width:100%;text-align:left;background:var(--warm);
   border:1px solid rgba(214,122,78,.22);border-radius:16px;padding:16px 18px;
@@ -578,6 +590,18 @@ to{opacity:1;transform:translateX(0)}
         </div>
       </div>
       <p class="list-lbl" style="margin-top:34px">CHAPITRES</p>
+      <div class="memo" id="memo" style="display:none">
+        <div class="memo-row">
+          <span class="memo-n" id="memo-due">0</span>
+          <span class="memo-t">à revoir aujourd'hui</span>
+        </div>
+        <div class="memo-row">
+          <span class="memo-n" id="memo-acq">0</span>
+          <span class="memo-t">exercices acquis</span>
+        </div>
+        <p class="memo-x">Les exercices réussis reviennent après 3, 7, 16 puis 35 jours. Ceux qui coincent reviennent dès demain.</p>
+      </div>
+
       <button class="revcard" id="revcard" style="display:none">
         <div class="rev-lbl">RÉVISION MÊLÉE</div>
         <div class="rev-name">Garder tout en tête</div>
@@ -2654,7 +2678,7 @@ const MODULES = [
 function moduleStats(m){
   const chs = m.chapitres.map(n=>CHAPITRES.find(c=>c.n===n)).filter(Boolean);
   const done = chs.filter(c=>DB.ch[c.n] && DB.ch[c.n].done).length;
-  const exos = chs.reduce((s,c)=>s+(c.series||[]).flat().length,0);
+  const exos = chs.reduce((s,c)=>s+poolOf(c.n).length+defisOf(c.n).length,0);
   return { total:chs.length, done, exos, chs };
 }
 
@@ -3184,6 +3208,50 @@ function show(id){
 /* ═══════════ ГЛАВНАЯ ═══════════ */
 
 
+
+/* ═══════════ PILE DE NAVIGATION ═══════════ */
+/* chaque écran se souvient d'où l'on vient : retour = un pas en arrière */
+
+let PILE = [];
+
+function aller(ecran, dessine, etat){
+  const cur = document.querySelector(".screen.on");
+  if(cur && cur.id !== ecran){
+    PILE.push({ ecran: cur.id, etat: etat || null });
+    if(PILE.length > 12) PILE.shift();
+  }
+  show(ecran);
+  if(dessine) dessine();
+}
+
+function retour(){
+  const p = PILE.pop();
+  if(!p){ show("s-mods"); drawMods(); return; }
+
+  switch(p.ecran){
+    case "s-mods":  show("s-mods");  drawMods();  break;
+    case "s-home":  show("s-home");  drawHome();  break;
+    case "s-done":  show("s-done");  redrawDone(); break;
+    default:        show("s-mods");  drawMods();
+  }
+}
+
+/* l'écran de fin doit pouvoir être redessiné à l'identique */
+let DONE_SNAP = null;
+
+function redrawDone(){
+  if(!DONE_SNAP){ show("s-home"); drawHome(); return; }
+  const s = DONE_SNAP;
+  $("bstars").innerHTML = s.stars;
+  $("d-h").textContent = s.titre;
+  $("d-s").textContent = s.sous;
+  const tip = $("d-tip");
+  if(s.tip){ tip.style.display="block"; tip.innerHTML = s.tip; }
+  else tip.style.display="none";
+  $("d-more").textContent = s.more;
+  R.ch = s.ch;
+}
+
 /* ═══════════ ÉCRAN MODULES ═══════════ */
 
 let MOD = MODULES[0];   /* module ouvert */
@@ -3241,6 +3309,7 @@ function drawMods(){
 
 function openModule(m){
   MOD = m;
+  PILE = [{ ecran:"s-mods" }];
   $("h-nom").textContent = m.nom;
   $("h-sous").textContent = m.sous;
   show("s-home");
@@ -3274,6 +3343,23 @@ function drawHome(){
     $("r-name").textContent = pick.nom;
     $("r-meta").textContent = "5 nouveaux exercices";
     $("resume").onclick = ()=> startCh(pick.n);
+  }
+
+  /* mémoire espacée : visible dès le premier chapitre terminé */
+  const memo = $("memo");
+  if(memo){
+    const faits = chs.filter(c=>DB.ch[c.n]&&DB.ch[c.n].done).length;
+    if(faits >= 1){
+      const j = dayNum();
+      let acq = 0, due = 0;
+      Object.values(DB.fiches||{}).forEach(f=>{
+        if(f.b >= 2) acq++;
+        if(f.due <= j) due++;
+      });
+      memo.style.display = "block";
+      $("memo-due").textContent = due;
+      $("memo-acq").textContent = acq;
+    } else memo.style.display = "none";
   }
 
   /* carte révision mêlée : dès 2 chapitres terminés */
@@ -3319,6 +3405,11 @@ function startCh(n, mode){
   const st = DB.ch[n] || {};
   const defi = mode === "defi";
   const melee = mode === "melee";
+
+  if(!PILE.some(p=>p.ecran==="s-home") && document.querySelector(".screen.on") &&
+     document.querySelector(".screen.on").id === "s-home"){
+    PILE.push({ ecran:"s-home" });
+  }
 
   if(melee){
     const q = sessionMelee(8);
@@ -3717,7 +3808,11 @@ function drawQ(){
     </div>`;
   }
 
-  const kindHtml = q.hard ? q.k.replace("⭑",`<span class="hard">⭑</span>`) : q.k;
+  let kindHtml = q.hard ? q.k.replace("⭑",`<span class="hard">⭑</span>`) : q.k;
+  if(q._vieux || R.ech){
+    const src = CHAPITRES.find(c=>c.n===q._ch);
+    kindHtml += `<span class="revtag">RAPPEL${src ? " · "+src.nom : ""}</span>`;
+  }
 
   $("stage").innerHTML = `
     <div class="q">
@@ -3903,33 +3998,52 @@ function finishChReel(){
     tip.innerHTML=`<b>BON RÉFLEXE</b>Tu as utilisé les indices — c'est fait pour ça. Refais la série demain sans les ouvrir.`;
   } else { tip.style.display="none"; }
 
-  $("d-more").textContent = "Série " + nextSerie;
+  $("d-more").textContent = R.defi ? "Encore des défis" : "Série " + nextSerie;
+
+  DONE_SNAP = {
+    stars: box.innerHTML,
+    titre: $("d-h").textContent,
+    sous:  $("d-s").textContent,
+    tip:   tip.style.display === "block" ? tip.innerHTML : null,
+    more:  $("d-more").textContent,
+    ch:    R.ch,
+    defi:  R.defi
+  };
+
+  /* on vient de l'écran de travail : la pile doit contenir s-home, pas s-work */
+  PILE = PILE.filter(p => p.ecran !== "s-work");
+  if(!PILE.length || PILE[PILE.length-1].ecran !== "s-home")
+    PILE.push({ ecran:"s-home" });
+
   show("s-done");
 }
 
 function nextSerie(){
+  PILE.push({ ecran:"s-done" });
   startCh(R.ch);
   show("s-work");
 }
 
 function startDefis(){
+  /* on garde l'écran de fin dans la pile : retour = revenir au choix */
+  PILE.push({ ecran:"s-done" });
   startCh(R.ch, "defi");
   show("s-work");
 }
 
 
-$("back").onclick=()=>{ padHide(); show("s-home"); drawHome(); };
+$("back").onclick=()=>{ padHide(); retour(); };
 $("home-back").onclick=()=>{ show("s-mods"); drawMods(); };
-$("d-home").onclick=()=>{ show("s-home"); drawHome(); };
+$("d-home").onclick=()=>{ PILE=[]; show("s-home"); drawHome(); };
 $("d-more").onclick=nextSerie;
 $("d-defi").onclick=startDefis;
 
 document.addEventListener("keydown",e=>{
   if($("s-home").classList.contains("on") && e.key==="Escape"){
-    show("s-mods"); drawMods(); return;
+    PILE=[]; show("s-mods"); drawMods(); return;
   }
   if(!$("s-work").classList.contains("on")){
-    if(e.key==="Escape"&&$("s-done").classList.contains("on")){ show("s-home"); drawHome(); }
+    if(e.key==="Escape"&&$("s-done").classList.contains("on")) retour();
     return;
   }
   if(R.mode==="q"){
@@ -3940,7 +4054,7 @@ document.addEventListener("keydown",e=>{
     }
     if(e.key==="Enter"&&$("dock").classList.contains("up")) $("go").click();
   }
-  if(e.key==="Escape"){ show("s-home"); drawHome(); }
+  if(e.key==="Escape"){ retour(); }
 });
 
 drawMods();

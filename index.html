@@ -191,6 +191,15 @@ tr:last-child td{border-bottom:0}
 .up:active{transform:scale(.97)}
 
 
+.toapp{
+  display:inline-flex; align-items:center; gap:7px;
+  padding:8px 14px; border-radius:20px;
+  background:var(--ember); color:#fff; text-decoration:none;
+  font:600 12.5px/1 "Inter",sans-serif; white-space:nowrap;
+  transition:background .18s var(--e), transform .12s var(--e);
+}
+.toapp:active{transform:scale(.96); background:var(--ember-d)}
+
 /* ── плавающая кнопка «наверх» ── */
 .fab{
   position:fixed; right:18px; z-index:50;
@@ -223,6 +232,8 @@ tr:last-child td{border-bottom:0}
 .nav .sib{background:var(--dust); color:var(--charcoal)}
 .nav .sib:hover{background:var(--mist)}
 .nav .sib.off{opacity:.35; pointer-events:none}
+.nav .ex-b{background:var(--ok-soft); color:var(--ok); border:1px solid var(--ok-line)}
+.nav .ex-b:hover{background:#e3f2e9}
 
 @media (max-width:560px){
   .nav a{padding:0 14px; font-size:12.5px}
@@ -264,6 +275,12 @@ tr:last-child td{border-bottom:0}
       <b>Les suites</b>
       <span id="bar-sub">Première · Terminale</span>
     </div>
+    <a class="toapp" href="app/" id="toapp">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3 5-6"/><rect x="3" y="4" width="18" height="16" rx="2.5"/>
+      </svg>
+      <span id="toapp-t">Задания</span>
+    </a>
     <div class="lang">
       <button id="b-ru" class="on">Рус</button>
       <button id="b-fr">Fr</button>
@@ -1050,12 +1067,12 @@ const T = {
        titre:"Последовательности<br>с самого начала",
        sous:"Всё, что нужно знать по теме, разобрано на пальцах — с примерами из жизни и готовыми формулировками для контрольной.",
        up:"Содержание", foot:"Перейти к упражнениям", neuf:"НОВОЕ",
-       prev:"Назад", next:"Далее" },
+       prev:"Назад", next:"Далее", exo:"Задания" },
   fr:{ sub:"Première · Terminale", toc:"Sommaire",
        titre:"Les suites,<br>depuis le début",
        sous:"Tout le programme expliqué simplement — avec des images concrètes et les formulations à écrire en devoir.",
        up:"Sommaire", foot:"Aux exercices", neuf:"NOUVEAU",
-       prev:"Retour", next:"Suite" }
+       prev:"Retour", next:"Suite", exo:"Exercices" }
 };
 
 function txt(o){ return (o && typeof o === "object") ? (o[L] || o.ru || "") : (o || ""); }
@@ -1086,6 +1103,7 @@ function dessine(){
   $("h-titre").innerHTML   = T[L].titre;
   $("h-sous").textContent  = T[L].sous;
   $("f-txt").textContent   = T[L].foot;
+  $("toapp-t").textContent = T[L].exo;
 
   $("toc-l").innerHTML = COURS.map(s=>
     `<li><a href="#s${s.n}">${txt(s.t)}${s.neuf?`<span class="neuf">${T[L].neuf}</span>`:""}</a></li>`
@@ -1105,6 +1123,10 @@ function dessine(){
         <a class="toc-b" href="#toc">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
           ${T[L].up}
+        </a>
+        <a class="ex-b" href="app/">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 5-6"/><rect x="3" y="4" width="18" height="16" rx="2.5"/></svg>
+          ${T[L].exo}
         </a>
         <a class="sib${s.n===COURS.length?" off":""}" href="#s${s.n+1}" title="${T[L].next}">
           <span>${T[L].next}</span>

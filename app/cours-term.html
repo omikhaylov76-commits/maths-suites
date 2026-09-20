@@ -1483,6 +1483,19 @@ document.addEventListener("click", e=>{
 
 
 dessine();
+
+/* ancrage #sN à l'ouverture (lien depuis les ponts) */
+if(location.hash && location.hash.indexOf("#s") === 0){
+  const cible = document.querySelector(location.hash);
+  if(cible){
+    setTimeout(function(){
+      try{ cible.scrollIntoView({block:"start"}); }catch(e){}
+      const y = cible.getBoundingClientRect().top
+              + (window.scrollY || document.documentElement.scrollTop || 0) - 12;
+      if(y > 0) window.scrollTo(0, y);
+    }, 60);
+  }
+}
 </script>
 <a class="fab" id="fab" href="#toc" aria-label="Sommaire">
   <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">

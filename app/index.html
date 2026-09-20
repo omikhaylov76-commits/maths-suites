@@ -684,6 +684,35 @@ to{opacity:1;transform:translateX(0)}
   font:600 11.5px/1 "Inter",sans-serif;cursor:pointer}
 .pt-go:active{transform:scale(.97)}
 
+
+/* ── niveau 2-3 : micro-question + lien vers le cours ── */
+.pt-course{display:flex;align-items:center;gap:7px;min-height:34px;
+  margin:2px 0 10px;padding:0 12px;border-radius:17px;background:var(--dust);
+  color:var(--charcoal);text-decoration:none;
+  font:600 11.5px/1 "Inter",sans-serif}
+.pt-course:active{transform:scale(.98)}
+
+.pt-quiz{border-top:1px dashed var(--mist);padding-top:12px;margin-top:4px}
+.pt-q-h{font:600 9.5px/1.6 "Inter",sans-serif;letter-spacing:.09em;
+  color:var(--ember);text-transform:uppercase;margin-bottom:6px}
+.pt-q-t{font-size:14.5px;line-height:1.5;color:var(--ink);
+  font-weight:600;margin-bottom:9px}
+.pt-q-o{display:flex;flex-direction:column;gap:6px}
+.pt-opt{min-height:38px;padding:0 13px;border-radius:12px;
+  border:1px solid var(--mist);background:#fff;text-align:left;
+  font:500 13.5px/1.3 "Inter",sans-serif;color:var(--charcoal);cursor:pointer;
+  transition:background .15s var(--e),border-color .15s var(--e)}
+.pt-opt:active{transform:scale(.985)}
+.pt-opt.good{background:#e7f4e7;border-color:#3e9b4f;color:#266b34;
+  font-weight:600}
+.pt-opt.bad{background:#fbe9e7;border-color:#d9534f;color:#a33;text-decoration:line-through}
+.pt-opt:disabled{cursor:default;opacity:1}
+.pt-fb{margin-top:8px;font:500 12.5px/1.55 "Inter",sans-serif;
+  padding:8px 11px;border-radius:10px}
+.pt-fb.ok{background:#e7f4e7;color:#266b34;font-weight:600}
+.pt-fb.ko{background:#fbe9e7;color:#7c2d28}
+.pt-fb.hint{background:var(--warm);color:var(--charcoal);margin-top:5px}
+
 /* ── suivi parent ── */
 .pstate{display:flex;gap:14px;align-items:flex-start;background:#fff;
   border:1px solid var(--mist);border-radius:16px;padding:18px 20px}
@@ -6117,7 +6146,9 @@ const PONTS = {
 11:[
   { id:"notation",
     t:{ru:"Что вообще значит uₙ", fr:"Ce que signifie uₙ"},
-    ch:1,
+    ch:1, sec:1,
+    q:{ ru:{ t:"uₙ = 2n. Чему равно u₃?", o:["5","6","8"], ok:1, e:"Подставь n=3: 2×3=6." },
+       fr:{ t:"uₙ = 2n. Que vaut u₃ ?", o:["5","6","8"], ok:1, e:"On remplace n par 3 : 2×3=6." } },
     c:{ru:`<p><b>Вагоны поезда.</b> Каждый пронумерован: 0, 1, 2, 3… В каждом лежит число.</p>
       <p>Номер вагона — это <span class="v">n</span>. Число внутри — <span class="v">u<sub>n</sub></span>.</p>
       <div class="pt-f"><span class="v">u<sub>0</sub></span> = 2 &nbsp; <span class="v">u<sub>1</sub></span> = 5 &nbsp; <span class="v">u<sub>2</sub></span> = 8</div>
@@ -6129,7 +6160,9 @@ const PONTS = {
 
   { id:"suivant",
     t:{ru:"uₙ₊₁ — это не uₙ + 1", fr:"uₙ₊₁ n'est pas uₙ + 1"},
-    ch:1,
+    ch:1, sec:1,
+    q:{ ru:{ t:"uₙ = 3n. u₂+1 и u₃ — это…", o:["7 и 9","9 и 9","7 и 7"], ok:0, e:"u₂=6, значит u₂+1=7. А u₃=9 — другое число." },
+       fr:{ t:"uₙ = 3n. u₂+1 et u₃ valent…", o:["7 et 9","9 et 9","7 et 7"], ok:0, e:"u₂=6 donc u₂+1=7. Et u₃=9 — un autre nombre." } },
     c:{ru:`<p>Две записи выглядят похоже, а значат совершенно разное.</p>
       <div class="pt-f"><span class="v">u<sub>n+1</sub></span> = следующий вагон<br><span class="v">u<sub>n</sub></span> + 1 = текущий вагон, плюс единица</div>
       <p><b>Проверь на числах.</b> Пусть <span class="v">u<sub>n</sub></span> = 3<span class="v">n</span>.</p>
@@ -6145,7 +6178,9 @@ const PONTS = {
 
   { id:"substitution",
     t:{ru:"Как подставлять n+1 в формулу", fr:"Remplacer n par n+1"},
-    ch:3,
+    ch:3, sec:3,
+    q:{ ru:{ t:"uₙ = 4n+1. Чему равно uₙ₊₁?", o:["4n+5","4n+2","4n+4"], ok:0, e:"4(n+1)+1 = 4n+4+1 = 4n+5." },
+       fr:{ t:"uₙ = 4n+1. Que vaut uₙ₊₁ ?", o:["4n+5","4n+2","4n+4"], ok:0, e:"4(n+1)+1 = 4n+4+1 = 4n+5." } },
     c:{ru:`<p><b>Правило одно:</b> <span class="v">n</span> — это не буква, это <b>пустое место</b>. Подставлять надо везде, где оно встречается.</p>
       <p>Пусть <span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 1. Найдём <span class="v">u<sub>n+1</sub></span>.</p>
       <p><b>Неверно:</b> 4<span class="v">n</span> + 1 + 1 = 4<span class="v">n</span> + 2</p>
@@ -6164,7 +6199,9 @@ const PONTS = {
 12:[
   { id:"variation",
     t:{ru:"Растёт или падает — знак разности", fr:"Croissante ou décroissante"},
-    ch:2,
+    ch:2, sec:5,
+    q:{ ru:{ t:"uₙ₊₁ − uₙ = 3 для всех n. Последовательность…", o:["возрастает","убывает","постоянна"], ok:0, e:"Разность всегда положительна → растёт." },
+       fr:{ t:"uₙ₊₁ − uₙ = 3 pour tout n. La suite est…", o:["croissante","décroissante","constante"], ok:0, e:"La différence est toujours positive → elle monte." } },
     c:{ru:`<p><b>Весы каждое утро.</b> Записываешь разницу со вчерашним днём.</p>
       <p>Всё время плюс — набираешь. Всё время минус — худеешь.</p>
       <div class="pt-f">Смотрим знак <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span></div>
@@ -6178,7 +6215,9 @@ const PONTS = {
 
   { id:"bornes",
     t:{ru:"Потолок и пол", fr:"Plafond et plancher"},
-    ch:5,
+    ch:5, sec:9,
+    q:{ ru:{ t:"uₙ = n/(n+1). Какое число годится в мажоранты?", o:["1","0","−1"], ok:0, e:"n/(n+1) всегда меньше 1, но никогда его не касается." },
+       fr:{ t:"uₙ = n/(n+1). Quel nombre est un majorant ?", o:["1","0","−1"], ok:0, e:"n/(n+1) reste toujours sous 1 sans jamais y toucher." } },
     c:{ru:`<p><b>Комната.</b> Если последовательность никогда не поднимается выше какого-то числа — у неё есть потолок. Она <i>majorée</i>.</p>
       <p>Если никогда не опускается ниже — есть пол. Она <i>minorée</i>.</p>
       <div class="pt-f">Majorée: <span class="v">u<sub>n</sub></span> ⩽ <span class="v">M</span><br>Minorée: <span class="v">u<sub>n</sub></span> ⩾ <span class="v">m</span></div>
@@ -6192,7 +6231,9 @@ const PONTS = {
 
   { id:"fractions",
     t:{ru:"Дробь, у которой растёт знаменатель", fr:"Une fraction dont le dénominateur grandit"},
-    ch:1,
+    ch:1, sec:3,
+    q:{ ru:{ t:"1/n, когда n растёт…", o:["приближается к 0","с какого-то n становится ровно 0","растёт"], ok:0, e:"Нуля не достигнет — но подойдёт сколь угодно близко." },
+       fr:{ t:"1/n, quand n grandit…", o:["se rapproche de 0","devient exactement 0 à partir d'un certain n","augmente"], ok:0, e:"Elle n'atteint jamais 0 — mais s'en approche autant qu'on veut." } },
     c:{ru:`<p><b>Торт на много человек.</b> На двоих — половина каждому. На тысячу — одна тысячная.</p>
       <p>Чем больше знаменатель, тем меньше дробь.</p>
       <div class="pt-f">1/10 = 0,1 &nbsp;·&nbsp; 1/1000 = 0,001 &nbsp;·&nbsp; 1/10⁶ = 0,000001</div>
@@ -6209,7 +6250,9 @@ const PONTS = {
 13:[
   { id:"puissances",
     t:{ru:"Какая степень растёт быстрее", fr:"Quelle puissance croît le plus vite"},
-    ch:4,
+    ch:4, sec:7,
+    q:{ ru:{ t:"При n = 100 самое большое…", o:["n³","n²","n"], ok:0, e:"n³ = 1 000 000, n² = 10 000, n = 100." },
+       fr:{ t:"Pour n = 100, le plus grand est…", o:["n³","n²","n"], ok:0, e:"n³ = 1 000 000, n² = 10 000, n = 100." } },
     c:{ru:`<p>Возьми <span class="v">n</span> = 100 и сравни:</p>
       <div class="pt-f"><span class="v">n</span> = 100<br><span class="v">n</span>² = 10 000<br><span class="v">n</span>³ = 1 000 000</div>
       <p>Чем выше степень, тем быстрее рост. При больших <span class="v">n</span> младшие степени становятся <b>незаметны</b>.</p>
@@ -6223,7 +6266,9 @@ const PONTS = {
 
   { id:"factoriser",
     t:{ru:"Вынести общий множитель", fr:"Mettre en facteur"},
-    ch:3,
+    ch:3, sec:3,
+    q:{ ru:{ t:"n³ − n², вынесем общий множитель:", o:["n²(n−1)","n(n²−1)","n³(1−n)"], ok:0, e:"Общее у обоих слагаемых — n²." },
+       fr:{ t:"n³ − n², en factorisant :", o:["n²(n−1)","n(n²−1)","n³(1−n)"], ok:0, e:"Le facteur commun aux deux termes est n²." } },
     c:{ru:`<p>Вынести за скобку — значит найти то, что есть во всех слагаемых, и достать наружу.</p>
       <div class="pt-f">6<span class="v">n</span> + 9 = 3(2<span class="v">n</span> + 3)<br><span class="v">n</span>² + <span class="v">n</span> = <span class="v">n</span>(<span class="v">n</span> + 1)</div>
       <p><b>Проверка всегда одна:</b> раскрой обратно и сравни. 3 × 2<span class="v">n</span> = 6<span class="v">n</span>, 3 × 3 = 9 ✓</p>
@@ -6240,7 +6285,9 @@ const PONTS = {
 14:[
   { id:"inegalites",
     t:{ru:"Что можно делать с неравенством", fr:"Ce qu'on peut faire d'une inégalité"},
-    ch:5,
+    ch:5, sec:9,
+    q:{ ru:{ t:"Из 2 ⩽ 6, умножив на −1, получим…", o:["−2 ⩾ −6","−2 ⩽ −6","−2 = −6"], ok:0, e:"Умножение на отрицательное переворачивает знак." },
+       fr:{ t:"De 2 ⩽ 6, en multipliant par −1…", o:["−2 ⩾ −6","−2 ⩽ −6","−2 = −6"], ok:0, e:"Multiplier par un négatif inverse le sens." } },
     c:{ru:`<p><b>Прибавлять и вычитать</b> — знак не меняется:</p>
       <div class="pt-f">из 2 ⩽ 6 следует 2+4 ⩽ 6+4, то есть 6 ⩽ 10</div>
       <p><b>Умножать и делить на положительное</b> — знак не меняется:</p>
@@ -6258,7 +6305,9 @@ const PONTS = {
 
   { id:"encadrer",
     t:{ru:"Зажать величину между двумя", fr:"Encadrer une quantité"},
-    ch:5,
+    ch:5, sec:9,
+    q:{ ru:{ t:"sin(x) всегда лежит между…", o:["−1 и 1","0 и 1","−2 и 2"], ok:0, e:"Это его определение: выход за эти границы невозможен." },
+       fr:{ t:"sin(x) est toujours entre…", o:["−1 et 1","0 et 1","−2 et 2"], ok:0, e:"C'est sa définition : impossible d'en sortir." } },
     c:{ru:`<p>Зажать — значит найти число снизу и число сверху, между которыми величина всегда находится.</p>
       <div class="pt-f">3 ⩽ <span class="v">x</span> ⩽ 7</div>
       <p><b>Пример из жизни.</b> Рост взрослого человека: 1,40 м ⩽ рост ⩽ 2,20 м. Точное значение неизвестно, но границы надёжны.</p>
@@ -6275,7 +6324,9 @@ const PONTS = {
 15:[
   { id:"geom",
     t:{ru:"Геометрическая — умножаем на одно и то же", fr:"Géométrique : on multiplie"},
-    ch:4,
+    ch:4, sec:7,
+    q:{ ru:{ t:"u₀ = 3, q = 2. Чему равно u₄?", o:["48","24","8"], ok:0, e:"u₄ = 3×2⁴ = 3×16 = 48." },
+       fr:{ t:"u₀ = 3, q = 2. Que vaut u₄ ?", o:["48","24","8"], ok:0, e:"u₄ = 3×2⁴ = 3×16 = 48." } },
     c:{ru:`<p><b>Лист бумаги, который складывают пополам.</b> Толщина каждый раз удваивается: 1 → 2 → 4 → 8 → 16…</p>
       <p>Здесь ничего не прибавляют. Здесь <b>умножают</b> — всегда на одно и то же число.</p>
       <div class="pt-f"><span class="v">u<sub>n+1</sub></span> = <span class="v">u<sub>n</sub></span> × <span class="v">q</span><br><span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup></div>
@@ -6289,7 +6340,9 @@ const PONTS = {
 
   { id:"pourcent",
     t:{ru:"Процент — это множитель", fr:"Un pourcentage est un coefficient"},
-    ch:4,
+    ch:4, sec:7,
+    q:{ ru:{ t:"−10 % — это умножение на…", o:["0,9","1,1","0,1"], ok:0, e:"Остаётся 90 % из 100 %, то есть 0,9." },
+       fr:{ t:"−10 %, c'est multiplier par…", o:["0,9","1,1","0,1"], ok:0, e:"Il reste 90 % de 100 %, soit 0,9." } },
     c:{ru:`<p>Проценты нельзя складывать. Их надо превращать в множитель.</p>
       <div class="pt-f">+5 % → ×1,05<br>+20 % → ×1,2<br>−10 % → ×0,9<br>−25 % → ×0,75</div>
       <p><b>Логика:</b> было 100 %. Добавили 5 % → стало 105 %, то есть 1,05. Убрали 10 % → осталось 90 %, то есть 0,9.</p>
@@ -6303,7 +6356,9 @@ const PONTS = {
 
   { id:"seuil",
     t:{ru:"Задача о пороге", fr:"Le problème du seuil"},
-    ch:7,
+    ch:7, sec:11,
+    q:{ ru:{ t:"Первый n, при котором 2ⁿ > 10:", o:["4","3","5"], ok:0, e:"2⁴ = 16 > 10, а 2³ = 8 ⩽ 10." },
+       fr:{ t:"Le premier n tel que 2ⁿ > 10 :", o:["4","3","5"], ok:0, e:"2⁴ = 16 > 10, mais 2³ = 8 ⩽ 10." } },
     c:{ru:`<p><b>Лестница с отметкой на стене.</b> Шагаешь вверх и после каждой ступеньки смотришь: достал или нет?</p>
       <p>Не достал — шагаешь ещё. Достал — останавливаешься и считаешь шаги.</p>
       <div class="pt-f">Вопрос «начиная с какого ранга <span class="v">u<sub>n</sub></span> превысит <span class="v">A</span>»</div>
@@ -6322,7 +6377,9 @@ const PONTS = {
 16:[
   { id:"monotone",
     t:{ru:"Монотонность — доказательство, а не наблюдение", fr:"La monotonie se démontre"},
-    ch:2,
+    ch:2, sec:5,
+    q:{ ru:{ t:"u₁=1, u₂=3, u₇=7. Достаточно ли для вывода «возрастает»?", o:["Нет — три члена ничего не доказывают","Да — они растут","Да — начиная с n=4"], ok:0, e:"Надо доказать знак uₙ₊₁−uₙ для любого n." },
+       fr:{ t:"u₁=1, u₂=3, u₇=7. Peut-on conclure « croissante » ?", o:["Non — trois termes ne prouvent rien","Oui — ils augmentent","Oui — au-delà de n=4"], ok:0, e:"Il faut démontrer le signe de uₙ₊₁−uₙ pour tout n." } },
     c:{ru:`<p>Посчитать первые три члена и увидеть рост — это <b>не доказательство</b>.</p>
       <p>Возьми 1; 3; 7; 2. Первые три растут, четвёртый падает. Три члена не говорят ни о чём.</p>
       <div class="pt-f">Надо показать знак <span class="v">u<sub>n+1</sub></span> − <span class="v">u<sub>n</sub></span> для <b>любого</b> <span class="v">n</span></div>
@@ -6336,7 +6393,9 @@ const PONTS = {
 
   { id:"majorant",
     t:{ru:"Мажоранта — это барьер, а не цель", fr:"Le majorant est une barrière"},
-    ch:5,
+    ch:5, sec:9,
+    q:{ ru:{ t:"Возрастает и мажорирована числом 5. Вывод:", o:["сходится к ℓ ⩽ 5","сходится ровно к 5","расходится"], ok:0, e:"Теорема даёт существование предела, а не его значение." },
+       fr:{ t:"Croissante et majorée par 5. Conclusion :", o:["converge vers ℓ ⩽ 5","converge exactement vers 5","diverge"], ok:0, e:"Le théorème donne l'existence, pas la valeur." } },
     c:{ru:`<p>Мажоранта — любое число, которое последовательность не превышает.</p>
       <p><b>Их всегда много.</b> Если <span class="v">u<sub>n</sub></span> ⩽ 5, то она и ⩽ 10, и ⩽ 100, и ⩽ миллиона. Все они законные мажоранты.</p>
       <p>Поэтому мажоранта <b>не может быть пределом</b> — предел один, а мажорант бесконечно много.</p>
@@ -6353,7 +6412,9 @@ const PONTS = {
 17:[
   { id:"recurrence-def",
     t:{ru:"Рекуррентная запись", fr:"Définition par récurrence"},
-    ch:1,
+    ch:1, sec:2,
+    q:{ ru:{ t:"u₀ = 0, uₙ₊₁ = 2uₙ + 1. Чему равно u₂?", o:["3","5","1"], ok:0, e:"u₁ = 2×0+1 = 1, u₂ = 2×1+1 = 3." },
+       fr:{ t:"u₀ = 0, uₙ₊₁ = 2uₙ + 1. Que vaut u₂ ?", o:["3","5","1"], ok:0, e:"u₁ = 2×0+1 = 1, u₂ = 2×1+1 = 3." } },
     c:{ru:`<p>Два способа задать последовательность.</p>
       <p><b>Явно</b> — формула сразу даёт любой член:</p>
       <div class="pt-f"><span class="v">u<sub>n</sub></span> = 4<span class="v">n</span> + 3 → <span class="v">u<sub>100</sub></span> = 403 за секунду</div>
@@ -6373,7 +6434,9 @@ const PONTS = {
 
   { id:"equation",
     t:{ru:"Решить уравнение с неизвестной", fr:"Résoudre une équation"},
-    ch:3,
+    ch:3, sec:3,
+    q:{ ru:{ t:"x = 0,5x + 3. Чему равен x?", o:["6","3","2"], ok:0, e:"0,5x = 3, значит x = 6. Проверка: 0,5×6+3 = 6 ✓" },
+       fr:{ t:"x = 0,5x + 3. Que vaut x ?", o:["6","3","2"], ok:0, e:"0,5x = 3, donc x = 6. Vérification : 0,5×6+3 = 6 ✓" } },
     c:{ru:`<p>Неподвижная точка находится решением уравнения. Напоминание, как это делается.</p>
       <p><b>Пример:</b> <span class="v">x</span> = 0,5<span class="v">x</span> + 3</p>
       <p><b>Шаг 1.</b> Собираем <span class="v">x</span> в одной части:<br><span class="v">x</span> − 0,5<span class="v">x</span> = 3</p>
@@ -6394,7 +6457,9 @@ const PONTS = {
 18:[
   { id:"tout",
     t:{ru:"Всё вместе — короткая карта", fr:"Tout ensemble, la carte courte"},
-    ch:1,
+    ch:1, sec:13,
+    q:{ ru:{ t:"+5 %, потом −10 %. Итоговый множитель:", o:["0,945","0,95","0,96"], ok:0, e:"1,05 × 0,9 = 0,945. Проценты не складываются." },
+       fr:{ t:"+5 %, puis −10 %. Le coefficient final :", o:["0,945","0,95","0,96"], ok:0, e:"1,05 × 0,9 = 0,945. Les pourcentages ne s'additionnent pas." } },
     c:{ru:`<p>В задании бака обычно надо вспомнить несколько вещей сразу. Вот они одной страницей.</p>
       <p><b>Арифметическая:</b> прибавляем <span class="v">r</span>. <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> + <span class="v">nr</span></p>
       <p><b>Геометрическая:</b> умножаем на <span class="v">q</span>. <span class="v">u<sub>n</sub></span> = <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup></p>
@@ -7315,6 +7380,7 @@ function drawPonts(ch){
     return;
   }
 
+  const LANG = txtLang();
   box.innerHTML = `<div class="pt-wrap">` +
     liste.map((p,i)=>`
       <div class="pt-card">
@@ -7323,6 +7389,17 @@ function drawPonts(ch){
           <span class="pt-t">${txtP(p.t)}</span>
         </div>
         ${txtP(p.c)}
+        ${p.sec?`<a class="pt-course" href="cours-prem.html#s${p.sec}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg>
+          ${LANG==="ru"?"Читать полный раздел конспекта · §"+p.sec:"Lire la section complète du cours · §"+p.sec}
+        </a>`:``}
+        ${p.q?`
+        <div class="pt-quiz" data-id="${p.id}">
+          <div class="pt-q-h">${LANG==="ru"?"Проверь, что понял:":"Vérifie que tu as compris :"}</div>
+          <div class="pt-q-t">${p.q[LANG].t}</div>
+          <div class="pt-q-o">${p.q[LANG].o.map((o,j)=>`<button class="pt-opt" data-j="${j}">${o}</button>`).join("")}</div>
+          <div class="pt-q-f"></div>
+        </div>`:``}
         <button class="pt-go" data-ch="${p.ch}">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           Reprendre ce chapitre
@@ -7344,9 +7421,45 @@ function drawPonts(ch){
       startCh(n);
     };
   });
+
+  /* niveau 2 : micro-question avec retour immédiat */
+  box.querySelectorAll(".pt-quiz").forEach(qz=>{
+    const pid = qz.dataset.id;
+    const p = liste.find(x=>x.id === pid);
+    if(!p || !p.q) return;
+    const fb = qz.querySelector(".pt-q-f");
+    qz.querySelectorAll(".pt-opt").forEach(b=>{
+      b.onclick = ()=>{
+        if(qz.dataset.done) return;
+        qz.dataset.done = "1";
+        const j = parseInt(b.dataset.j);
+        const lang = txtLang();
+        const ok = j === p.q[lang].ok;
+        DB.pt = DB.pt || { ok:0, ko:0 };
+        DB.pt[ok?"ok":"ko"]++;
+        save();
+        qz.querySelectorAll(".pt-opt").forEach(x=>{
+          x.disabled = true;
+          const k = parseInt(x.dataset.j);
+          if(k === p.q[lang].ok) x.classList.add("good");
+          else if(k === j) x.classList.add("bad");
+        });
+        fb.innerHTML = ok
+          ? `<div class="pt-fb ok">✓ ${lang==="ru"?"Верно!":"Exact !"}</div>`
+          : `<div class="pt-fb ko">✗ ${lang==="ru"?"Не совсем. ":"Pas tout à fait. "}${p.q[lang].e}</div>` +
+            `<div class="pt-fb hint">${lang==="ru"?"Если шатко — открой полный раздел или пройди главу ниже.":"Si c'est fragile, ouvre la section complète ou reprends le chapitre ci-dessous."}</div>`;
+      };
+    });
+  });
+
   $("pt-close").onclick = ()=>{ PT_OUVERT = false; drawPonts(ch); };
 }
 
+function txtLang(){
+  let l = "fr";
+  try{ l = localStorage.getItem("suites.cours.lang") || "fr"; }catch(e){}
+  return l;
+}
 /* le texte des ponts suit la langue du cours */
 function txtP(o){
   if(!o || typeof o !== "object") return o || "";

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Les suites — cours</title>
-<link rel="apple-touch-icon" href="app/i/icon-180.png">
+<link rel="apple-touch-icon" href="i/icon-180.png">
 <meta name="theme-color" content="#fdf9f4">
 <style>
 
@@ -290,7 +290,7 @@ tr:last-child td{border-bottom:0}
       <b>Les suites</b>
       <span id="bar-sub">Première · Terminale</span>
     </div>
-    <a class="toapp" href="./" id="toapp" aria-label="Exercices" title="Exercices">
+    <a class="toapp" href="app/" id="toapp" aria-label="Exercices" title="Exercices">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M5 12h13M12 6l6 6-6 6"/>
       </svg>
@@ -316,7 +316,7 @@ tr:last-child td{border-bottom:0}
   <main id="corps"></main>
 
   <div class="foot">
-    <a href="./">
+    <a href="app/">
       <span id="f-txt">Перейти к упражнениям</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
@@ -992,12 +992,12 @@ let L = "ru";
 try{ L = localStorage.getItem(LKEY) || "ru"; }catch(e){}
 
 const T = {
-  ru:{ sub:"Première", toc:"Содержание",
+  ru:{ sub:"Première · Terminale", toc:"Содержание",
        titre:"Последовательности<br>с самого начала",
        sous:"Всё, что нужно знать по теме, разобрано на пальцах — с примерами из жизни и готовыми формулировками для контрольной.",
        up:"Содержание", foot:"Перейти к упражнениям", neuf:"НОВОЕ",
        prev:"Назад", next:"Далее", exo:"Задания" },
-  fr:{ sub:"Première", toc:"Sommaire",
+  fr:{ sub:"Première · Terminale", toc:"Sommaire",
        titre:"Les suites,<br>depuis le début",
        sous:"Tout le programme expliqué simplement — avec des images concrètes et les formulations à écrire en devoir.",
        up:"Sommaire", foot:"Aux exercices", neuf:"NOUVEAU",

@@ -75,7 +75,7 @@ sub,sup{font-size:.7em;line-height:0}
 }
 .screen.on{opacity:1;pointer-events:auto;transform:translateX(0)}
 .screen.left{transform:translateX(-18px)}
-.pad{max-width:720px;margin:0 auto;padding:calc(20px + var(--safe-t)) 20px calc(120px + var(--safe-b))}
+.pad{max-width:720px;margin:0 auto;padding:calc(20px + var(--safe-t)) 20px calc(150px + var(--safe-b))}
 
 /* главная */
 .hero{padding:8px 0 4px}
@@ -200,11 +200,11 @@ to{opacity:1;transform:translateX(0)}
 .slow-btn svg{transition:transform var(--t-move) var(--e)}
 .slow-btn.open svg{transform:rotate(180deg)}
 .slow{
-  max-height:0;overflow:hidden;margin-top:0;
-  transition:max-height 440ms var(--e),margin-top 440ms var(--e),opacity 300ms var(--e-soft);
-  opacity:0;
+  display:none;margin-top:0;opacity:0;
+  transition:opacity 300ms var(--e-soft);
 }
-.slow.open{margin-top:16px;opacity:1}
+.slow.open{display:block}
+.slow.open{margin-top:16px;margin-bottom:4px;opacity:1}
 .slow-in{
   padding:19px 21px;background:var(--dust);border:1px solid var(--mist);
   border-radius:var(--r-card);font-size:15px;line-height:1.62;color:var(--charcoal);
@@ -228,6 +228,7 @@ to{opacity:1;transform:translateX(0)}
   .viewport{touch-action:auto}
   .track{user-select:text;-webkit-user-select:text;align-items:stretch}
   .slide{display:flex}
+.slide>.card{display:block;width:100%;min-width:0}
   .slide > .card{flex:1;display:flex;flex-direction:column}
 }
 .swipe-hint{
@@ -393,8 +394,9 @@ to{opacity:1;transform:translateX(0)}
 /* нижняя кнопка */
 .dock{
   position:fixed;left:0;right:0;bottom:0;z-index:30;
-  padding:14px 20px calc(14px + var(--safe-b));
-  background:linear-gradient(to top,var(--canvas) 66%,rgba(253,249,244,0));
+  padding:16px 20px calc(16px + var(--safe-b));
+  background:var(--canvas);
+  box-shadow:0 -14px 22px -6px var(--canvas), 0 -1px 0 var(--mist);
   pointer-events:none;opacity:0;transform:translateY(10px);
   transition:opacity var(--t-fade) var(--e-soft),transform var(--t-move) var(--e);
 }
@@ -3384,9 +3386,15 @@ function measureFloor(){
   if(!tr || isTouchDevice()){ FLOOR = 0; return; }
   let max = 0;
   Array.from(tr.children).forEach(s=>{
-    if(s.offsetHeight > max) max = s.offsetHeight;
+    const h = cardH(s);
+    if(h > max) max = h;
   });
   FLOOR = max;
+}
+
+function cardH(slide){
+  const c = slide && slide.firstElementChild;
+  return c ? c.getBoundingClientRect().height : 0;
 }
 
 function fitHeight(animate, ms){
@@ -3394,7 +3402,7 @@ function fitHeight(animate, ms){
   if(!vp || !tr) return;
   const s = tr.children[R.card];
   if(!s) return;
-  const h = Math.max(s.offsetHeight, FLOOR);
+  const h = Math.max(cardH(s), FLOOR);
   vp.style.transition = animate ? `height ${ms||340}ms var(--e)` : "none";
   vp.style.height = h + "px";
 }
@@ -3559,38 +3567,36 @@ function drawCard(){
       const vp   = $("viewport");
       const slide = btn.closest(".slide");
       const opening = !box.classList.contains("open");
+      const H0 = vp ? vp.getBoundingClientRect().height : 0;
 
       btn.querySelector("span").textContent = opening ? "Masquer" : "Je n'ai pas compris";
       btn.classList.toggle("open", opening);
 
       if(opening){
         DB.aides=(DB.aides||0)+1; save();
-
-        /* hauteur réelle du contenu, sans plafond */
-        const h = inner.scrollHeight;
         box.classList.add("open");
-        box.style.maxHeight = h + "px";
-
-        /* la carte grandit exactement de la même quantité, en même temps */
-        if(vp && slide){
-          const target = slide.offsetHeight + h + 16;
-          vp.style.height = Math.max(target, FLOOR) + "px";
-          /* ajustement fin une fois l'ouverture terminée */
-          setTimeout(()=>{
-            box.style.maxHeight = "none";
-            fitHeight(true, 160);
-          }, 470);
-        }
-      } else {
-        /* fixer la hauteur courante avant de replier */
-        box.style.maxHeight = inner.scrollHeight + "px";
-        void box.offsetHeight;
-        box.classList.remove("open");
-        box.style.maxHeight = "0px";
+        /* laisser la carte grandir, puis animer la fenêtre vers la nouvelle taille */
+        const H1 = cardH(slide);
         if(vp){
-          const target = slide.offsetHeight - inner.scrollHeight - 16;
-          vp.style.height = Math.max(target, FLOOR) + "px";
-          setTimeout(()=>fitHeight(true, 160), 470);
+          vp.style.transition = "none";
+          vp.style.height = H0 + "px";
+          void vp.offsetHeight;
+          vp.style.transition = "height 440ms var(--e)";
+          vp.style.height = H1 + "px";
+        }
+        requestAnimationFrame(()=>{ box.style.opacity = "1"; });
+        setTimeout(()=>{ vp.style.transition="none"; fitHeight(false); }, 460);
+      } else {
+        box.classList.remove("open");
+        measureFloor();
+        const H1 = Math.max(cardH(slide), FLOOR);
+        if(vp){
+          vp.style.transition = "none";
+          vp.style.height = H0 + "px";
+          void vp.offsetHeight;
+          vp.style.transition = "height 440ms var(--e)";
+          vp.style.height = H1 + "px";
+          setTimeout(()=>{ vp.style.transition="none"; fitHeight(false); }, 460);
         }
       }
     };

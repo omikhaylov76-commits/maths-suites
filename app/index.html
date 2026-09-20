@@ -432,6 +432,16 @@ to{opacity:1;transform:translateX(0)}
 
 /* десктоп */
 
+/* ── révision mêlée ── */
+.revcard{display:block;width:100%;text-align:left;background:var(--warm);
+  border:1px solid rgba(214,122,78,.22);border-radius:16px;padding:16px 18px;
+  margin:0 0 14px;cursor:pointer;
+  transition:transform .13s cubic-bezier(.215,.61,.355,1),box-shadow .18s}
+.revcard:active{transform:scale(.985)}
+.rev-lbl{font-size:10.5px;letter-spacing:.11em;font-weight:700;color:var(--ember);margin-bottom:5px}
+.rev-name{font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.rev-meta{font-size:12.5px;color:var(--soft);margin-top:3px}
+
 /* ── modules ── */
 .mods{display:flex;flex-direction:column;gap:12px}
 .mod{
@@ -566,6 +576,12 @@ to{opacity:1;transform:translateX(0)}
         </div>
       </div>
       <p class="list-lbl" style="margin-top:34px">CHAPITRES</p>
+      <button class="revcard" id="revcard" style="display:none">
+        <div class="rev-lbl">RÉVISION MÊLÉE</div>
+        <div class="rev-name">Garder tout en tête</div>
+        <div class="rev-meta" id="rev-meta"></div>
+      </button>
+
       <div class="chs" id="chs"></div>
       <a class="foot-link" href="../">
         Ouvrir le cours
@@ -2652,13 +2668,28 @@ function shuffle(a){
   return r;
 }
 
-/* tous les exercices d'un chapitre : séries + supplément */
+/* discrimination : quels exercices sont pertinents pour tel chapitre */
+const DISC_CH = {
+  1:["lecture","question","erreur"],
+  2:["choix","erreur","question"],
+  3:["nature","paire","lecture","erreur"],
+  4:["nature","paire","lecture","erreur"],
+  5:["question","erreur","choix"],
+  6:["paire","choix","erreur"],
+  7:["choix","question"],
+  8:["nature","choix","lecture","question","erreur","paire"]
+};
+
+/* tous les exercices d'un chapitre : séries + supplément + discrimination */
 function poolOf(n){
   const ch = CHAPITRES.find(c=>c.n===n);
   if(!ch) return [];
   let all = (ch.series||[]).flat();
   const p = PLUS[n];
   if(p && p.exos) all = all.concat(p.exos);
+  const tags = DISC_CH[n] || [];
+  if(tags.length && typeof DISCRIM !== "undefined")
+    all = all.concat(DISCRIM.filter(q => tags.includes(q.meth)));
   return all;
 }
 
@@ -2716,6 +2747,270 @@ function pickSession(n, size){
 }
 
 /* ── méthode dominante par chapitre (repli) ── */
+const DISCRIM = [
+
+/* ─── reconnaître la nature d'une suite ─── */
+{ k:"QUELLE MÉTHODE ?", meth:"nature", type:"qcm",
+  q:`Observe : 4 ; 12 ; 36 ; 108 ; …<br>De quelle nature est cette suite ?`,
+  opts:[{t:`Géométrique de raison 3`,ok:true,why:`Chaque terme vaut 3 fois le précédent : 12 = 4×3.`},
+        {t:`Arithmétique de raison 8`,ok:false,why:`12 − 4 = 8 mais 36 − 12 = 24 : l'écart change.`},
+        {t:`Ni l'une ni l'autre`,ok:false,why:`Le quotient est constant : c'est géométrique.`}],
+  regle:`Teste les deux : écart constant ou quotient constant.`,
+  aides:[`Calcule 12 − 4 puis 36 − 12.`,`Puis 12 ÷ 4 et 36 ÷ 12.`],
+  sol:[`Écarts : 8, 24 — non constants`,`Quotients : 3, 3, 3 — constants`,`<b>Géométrique, q = 3</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"nature", type:"qcm",
+  q:`Observe : 4 ; 12 ; 20 ; 28 ; …<br>De quelle nature est cette suite ?`,
+  opts:[{t:`Arithmétique de raison 8`,ok:true,why:`L'écart vaut 8 à chaque pas.`},
+        {t:`Géométrique de raison 3`,ok:false,why:`12 ÷ 4 = 3 mais 20 ÷ 12 ≈ 1,67.`},
+        {t:`Ni l'une ni l'autre`,ok:false,why:`L'écart est constant : arithmétique.`}],
+  regle:`Un premier quotient juste ne suffit pas — vérifie le suivant.`,
+  aides:[`Écarts : 8, 8, 8.`,`Quotients : 3 puis 1,67 — non constants.`],
+  sol:[`Écarts : 8, 8, 8 — constants`,`Quotients : 3 ; 1,67 — non constants`,`<b>Arithmétique, r = 8</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"nature", type:"qcm",
+  q:`Observe : 4 ; 12 ; 24 ; 40 ; …<br>De quelle nature est cette suite ?`,
+  opts:[{t:`Ni arithmétique ni géométrique`,ok:true,why:`Écarts : 8, 12, 16 — ils augmentent. Quotients : 3 ; 2 ; 1,67 — ils baissent.`},
+        {t:`Arithmétique`,ok:false,why:`Les écarts changent : 8 puis 12.`},
+        {t:`Géométrique`,ok:false,why:`Les quotients changent : 3 puis 2.`}],
+  regle:`Les deux tests peuvent échouer — c'est un cas fréquent au DS.`,
+  aides:[`Calcule les trois écarts.`,`8, 12, 16 : ils grandissent de 4.`],
+  sol:[`Écarts : 8, 12, 16 — non constants`,`Quotients : 3 ; 2 ; 1,67 — non constants`,`<b>Ni l'une ni l'autre</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"nature", type:"qcm",
+  q:`<span class="v">u<sub>n</sub></span> = 5 × 2<sup><span class="v">n</span></sup> — quelle nature ?`,
+  opts:[{t:`Géométrique de raison 2`,ok:true,why:`Forme <span class="v">u<sub>0</sub></span> × <span class="v">q</span><sup><span class="v">n</span></sup>.`},
+        {t:`Arithmétique de raison 5`,ok:false,why:`5 est le premier terme, et il y a une puissance.`},
+        {t:`Géométrique de raison 5`,ok:false,why:`La raison est la base de la puissance, donc 2.`}],
+  regle:`Puissance de <span class="v">n</span> → géométrique.`,
+  aides:[`Où se trouve le <span class="v">n</span> ?`,`En exposant → géométrique.`],
+  sol:[`<span class="v">n</span> est en exposant`,`La base 2 est la raison`,`<b>Géométrique, q = 2</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"nature", type:"qcm",
+  q:`<span class="v">u<sub>n</sub></span> = 5 + 2<span class="v">n</span> — quelle nature ?`,
+  opts:[{t:`Arithmétique de raison 2`,ok:true,why:`<span class="v">n</span> est multiplié, pas en exposant.`},
+        {t:`Géométrique de raison 2`,ok:false,why:`Il faudrait 2<sup><span class="v">n</span></sup>.`},
+        {t:`Arithmétique de raison 5`,ok:false,why:`5 est le premier terme.`}],
+  regle:`<span class="v">n</span> multiplié → arithmétique · <span class="v">n</span> en exposant → géométrique.`,
+  aides:[`Compare 2<span class="v">n</span> et 2<sup><span class="v">n</span></sup>.`,`Ici <span class="v">n</span> est facteur.`],
+  sol:[`<span class="v">n</span> est multiplié par 2`,`Chaque pas ajoute 2`,`<b>Arithmétique, r = 2</b>`] },
+
+/* ─── choisir entre différence et quotient ─── */
+{ k:"QUELLE MÉTHODE ?", meth:"choix", type:"qcm",
+  q:`<span class="v">u<sub>n</sub></span> = 3<sup><span class="v">n</span></sup> et tous les termes sont positifs.<br>Quelle méthode pour le sens de variation ?`,
+  opts:[{t:`Le quotient <span class="v">u<sub>n+1</sub></span>/<span class="v">u<sub>n</sub></span>`,ok:true,why:`Avec des puissances, le quotient se simplifie en un seul coup.`},
+        {t:`La différence`,ok:false,why:`Possible mais bien plus lourd : 3<sup><span class="v">n+1</span></sup> − 3<sup><span class="v">n</span></sup>.`},
+        {t:`Calculer dix termes`,ok:false,why:`Ce n'est pas une démonstration.`}],
+  regle:`Puissances + termes positifs → quotient.`,
+  aides:[`Que donne 3<sup><span class="v">n+1</span></sup> ÷ 3<sup><span class="v">n</span></sup> ?`,`3, directement.`],
+  sol:[`Le quotient vaut 3<sup><span class="v">n+1</span></sup>/3<sup><span class="v">n</span></sup> = 3`,`3 > 1 et termes positifs`,`<b>Quotient — croissante</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"choix", type:"qcm",
+  q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 6<span class="v">n</span>.<br>Quelle méthode pour le sens de variation ?`,
+  opts:[{t:`La différence <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>`,ok:true,why:`Les termes changent de signe : le quotient est interdit.`},
+        {t:`Le quotient`,ok:false,why:`<span class="v">u<sub>1</sub></span> = −5 : la méthode exige des termes positifs.`},
+        {t:`Peu importe`,ok:false,why:`Non : le quotient a une condition stricte.`}],
+  regle:`Termes négatifs → jamais le quotient.`,
+  aides:[`Calcule <span class="v">u<sub>1</sub></span>.`,`−5 : négatif.`],
+  sol:[`<span class="v">u<sub>1</sub></span> = 1 − 6 = −5 < 0`,`Le quotient est inapplicable`,`<b>Différence</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"choix", type:"qcm",
+  q:`On demande le 50<sup>e</sup> terme d'une suite arithmétique.<br>Que fait-on ?`,
+  opts:[{t:`On applique la formule du terme général`,ok:true,why:`<span class="v">u<sub>0</sub></span> + 50<span class="v">r</span>, immédiat.`},
+        {t:`On calcule les 50 termes un par un`,ok:false,why:`Long et source d'erreurs — la formule existe pour cela.`},
+        {t:`On utilise la formule des sommes`,ok:false,why:`La somme n'est pas demandée.`}],
+  regle:`Un terme lointain → formule explicite.`,
+  aides:[`Faut-il tous les termes, ou un seul ?`,`Un seul : formule directe.`],
+  sol:[`On veut un terme précis, pas la somme`,`<span class="v">u<sub>50</sub></span> = <span class="v">u<sub>0</sub></span> + 50<span class="v">r</span>`,`<b>Formule du terme général</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"choix", type:"qcm",
+  q:`« Combien d'argent au total après 20 versements ? »<br>Quelle formule ?`,
+  opts:[{t:`La somme des termes`,ok:true,why:`« Au total » = addition de tous les versements.`},
+        {t:`Le terme général`,ok:false,why:`Il donne un seul versement, pas le cumul.`},
+        {t:`La raison`,ok:false,why:`Elle ne répond pas à la question.`}],
+  regle:`« Total », « cumul », « en tout » → somme.`,
+  aides:[`Un seul versement ou tous ?`,`Tous → somme.`],
+  sol:[`« Au total » signale un cumul`,`On additionne les 20 termes`,`<b>Formule des sommes</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"choix", type:"qcm",
+  q:`« À partir de quelle année la population dépasse-t-elle 50 000 ? »<br>Quel outil ?`,
+  opts:[{t:`Un algorithme de seuil, ou une inéquation`,ok:true,why:`On cherche le premier rang qui franchit une valeur.`},
+        {t:`La formule des sommes`,ok:false,why:`On ne cumule pas les populations.`},
+        {t:`La raison`,ok:false,why:`Elle ne suffit pas seule.`}],
+  regle:`« À partir de quand » → seuil.`,
+  aides:[`On cherche un rang, pas une valeur.`,`C'est un problème de seuil.`],
+  sol:[`On cherche le premier <span class="v">n</span> tel que <span class="v">u<sub>n</sub></span> > 50 000`,`Boucle while ou inéquation`,`<b>Algorithme de seuil</b>`] },
+
+/* ─── pièges de lecture d'énoncé ─── */
+{ k:"LIS BIEN", meth:"lecture", type:"qcm",
+  q:`« Le prix augmente de 5 € par an. »<br>Nature ?`,
+  opts:[{t:`Arithmétique`,ok:true,why:`Une somme fixe en euros : addition.`},
+        {t:`Géométrique`,ok:false,why:`Il faudrait un pourcentage.`}],
+  regle:`Unité (€, cm, litres) → arithmétique.`,
+  aides:[`« 5 € » est une quantité fixe.`,`On ajoute.`],
+  sol:[`+5 € chaque année, toujours pareil`,`Addition constante`,`<b>Arithmétique</b>`] },
+
+{ k:"LIS BIEN", meth:"lecture", type:"qcm",
+  q:`« Le prix augmente de 5 % par an. »<br>Nature ?`,
+  opts:[{t:`Géométrique`,ok:true,why:`Un pourcentage : multiplication par 1,05.`},
+        {t:`Arithmétique`,ok:false,why:`5 % de 100 € et 5 % de 200 € ne font pas la même somme.`}],
+  regle:`Pourcentage → géométrique.`,
+  aides:[`5 % de quoi ? Du prix courant.`,`Donc multiplication.`],
+  sol:[`5 % dépend du prix actuel`,`×1,05 chaque année`,`<b>Géométrique</b>`] },
+
+{ k:"LIS BIEN", meth:"lecture", type:"qcm",
+  q:`« Une somme double tous les 3 ans. »<br>Quelle raison, et par quoi indexe-t-on ?`,
+  opts:[{t:`<span class="v">q</span> = 2, indexée par périodes de 3 ans`,ok:true,why:`Le rang compte les périodes, pas les années.`},
+        {t:`<span class="v">q</span> = 2, indexée par année`,ok:false,why:`Elle ne double pas chaque année.`},
+        {t:`<span class="v">r</span> = 2`,ok:false,why:`Doubler est une multiplication.`}],
+  regle:`Attention à l'unité du rang.`,
+  aides:[`Un pas de la suite = combien d'années ?`,`Trois.`],
+  sol:[`Doubler → géométrique, <span class="v">q</span> = 2`,`Un pas = 3 ans`,`<b>Rang en périodes de 3 ans</b>`] },
+
+{ k:"LIS BIEN", meth:"lecture", type:"qcm",
+  q:`« Le stock perd un quart de sa valeur chaque mois. »<br>Coefficient ?`,
+  opts:[{t:`0,75`,ok:true,why:`Il reste les trois quarts.`},
+        {t:`0,25`,ok:false,why:`C'est la part perdue, pas ce qui reste.`},
+        {t:`1,25`,ok:false,why:`Ce serait une hausse.`}],
+  regle:`Ce qui reste, pas ce qui part.`,
+  aides:[`Un quart part. Combien reste-t-il ?`,`Trois quarts = 0,75.`],
+  sol:[`Perte : 1/4 = 25 %`,`Reste : 75 %`,`<b>Coefficient 0,75</b>`] },
+
+{ k:"LIS BIEN", meth:"lecture", type:"qcm",
+  q:`« <span class="v">u<sub>1</sub></span> = 7 et on ajoute 3 à chaque étape. »<br>Expression de <span class="v">u<sub>n</sub></span> ?`,
+  opts:[{t:`7 + 3(<span class="v">n</span> − 1)`,ok:true,why:`On part du rang 1 : il y a <span class="v">n</span> − 1 pas.`},
+        {t:`7 + 3<span class="v">n</span>`,ok:false,why:`Valable si on partait de <span class="v">u<sub>0</sub></span>.`},
+        {t:`7 × 3<sup><span class="v">n</span></sup>`,ok:false,why:`On ajoute, on ne multiplie pas.`}],
+  regle:`Départ au rang 1 → (<span class="v">n</span> − 1) pas.`,
+  aides:[`De <span class="v">u<sub>1</sub></span> à <span class="v">u<sub>4</sub></span> : combien de pas ?`,`Trois, soit 4 − 1.`],
+  sol:[`Départ au rang 1`,`Nombre de pas : <span class="v">n</span> − 1`,`<b>7 + 3(<span class="v">n</span> − 1)</b>`] },
+
+/* ─── même chiffre, méthode différente ─── */
+{ k:"QUELLE MÉTHODE ?", meth:"paire", type:"num",
+  q:`Suite arithmétique, <span class="v">u<sub>0</sub></span> = 3, raison 2.<br>Calculer <span class="v">u<sub>5</sub></span>.`,
+  rep:13, ind:"un entier", ok:`3 + 5×2 = <b>13</b>`, no:`Arithmétique : on ajoute.`,
+  regle:`Ajouter la raison <span class="v">n</span> fois.`,
+  aides:[`5 × 2 = 10.`,`3 + 10.`],
+  sol:[`5 pas × 2`,`3 + 10`,`<b>13</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"paire", type:"num",
+  q:`Suite géométrique, <span class="v">u<sub>0</sub></span> = 3, raison 2.<br>Calculer <span class="v">u<sub>5</sub></span>.`,
+  rep:96, ind:"un entier", ok:`3 × 2<sup>5</sup> = <b>96</b>`, no:`Géométrique : on multiplie.`,
+  regle:`Multiplier par la raison <span class="v">n</span> fois.`,
+  aides:[`2<sup>5</sup> = 32.`,`3 × 32.`],
+  sol:[`2<sup>5</sup> = 32`,`3 × 32`,`<b>96</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"paire", type:"num",
+  q:`Suite arithmétique, <span class="v">u<sub>0</sub></span> = 3, raison 2.<br>Somme <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>5</sub></span> ?`,
+  rep:48, ind:"un entier", ok:`6 termes, moyenne (3+13)÷2 = 8 → <b>48</b>`, no:`Somme, pas un terme.`,
+  regle:`Somme = nb termes × moyenne.`,
+  aides:[`<span class="v">u<sub>5</sub></span> = 13, 6 termes.`,`(3+13)÷2 = 8.`],
+  sol:[`6 termes, <span class="v">u<sub>5</sub></span> = 13`,`Moyenne : 8`,`6 × 8 = <b>48</b>`] },
+
+{ k:"QUELLE MÉTHODE ?", meth:"paire", type:"num",
+  q:`Suite géométrique, <span class="v">u<sub>0</sub></span> = 3, raison 2.<br>Somme <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>5</sub></span> ?`,
+  rep:189, ind:"un entier", ok:`3 × (1−2<sup>6</sup>)÷(1−2) = 3 × 63 = <b>189</b>`, no:`6 termes → exposant 6.`,
+  regle:`Exposant = nombre de termes.`,
+  aides:[`2<sup>6</sup> = 64.`,`(1−64)÷(−1) = 63, puis ×3.`],
+  sol:[`6 termes : exposant 6`,`(1 − 64) ÷ (−1) = 63`,`3 × 63 = <b>189</b>`] },
+
+/* ─── détecter la question posée ─── */
+{ k:"QUE DEMANDE-T-ON ?", meth:"question", type:"qcm",
+  q:`« Montrer que la suite est croissante. »<br>Que doit-on produire ?`,
+  opts:[{t:`Le signe de <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span> pour tout <span class="v">n</span>`,ok:true,why:`Une démonstration générale, pas des exemples.`},
+        {t:`Les cinq premiers termes`,ok:false,why:`Des exemples ne démontrent rien.`},
+        {t:`La limite`,ok:false,why:`Ce n'est pas la question.`}],
+  regle:`« Montrer que » → démonstration générale.`,
+  aides:[`Quelques termes suffisent-ils ?`,`Non — il faut tout <span class="v">n</span>.`],
+  sol:[`« Montrer » exige une preuve`,`On étudie le signe de la différence`,`<b>Signe de <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span></b>`] },
+
+{ k:"QUE DEMANDE-T-ON ?", meth:"question", type:"qcm",
+  q:`« Conjecturer le sens de variation. »<br>Que fait-on ?`,
+  opts:[{t:`On calcule quelques termes et on observe`,ok:true,why:`Conjecturer = formuler une hypothèse.`},
+        {t:`On démontre rigoureusement`,ok:false,why:`Ce sera l'étape suivante, pas celle-ci.`},
+        {t:`Rien, c'est impossible`,ok:false,why:`C'est justement faisable.`}],
+  regle:`Conjecturer ≠ démontrer.`,
+  aides:[`Que signifie « conjecturer » ?`,`Émettre une hypothèse à partir d'observations.`],
+  sol:[`Conjecturer = observer et supposer`,`Quelques termes suffisent ici`,`<b>Calculer et observer</b>`] },
+
+{ k:"QUE DEMANDE-T-ON ?", meth:"question", type:"qcm",
+  q:`« Déterminer <span class="v">n</span> tel que <span class="v">u<sub>n</sub></span> > 1 000. »<br>Nature du travail ?`,
+  opts:[{t:`Résoudre une inéquation, ou faire tourner un algorithme`,ok:true,why:`On cherche un rang, donc un seuil.`},
+        {t:`Calculer <span class="v">u<sub>1000</sub></span>`,ok:false,why:`Confusion entre rang et valeur.`},
+        {t:`Additionner les termes`,ok:false,why:`Aucune somme demandée.`}],
+  regle:`Inconnue = le rang → seuil.`,
+  aides:[`Qu'est-ce qu'on cherche : un rang ou une valeur ?`,`Le rang <span class="v">n</span>.`],
+  sol:[`L'inconnue est <span class="v">n</span>`,`On pose <span class="v">u<sub>n</sub></span> > 1000`,`<b>Inéquation ou algorithme</b>`] },
+
+{ k:"QUE DEMANDE-T-ON ?", meth:"question", type:"qcm",
+  q:`« Montrer que la suite est majorée par 4. »<br>Que calcule-t-on ?`,
+  opts:[{t:`Le signe de <span class="v">u<sub>n</sub></span> − 4`,ok:true,why:`S'il est négatif, alors <span class="v">u<sub>n</sub></span> ⩽ 4.`},
+        {t:`La limite`,ok:false,why:`Majorer ne demande pas la limite.`},
+        {t:`<span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>`,ok:false,why:`Cela donne le sens de variation.`}],
+  regle:`Majoration → signe de <span class="v">u<sub>n</sub> − M</span>.`,
+  aides:[`Comment comparer <span class="v">u<sub>n</sub></span> à 4 ?`,`On soustrait 4.`],
+  sol:[`<span class="v">u<sub>n</sub></span> ⩽ 4 équivaut à <span class="v">u<sub>n</sub></span> − 4 ⩽ 0`,`On étudie ce signe`,`<b>Signe de <span class="v">u<sub>n</sub></span> − 4</b>`] },
+
+{ k:"QUE DEMANDE-T-ON ?", meth:"question", type:"qcm",
+  q:`Un énoncé donne <span class="v">u<sub>0</sub></span> et <span class="v">u<sub>n+1</sub></span> = <span class="v">f</span>(<span class="v">u<sub>n</sub></span>), et demande <span class="v">u<sub>100</sub></span>.<br>Problème ?`,
+  opts:[{t:`Sans forme explicite, il faut 100 étapes — ou trouver une formule`,ok:true,why:`La récurrence ne donne pas directement un terme lointain.`},
+        {t:`Aucun problème, on applique la formule`,ok:false,why:`Quelle formule ? Il n'y en a pas encore.`},
+        {t:`C'est impossible`,ok:false,why:`Faisable, mais il faut d'abord expliciter.`}],
+  regle:`Récurrence + rang élevé → chercher la forme explicite.`,
+  aides:[`Peux-tu calculer <span class="v">u<sub>100</sub></span> sans les 99 précédents ?`,`Pas avec une récurrence seule.`],
+  sol:[`La récurrence impose le pas à pas`,`Pour un rang élevé, il faut expliciter`,`<b>Trouver la forme explicite</b>`] },
+
+/* ─── erreurs classiques en DS ─── */
+{ k:"TROUVE L'ERREUR", meth:"erreur", type:"qcm",
+  q:`Un élève écrit :<br>« <span class="v">u<sub>n</sub></span> = 2 + 3<span class="v">n</span>, donc <span class="v">u<sub>0</sub></span> = 5. »<br>Verdict ?`,
+  opts:[{t:`Faux : <span class="v">u<sub>0</sub></span> = 2`,ok:true,why:`Pour <span class="v">n</span> = 0, 3<span class="v">n</span> = 0.`},
+        {t:`Juste`,ok:false,why:`Il a remplacé <span class="v">n</span> par 1, pas par 0.`}],
+  regle:`Vérifie toujours le rang 0.`,
+  aides:[`Remplace <span class="v">n</span> par 0.`,`2 + 0.`],
+  sol:[`<span class="v">u<sub>0</sub></span> = 2 + 3×0`,`= 2 + 0`,`<b>2, pas 5</b>`] },
+
+{ k:"TROUVE L'ERREUR", meth:"erreur", type:"qcm",
+  q:`Un élève écrit :<br>« Le prix baisse de 30 %, puis remonte de 30 % : il est revenu au départ. »<br>Verdict ?`,
+  opts:[{t:`Faux : 0,7 × 1,3 = 0,91`,ok:true,why:`Il manque 9 % du prix initial.`},
+        {t:`Juste`,ok:false,why:`Les pourcentages ne s'annulent pas.`}],
+  regle:`Les coefficients se multiplient.`,
+  aides:[`Teste avec 100 €.`,`100 → 70 → 91.`],
+  sol:[`100 € → −30 % → 70 €`,`70 € → +30 % → 91 €`,`<b>Faux : 91 ≠ 100</b>`] },
+
+{ k:"TROUVE L'ERREUR", meth:"erreur", type:"qcm",
+  q:`Un élève écrit :<br>« De <span class="v">u<sub>3</sub></span> à <span class="v">u<sub>10</sub></span>, il y a 7 termes. »<br>Verdict ?`,
+  opts:[{t:`Faux : il y en a 8`,ok:true,why:`10 − 3 + 1 = 8. Il a compté les intervalles.`},
+        {t:`Juste`,ok:false,why:`7 est le nombre de pas, pas de termes.`}],
+  regle:`Nombre de termes = <span class="v">n</span> − <span class="v">p</span> + 1.`,
+  aides:[`Compte de 3 à 10 sur tes doigts.`,`3,4,5,6,7,8,9,10 : huit.`],
+  sol:[`Pas : 10 − 3 = 7`,`Termes : 7 + 1`,`<b>8 termes</b>`] },
+
+{ k:"TROUVE L'ERREUR", meth:"erreur", type:"qcm",
+  q:`Un élève écrit :<br>« <span class="v">u<sub>n</sub></span> = (−1)<sup><span class="v">n</span></sup> × <span class="v">n</span> est croissante car <span class="v">n</span> augmente. »<br>Verdict ?`,
+  opts:[{t:`Faux : le signe alterne`,ok:true,why:`Termes : 0, −1, 2, −3, 4 — ça monte et descend.`},
+        {t:`Juste`,ok:false,why:`Le facteur (−1)<sup><span class="v">n</span></sup> change tout.`}],
+  regle:`Un facteur alterné casse la monotonie.`,
+  aides:[`Calcule les cinq premiers termes.`,`0, −1, 2, −3, 4.`],
+  sol:[`Termes : 0, −1, 2, −3, 4`,`La suite monte puis descend`,`<b>Non croissante</b>`] },
+
+{ k:"TROUVE L'ERREUR", meth:"erreur", type:"qcm",
+  q:`Un élève écrit :<br>« La suite est majorée par 10, donc elle converge vers 10. »<br>Verdict ?`,
+  opts:[{t:`Faux : majorée ne donne pas la limite`,ok:true,why:`Il faut aussi être croissante, et la limite peut être inférieure à 10.`},
+        {t:`Juste`,ok:false,why:`Deux erreurs : le théorème exige la croissance, et ne donne pas la valeur.`}],
+  regle:`Croissante <b>et</b> majorée → converge, limite ⩽ majorant.`,
+  aides:[`Quelles sont les deux conditions du théorème ?`,`Croissante et majorée.`],
+  sol:[`Majorée seule ne suffit pas`,`Et la limite n'est pas forcément le majorant`,`<b>Faux</b>`] },
+
+{ k:"TROUVE L'ERREUR", meth:"erreur", type:"qcm",
+  q:`Un élève écrit :<br>« 1 + 2 + … + 100 = 100 × 100 ÷ 2 = 5 000. »<br>Verdict ?`,
+  opts:[{t:`Faux : c'est 100 × 101 ÷ 2 = 5 050`,ok:true,why:`La formule est <span class="v">n</span>(<span class="v">n</span>+1)÷2.`},
+        {t:`Juste`,ok:false,why:`Il a oublié le « +1 ».`}],
+  regle:`<span class="v">n</span>(<span class="v">n</span>+1)÷2, pas <span class="v">n</span>²÷2.`,
+  aides:[`Vérifie sur 1+2+3 : la formule donne quoi ?`,`3×4÷2 = 6 ✓`],
+  sol:[`Formule : <span class="v">n</span>(<span class="v">n</span>+1)÷2`,`100 × 101 ÷ 2`,`<b>5 050</b>`] }
+
+];
+
 const METH_CH = {
   1:"notation", 2:"variation", 3:"arith", 4:"geom",
   5:"bornes",   6:"somme",     7:"algo",  8:"mixte"
@@ -2977,6 +3272,20 @@ function drawHome(){
     $("r-name").textContent = pick.nom;
     $("r-meta").textContent = "5 nouveaux exercices";
     $("resume").onclick = ()=> startCh(pick.n);
+  }
+
+  /* carte révision mêlée : dès 2 chapitres terminés */
+  const rev = $("revcard");
+  if(rev){
+    const nf = chs.filter(c=>DB.ch[c.n]&&DB.ch[c.n].done).length;
+    const du = nbDus();
+    if(nf >= 2){
+      rev.style.display = "block";
+      $("rev-meta").textContent = du > 0
+        ? du + (du===1 ? " exercice à revoir" : " exercices à revoir")
+        : "8 exercices · tous chapitres mêlés";
+      rev.onclick = ()=> startCh(1, "melee");
+    } else rev.style.display = "none";
   }
 
   const box=$("chs"); box.innerHTML="";

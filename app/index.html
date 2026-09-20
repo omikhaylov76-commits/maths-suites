@@ -17,16 +17,16 @@
 
 @media (prefers-reduced-motion:no-preference){
   ::view-transition-old(root){
-    animation:pgOut 260ms cubic-bezier(.4,0,.2,1) both;
+    animation:pgOut 420ms cubic-bezier(.4,0,.2,1) both;
   }
   ::view-transition-new(root){
-    animation:pgIn 300ms cubic-bezier(.215,.61,.355,1) both;
+    animation:pgIn 500ms cubic-bezier(.215,.61,.355,1) both;
   }
   html.retour::view-transition-old(root){
-    animation:pgOutR 260ms cubic-bezier(.4,0,.2,1) both;
+    animation:pgOutR 420ms cubic-bezier(.4,0,.2,1) both;
   }
   html.retour::view-transition-new(root){
-    animation:pgInR 300ms cubic-bezier(.215,.61,.355,1) both;
+    animation:pgInR 500ms cubic-bezier(.215,.61,.355,1) both;
   }
 }
 @keyframes pgOut { from{transform:translateX(0);opacity:1}      to{transform:translateX(-22%);opacity:0} }
@@ -93,7 +93,7 @@ sub,sup{font-size:.7em;line-height:0}
   position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;opacity:0;pointer-events:none;
   transform:translateX(30px);
-  transition:opacity var(--t-fade) var(--e-soft),transform var(--t-move) var(--e);
+  transition:opacity 300ms var(--e-soft),transform 400ms var(--e);
   will-change:opacity,transform;
 }
 .screen.on{opacity:1;pointer-events:auto;transform:translateX(0)}
@@ -3729,7 +3729,7 @@ function derniersJours(n){
   setTimeout(()=>{
     H.classList.remove("retour");
     try{ sessionStorage.setItem("nav.dir","avant"); }catch(err){}
-  }, 700);
+  }, 950);
 })();
 
 /* ═══════════ SYNCHRONISATION ═══════════ */
@@ -3981,7 +3981,7 @@ $("sy-valider").onclick = async ()=>{
   const r = await tirer();
   if(r.ok && !r.vide){
     e.className = "sy-etat ok"; e.textContent = "Travail récupéré";
-    setTimeout(()=>{ drawSync("on"); drawHome && drawHome(); }, 700);
+    setTimeout(()=>{ drawSync("on"); drawHome && drawHome(); }, 950);
   } else if(r.ok && r.vide){
     e.className = "sy-etat"; e.textContent = "Ce code est vide — tes données y seront envoyées";
     pousser(true);
@@ -5148,7 +5148,7 @@ document.addEventListener("keydown",e=>{
   const cible = document.querySelector("#s-mods .hero h1");
   if(cible){
     let tm = null;
-    const start = ()=>{ tm = setTimeout(()=>{ ouvrirSuivi(); }, 700); };
+    const start = ()=>{ tm = setTimeout(()=>{ ouvrirSuivi(); }, 950); };
     const stop  = ()=>{ clearTimeout(tm); };
     cible.addEventListener("touchstart", start, {passive:true});
     cible.addEventListener("touchend",   stop,  {passive:true});

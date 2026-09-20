@@ -13,17 +13,17 @@
 
 @media (prefers-reduced-motion:no-preference){
   ::view-transition-old(root){
-    animation:sortie 260ms cubic-bezier(.4,0,.2,1) both;
+    animation:sortie 420ms cubic-bezier(.4,0,.2,1) both;
   }
   ::view-transition-new(root){
-    animation:entree 300ms cubic-bezier(.215,.61,.355,1) both;
+    animation:entree 500ms cubic-bezier(.215,.61,.355,1) both;
   }
   /* retour : on inverse le sens */
   html.retour::view-transition-old(root){
-    animation:sortie-r 260ms cubic-bezier(.4,0,.2,1) both;
+    animation:sortie-r 420ms cubic-bezier(.4,0,.2,1) both;
   }
   html.retour::view-transition-new(root){
-    animation:entree-r 300ms cubic-bezier(.215,.61,.355,1) both;
+    animation:entree-r 500ms cubic-bezier(.215,.61,.355,1) both;
   }
 }
 
@@ -1102,7 +1102,7 @@ const COURS = [
   setTimeout(()=>{
     H.classList.remove("retour");
     try{ sessionStorage.setItem("nav.dir", "avant"); }catch(err){}
-  }, 700);
+  }, 950);
 })();
 
 /* ═══════════ ОТРИСОВКА ═══════════ */

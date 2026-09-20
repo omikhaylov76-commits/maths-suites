@@ -494,6 +494,11 @@ to{opacity:1;transform:translateX(0)}
 .dprog-acq{background:var(--ember)}
 .dprog-d{margin-top:9px;font:600 12.5px/1.3 "Inter",sans-serif;color:var(--ember)}
 
+.gap-tag{display:inline-block;margin-left:7px;padding:2px 7px;border-radius:5px;
+  background:var(--miss-soft);color:var(--miss);
+  font:600 8.5px/1.5 "Inter",sans-serif;letter-spacing:.06em;vertical-align:middle}
+.gap-tag.faible{background:var(--warm);color:var(--ember)}
+
 .meter-bar{position:relative;overflow:hidden}
 .ch-bar{position:relative;display:block;height:4px;border-radius:2px;
   background:#ece3d7;margin-top:8px;overflow:hidden}
@@ -588,6 +593,46 @@ to{opacity:1;transform:translateX(0)}
 .gl-t b{display:block; font:600 14.5px/1.3 "Inter",sans-serif; letter-spacing:-.01em}
 .gl-t i{display:block; font-style:normal; font-size:12.5px; color:var(--soft); margin-top:3px}
 .gl-go{flex:0 0 auto; color:var(--slate)}
+
+
+/* ── test de niveau ── */
+.bl-wrap{padding:26px 0 10px;text-align:center}
+.bl-h{font:600 11px/1 "Inter",sans-serif;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+.bl-score{font:700 44px/1 "Inter",sans-serif;letter-spacing:-.03em;color:var(--ink)}
+.bl-sous{font-size:14px;color:var(--soft);margin-top:7px;margin-bottom:26px}
+
+.bl-liste{text-align:left;background:#fff;border:1px solid var(--mist);
+  border-radius:16px;padding:6px 16px;margin-bottom:22px}
+.bl-ln{display:flex;align-items:center;gap:11px;padding:11px 0;
+  border-bottom:1px solid var(--dust);font-size:14.5px}
+.bl-ln:last-child{border-bottom:0}
+.bl-ic{flex:0 0 14px;text-align:center;font-size:13px}
+.bl-n{flex:1;min-width:0;color:var(--ink)}
+.bl-e{flex:0 0 auto;font-size:11.5px;color:var(--soft)}
+.bl-ln.solide  .bl-ic{color:#3fa66a}
+.bl-ln.fragile .bl-ic{color:var(--ember)}
+.bl-ln.creux   .bl-ic{color:var(--miss)}
+.bl-ln.creux   .bl-n{font-weight:600}
+.bl-ln.inconnu .bl-ic{color:var(--slate)}
+
+.bl-next{background:var(--warm);border-radius:14px;padding:15px 18px;
+  margin-bottom:18px;text-align:left}
+.bl-next-l{font:600 9.5px/1 "Inter",sans-serif;letter-spacing:.1em;
+  color:var(--ember);margin-bottom:6px}
+.bl-next-n{font:600 16px/1.3 "Inter",sans-serif;color:var(--ink)}
+.bl-note{margin-top:18px;font-size:12.5px;line-height:1.5;color:var(--soft)}
+
+/* карточка запуска теста на главной */
+.bilcard{display:block;width:100%;text-align:left;background:#fff;
+  border:1px solid rgba(214,122,78,.3);border-radius:16px;padding:17px 19px;
+  margin:0 0 14px;cursor:pointer;
+  transition:transform .13s var(--e),background .18s var(--e)}
+.bilcard:active{transform:scale(.985);background:var(--dust)}
+.bil-l{font:600 10px/1 "Inter",sans-serif;letter-spacing:.11em;
+  color:var(--ember);margin-bottom:6px}
+.bil-n{font:600 15.5px/1.3 "Inter",sans-serif;color:var(--ink)}
+.bil-s{font-size:12.5px;color:var(--soft);margin-top:4px}
 
 /* ── suivi parent ── */
 .pstate{display:flex;gap:14px;align-items:flex-start;background:#fff;
@@ -802,6 +847,12 @@ to{opacity:1;transform:translateX(0)}
         </div>
       </div>
       <p class="list-lbl" style="margin-top:34px">CHAPITRES</p>
+      <button class="bilcard" id="bilcard" style="display:none">
+        <div class="bil-l">POUR COMMENCER</div>
+        <div class="bil-n">Test de niveau · 10 minutes</div>
+        <div class="bil-s">12 questions pour savoir par où commencer</div>
+      </button>
+
       <div class="memo" id="memo" style="display:none">
         <div class="memo-row">
           <span class="memo-n" id="memo-due">0</span>
@@ -887,6 +938,30 @@ to{opacity:1;transform:translateX(0)}
       </div>
 
     </div></div>
+  </section>
+
+  <section class="screen" id="s-bilan">
+    <div class="pad">
+      <div class="work">
+        <div class="bl-wrap">
+          <div class="bl-h">Ton point de départ</div>
+          <div class="bl-score" id="bl-score">—</div>
+          <div class="bl-sous" id="bl-sous"></div>
+
+          <div class="bl-liste" id="bl-liste"></div>
+
+          <div class="bl-next">
+            <div class="bl-next-l">COMMENCE PAR</div>
+            <div class="bl-next-n" id="bl-dep">—</div>
+          </div>
+
+          <button class="pri" id="bl-go">Commencer ce chapitre</button>
+          <button class="gh" id="bl-home">Voir tous les chapitres</button>
+
+          <p class="bl-note">Ce test ne compte pas dans ta progression. Il sert juste à savoir par où commencer.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="screen" id="s-rap">
@@ -3399,6 +3474,76 @@ const DISCRIM = [
 
 ];
 
+const BILAN = [
+
+/* ── ch.1 · notation ── */
+{ ch:1, type:"qcm",
+  q:`<span class="v">u<sub>n</sub></span> = 3<span class="v">n</span> + 2.<br>Que vaut <span class="v">u<sub>0</sub></span> ?`,
+  opts:[{t:"2",ok:true,why:`3×0 + 2 = 2.`},
+        {t:"5",ok:false,why:`Tu as remplacé n par 1, pas par 0.`},
+        {t:"3",ok:false,why:`Il faut aussi ajouter 2.`}] },
+
+{ ch:1, type:"num",
+  q:`Combien de termes de <span class="v">u<sub>0</sub></span> à <span class="v">u<sub>12</sub></span> ?`,
+  rep:13, ind:"un entier", ok:`12 − 0 + 1 = 13.`, no:`N'oublie pas le rang 0.` },
+
+/* ── ch.2 · variation ── */
+{ ch:2, type:"num",
+  q:`<span class="v">u<sub>n</sub></span> = 7<span class="v">n</span> + 4.<br>Calculer <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>.`,
+  rep:7, ind:"un nombre", ok:`(7n+11) − (7n+4) = 7.`, no:`Développe d'abord u<sub>n+1</sub> = 7(n+1)+4.` },
+
+{ ch:2, type:"qcm",
+  q:`<span class="v">u<sub>n</sub></span> = <span class="v">n</span>² − 4<span class="v">n</span>.<br>Quelle méthode pour le sens de variation ?`,
+  opts:[{t:`La différence <span class="v">u<sub>n+1</sub> − u<sub>n</sub></span>`,ok:true,why:`Les termes changent de signe : le quotient est interdit.`},
+        {t:`Le quotient`,ok:false,why:`u<sub>1</sub> = −3 : la méthode exige des termes positifs.`},
+        {t:`Les premiers termes`,ok:false,why:`Des exemples ne démontrent rien.`}] },
+
+/* ── ch.3 · arithmétiques ── */
+{ ch:3, type:"num",
+  q:`Suite arithmétique : <span class="v">u<sub>0</sub></span> = 5, <span class="v">r</span> = 3.<br>Calculer <span class="v">u<sub>10</sub></span>.`,
+  rep:35, ind:"un entier", ok:`5 + 10×3 = 35.`, no:`u<sub>n</sub> = u<sub>0</sub> + n×r.` },
+
+{ ch:3, type:"qcm",
+  q:`Observe : 4 ; 12 ; 20 ; 28 …<br>Quelle est la nature de cette suite ?`,
+  opts:[{t:`Arithmétique de raison 8`,ok:true,why:`Les écarts valent tous 8.`},
+        {t:`Géométrique de raison 3`,ok:false,why:`12÷4 = 3 mais 20÷12 ≈ 1,67.`},
+        {t:`Ni l'une ni l'autre`,ok:false,why:`L'écart est constant.`}] },
+
+/* ── ch.4 · géométriques ── */
+{ ch:4, type:"num",
+  q:`Un prix de 200 € augmente de 15 %.<br>Nouveau prix ?`,
+  rep:230, ind:"en euros", ok:`200 × 1,15 = 230 €.`, no:`Coefficient : 1,15.` },
+
+{ ch:4, type:"qcm",
+  q:`Une valeur baisse de 20 %, puis remonte de 20 %.<br>Où en est-on ?`,
+  opts:[{t:`En dessous du départ`,ok:true,why:`0,8 × 1,2 = 0,96 : il manque 4 %.`},
+        {t:`Au point de départ`,ok:false,why:`Les pourcentages ne se compensent pas.`},
+        {t:`Au-dessus`,ok:false,why:`Le coefficient global vaut 0,96.`}] },
+
+/* ── ch.5 · bornes ── */
+{ ch:5, type:"qcm",
+  q:`Une suite croissante et majorée par 8.<br>Que garantit le théorème ?`,
+  opts:[{t:`Elle converge vers une limite ⩽ 8`,ok:true,why:`Convergence assurée, valeur non précisée.`},
+        {t:`Elle converge vers 8`,ok:false,why:`La limite peut être plus basse.`},
+        {t:`Rien, il manque une hypothèse`,ok:false,why:`Croissante + majorée suffit.`}] },
+
+/* ── ch.6 · sommes ── */
+{ ch:6, type:"num",
+  q:`Calculer 1 + 2 + 3 + … + 20.`,
+  rep:210, ind:"un entier", ok:`20 × 21 ÷ 2 = 210.`, no:`Formule de Gauss : n(n+1)÷2.` },
+
+/* ── ch.7 · algorithmique ── */
+{ ch:7, type:"num",
+  q:`<span style="font-family:monospace">u=1 ; n=0 ; while u&lt;20 : u=2*u ; n=n+1</span><br>Valeur finale de <span class="v">n</span> ?`,
+  rep:5, ind:"un entier", ok:`1→2→4→8→16→32. Cinq tours.`, no:`16 &lt; 20 : il reste un tour.` },
+
+/* ── ch.8 · problèmes ── */
+{ ch:8, type:"num",
+  q:`Un loyer de 600 € augmente de 25 € par an.<br>Après combien d'années dépasse-t-il 700 € ?`,
+  rep:5, ind:"un entier", ok:`25n > 100 donne n > 4 : la 5<sup>e</sup> année.`, no:`Il faut gagner 100 € de plus.` }
+
+];
+
 const METH_CH = {
   1:"notation", 2:"variation", 3:"arith", 4:"geom",
   5:"bornes",   6:"somme",     7:"algo",  8:"mixte"
@@ -4092,6 +4237,7 @@ function ouvrirRappels(){
 }
 
 $("rap-back").onclick = ()=> retour();
+$("bl-home").onclick = ()=>{ PILE=[{ecran:"s-mods"}]; show("s-home"); drawHome(); };
 $("bell").onclick = ()=> ouvrirRappels();
 
 $("rap-tog").onclick = async ()=>{
@@ -4169,6 +4315,82 @@ function bougeSemaine(){
     ex:    js.reduce((a,j)=>a+j.ex,0),
     jours: js.filter(j=>j.ex>0).length
   };
+}
+
+
+/* ═══════════ TEST DE POSITIONNEMENT ═══════════ */
+
+function lancerBilan(){
+  const q = BILAN.map((x,i)=> Object.assign({}, x, {
+    k: "QUESTION " + (i+1),
+    _bil: i,
+    meth: "b" + x.ch
+  }));
+  R = { ch:1, card:0, qi:0, queue:q, first:0, total:0,
+        tried:false, mode:"q", weak:[], aides:0,
+        defi:false, melee:false, bilan:true, res:[] };
+  $("w-name").textContent = "Test de niveau";
+  show("s-work");
+  drawQ();
+}
+
+/* résultat : quels chapitres tiennent, lesquels sont creux */
+function finirBilan(){
+  const parCh = {};
+  R.res.forEach(r=>{
+    if(!parCh[r.ch]) parCh[r.ch] = { ok:0, tot:0 };
+    parCh[r.ch].tot++;
+    if(r.ok) parCh[r.ch].ok++;
+  });
+
+  const chs = MODULES[0].chapitres
+    .map(n=>CHAPITRES.find(c=>c.n===n))
+    .filter(c=>c && c.pret);
+
+  const lignes = chs.map(c=>{
+    const p = parCh[c.n] || { ok:0, tot:0 };
+    const taux = p.tot ? p.ok / p.tot : null;
+    let etat;
+    if(taux === null)    etat = "inconnu";
+    else if(taux === 1)  etat = "solide";
+    else if(taux >= 0.5) etat = "fragile";
+    else                 etat = "creux";
+    return { c, etat, ok:p.ok, tot:p.tot };
+  });
+
+  /* premier chapitre à reprendre : le premier creux, sinon le premier fragile */
+  const creux   = lignes.filter(l=>l.etat === "creux");
+  const fragile = lignes.filter(l=>l.etat === "fragile");
+  const depart  = creux[0] || fragile[0] || lignes[0];
+
+  DB.bilan = {
+    fait: today(),
+    score: R.first + "/" + R.total,
+    depart: depart.c.n,
+    etats: lignes.reduce((a,l)=>{ a[l.c.n] = l.etat; return a; }, {})
+  };
+  save();
+  pousser();
+
+  const ic = { solide:"●", fragile:"◐", creux:"○", inconnu:"·" };
+  const mot = { solide:"acquis", fragile:"à revoir", creux:"à reprendre", inconnu:"non testé" };
+
+  $("bl-score").textContent = R.first + " / " + R.total;
+  $("bl-sous").textContent  = creux.length
+    ? creux.length + (creux.length>1 ? " chapitres à reprendre" : " chapitre à reprendre")
+    : fragile.length ? "quelques points à consolider" : "base solide";
+
+  $("bl-liste").innerHTML = lignes.map(l=>`
+    <div class="bl-ln ${l.etat}">
+      <span class="bl-ic">${ic[l.etat]}</span>
+      <span class="bl-n">${l.c.nom}</span>
+      <span class="bl-e">${mot[l.etat]}</span>
+    </div>`).join("");
+
+  $("bl-dep").textContent = depart.c.nom;
+  $("bl-go").onclick = ()=>{ PILE=[{ecran:"s-home"}]; startCh(depart.c.n); };
+
+  show("s-bilan");
 }
 
 /* ═══════════ SUIVI PARENT ═══════════ */
@@ -4418,6 +4640,14 @@ function drawHome(){
     $("resume").onclick = ()=> startCh(pick.n);
   }
 
+  /* test de niveau : proposé tant qu'il n'est pas fait */
+  const bc = $("bilcard");
+  if(bc){
+    const dejaFait = DB.bilan && DB.bilan.fait;
+    bc.style.display = dejaFait ? "none" : "block";
+    bc.onclick = ()=>{ PILE.push({ecran:"s-home"}); lancerBilan(); };
+  }
+
   /* mémoire espacée : visible dès le premier chapitre terminé */
   const memo = $("memo");
   if(memo){
@@ -4455,6 +4685,7 @@ function drawHome(){
     const d = DB.ch[c.n];
     const b=document.createElement("button");
     b.className="ch"+(d&&d.done?" done":"")+(firstTodo&&firstTodo.n===c.n?" next":"")+(!c.pret?" lock":"");
+    const etat = DB.bilan && DB.bilan.etats ? DB.bilan.etats[c.n] : null;
     const a = c.pret ? avanceCh(c.n) : null;
     const meta = !c.pret ? "bientôt"
       : (a && a.vus > 0)
@@ -4468,7 +4699,9 @@ function drawHome(){
     b.innerHTML=`
       <span class="ch-num">${idx+1}</span>
       <span class="ch-body">
-        <span class="ch-name">${c.nom}${c.ds?`<span class="ds-tag">DS</span>`:``}</span>
+        <span class="ch-name">${c.nom}${c.ds?`<span class="ds-tag">DS</span>`:``}${
+          etat==="creux" ? `<span class="gap-tag">À REPRENDRE</span>` :
+          etat==="fragile" ? `<span class="gap-tag faible">À REVOIR</span>` : ``}</span>
         <span class="ch-meta">${meta}</span>
         ${barre}
       </span>
@@ -4967,8 +5200,9 @@ function answerQcm(i){
     btns.forEach((b,j)=>{ b.classList.add("dead"); if(j===i) b.classList.add("good"); });
     if(!R.tried) R.first++;
     R.total++;
+    if(R.bilan) R.res.push({ ch:q.ch, ok:!R.tried });
     if(q._id) planifier(q._id, !R.tried);
-    tac(!R.tried, R.ch);
+    if(!R.bilan) tac(!R.tried, R.ch);
     openExp(true,q.opts[i].why,q.regle);
     finishQ();
   } else {
@@ -4990,8 +5224,9 @@ function answerNum(){
     inp.classList.remove("bad"); inp.classList.add("good"); inp.disabled=true;
     if(!R.tried) R.first++;
     R.total++;
+    if(R.bilan) R.res.push({ ch:q.ch, ok:!R.tried });
     if(q._id) planifier(q._id, !R.tried);
-    tac(!R.tried, R.ch);
+    if(!R.bilan) tac(!R.tried, R.ch);
     padHide();
     openExp(true,q.ok,q.regle);
     finishQ();
@@ -5036,6 +5271,8 @@ function finishQ(){
 }
 
 function finishCh(){
+  if(R.bilan){ finirBilan(); return; }
+
   /* fin de l'échauffement → on enchaîne sur le chapitre */
   if(R.ech){
     const a = R.apres;

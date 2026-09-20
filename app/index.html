@@ -223,10 +223,9 @@ to{opacity:1;transform:translateX(0)}
 .slow-btn svg{transition:transform var(--t-move) var(--e)}
 .slow-btn.open svg{transform:rotate(180deg)}
 .slow{
-  display:none;margin-top:0;opacity:0;
-  transition:opacity 300ms var(--e-soft);
+  display:block;max-height:0;overflow:hidden;margin-top:0;margin-bottom:0;opacity:0;
+  transition:max-height 440ms var(--e), margin-top 440ms var(--e), opacity 300ms var(--e-soft);
 }
-.slow.open{display:block}
 .slow.open{margin-top:16px;margin-bottom:4px;opacity:1}
 .slow-in{
   padding:19px 21px;background:var(--dust);border:1px solid var(--mist);
@@ -401,8 +400,8 @@ to{opacity:1;transform:translateX(0)}
 }
 
 /* объяснение */
-.exp{max-height:0;overflow:hidden;transition:max-height 280ms var(--e),margin 280ms var(--e);margin-top:0}
-.exp.open{max-height:700px;margin-top:18px}
+.exp{max-height:0;overflow:hidden;transition:max-height 440ms var(--e),margin-top 440ms var(--e);margin-top:0}
+.exp.open{margin-top:18px}
 .exp-in{padding:18px 19px;border-radius:var(--r-card);font-size:14.8px;line-height:1.62}
 .exp-in.win{background:var(--ok-soft);border:1px solid var(--ok-line)}
 .exp-in.lose{background:var(--miss-soft);border:1px solid var(--miss-line)}
@@ -7359,9 +7358,10 @@ let RETOUR_EX = null;
 
 function pontsDe(ch){ return PONTS[ch] || []; }
 
-function drawPonts(ch){
+function drawPonts(ch, anim){
   const box = $("ponts");
   if(!box) return;
+  const oldH = anim ? box.offsetHeight : 0;
   const liste = pontsDe(ch);
   if(!liste.length){ box.innerHTML = ""; return; }
 
@@ -7375,7 +7375,7 @@ function drawPonts(ch){
     $("pt-open").onclick = ()=>{
       PT_OUVERT = true;
       DB.aides = (DB.aides||0) + 1; save();
-      drawPonts(ch);
+      drawPonts(ch, true);
     };
     return;
   }
@@ -7406,6 +7406,8 @@ function drawPonts(ch){
         </button>
       </div>`).join("") +
     `<button class="pt-btn" id="pt-close">Masquer les bases</button></div>`;
+
+  if(anim) animH(box, oldH, box.scrollHeight, 440);
 
   box.querySelectorAll(".pt-go").forEach(b=>{
     b.onclick = ()=>{
@@ -7452,7 +7454,7 @@ function drawPonts(ch){
     });
   });
 
-  $("pt-close").onclick = ()=>{ PT_OUVERT = false; drawPonts(ch); };
+  $("pt-close").onclick = ()=>{ PT_OUVERT = false; drawPonts(ch, true); };
 }
 
 function txtLang(){
@@ -8094,48 +8096,49 @@ function drawCard(){
 
   /* accordéon « je n'ai pas compris » — hauteur exacte, mouvement conjoint */
   document.querySelectorAll("[data-slow]").forEach(btn=>{
-    btn.onclick = ()=>{
-      const box  = btn.nextElementSibling;
-      const inner = box.firstElementChild;
-      const vp   = $("viewport");
-      const slide = btn.closest(".slide");
-      const opening = !box.classList.contains("open");
-      const H0 = vp ? vp.getBoundingClientRect().height : 0;
-
-      btn.querySelector("span").textContent = opening ? "Masquer" : "Je n'ai pas compris";
-      btn.classList.toggle("open", opening);
-
-      if(opening){
-        DB.aides=(DB.aides||0)+1; save();
-        box.classList.add("open");
-        /* laisser la carte grandir, puis animer la fenêtre vers la nouvelle taille */
-        const H1 = cardH(slide);
-        if(vp){
-          vp.style.transition = "none";
-          vp.style.height = H0 + "px";
-          void vp.offsetHeight;
-          vp.style.transition = "height 440ms var(--e)";
-          vp.style.height = H1 + "px";
-        }
-        requestAnimationFrame(()=>{ box.style.opacity = "1"; });
-        setTimeout(()=>{ vp.style.transition="none"; fitHeight(false); }, 460);
-      } else {
-        box.classList.remove("open");
-        measureFloor();
-        const H1 = Math.max(cardH(slide), FLOOR);
-        if(vp){
-          vp.style.transition = "none";
-          vp.style.height = H0 + "px";
-          void vp.offsetHeight;
-          vp.style.transition = "height 440ms var(--e)";
-          vp.style.height = H1 + "px";
-          setTimeout(()=>{ vp.style.transition="none"; fitHeight(false); }, 460);
-        }
+  btn.onclick = ()=>{
+    const box  = btn.nextElementSibling;
+    const vp   = $("viewport");
+    const slide = btn.closest(".slide");
+    const opening = !box.classList.contains("open");
+    const H0 = vp ? vp.getBoundingClientRect().height : 0;
+    btn.querySelector("span").textContent = opening ? "Masquer" : "Je n'ai pas compris";
+    btn.classList.toggle("open", opening);
+    if(opening){
+      DB.aides=(DB.aides||0)+1; save();
+      /* cible calculée AVANT le changement de classe : hauteur fermée + contenu + marges */
+      const cFerme = cardH(slide);
+      const gain = box.scrollHeight + 20;
+      box.classList.add("open");
+      slowOpen(box);
+      const H1 = cFerme + gain;
+      if(vp){
+        vp.style.transition = "none";
+        vp.style.height = H0 + "px";
+        void vp.offsetHeight;
+        vp.style.transition = "height 440ms var(--e)";
+        vp.style.height = H1 + "px";
       }
-    };
-  });
+      setTimeout(()=>{ if(vp) vp.style.transition="none"; fitHeight(false); }, 460);
+    } else {
+      /* cible calculée avant de replier : hauteur ouverte − contenu − marges */
+      const cOuvert = cardH(slide);
+      const perte = box.scrollHeight + 20;
+      box.classList.remove("open");
+      slowClose(box, ()=>{ measureFloor(); fitHeight(false); });
+      const H1 = Math.max(cOuvert - perte, FLOOR);
+      if(vp){
+        vp.style.transition = "none";
+        vp.style.height = H0 + "px";
+        void vp.offsetHeight;
+        vp.style.transition = "height 440ms var(--e)";
+        vp.style.height = H1 + "px";
+      }
+    }
+  };
+});
 
-  /* points cliquables */
+/* points cliquables */
   document.querySelectorAll("[data-go]").forEach(d=>{
     d.onclick = ()=> goCard(parseInt(d.dataset.go));
   });
@@ -8319,10 +8322,59 @@ function drawQ(){
 }
 
 /* ступенчатые подсказки */
-function drawAid(level){
+
+/* ── accordéons doux : hauteur mesurée, sans plafond fixe ── */
+function animH(el, fromH, toH, dur, after){
+  el.style.overflow = "hidden";
+  el.style.transition = "none";
+  el.style.maxHeight = fromH + "px";
+  void el.offsetHeight;
+  el.style.transition = "max-height " + dur + "ms var(--e)";
+  el.style.maxHeight = toH + "px";
+  let t = setTimeout(fin, dur + 90);
+  function fin(ev){
+    if(ev && ev.propertyName && ev.propertyName !== "max-height") return;
+    clearTimeout(t);
+    el.removeEventListener("transitionend", fin);
+    el.style.maxHeight = "none";
+    el.style.overflow = "";
+    el.style.transition = "";
+    if(after) after();
+  }
+  el.addEventListener("transitionend", fin);
+}
+function slowOpen(box){
+  box.style.maxHeight = "0px";
+  void box.offsetHeight;
+  box.style.maxHeight = box.scrollHeight + "px";
+  let t = setTimeout(fin, 540);
+  function fin(ev){
+    if(ev && ev.propertyName && ev.propertyName !== "max-height") return;
+    clearTimeout(t);
+    box.removeEventListener("transitionend", fin);
+    box.style.maxHeight = "none";
+  }
+  box.addEventListener("transitionend", fin);
+}
+function slowClose(box, after){
+  box.style.maxHeight = box.scrollHeight + "px";
+  void box.offsetHeight;
+  box.style.maxHeight = "0px";
+  let t = setTimeout(fin, 540);
+  function fin(ev){
+    if(ev && ev.propertyName && ev.propertyName !== "max-height") return;
+    clearTimeout(t);
+    box.removeEventListener("transitionend", fin);
+    if(after) after();
+  }
+  box.addEventListener("transitionend", fin);
+}
+
+function drawAid(level, anim){
   const q = R.queue[R.qi];
   const box = $("aid");
   if(!q.aides || !q.sol){ box.innerHTML=""; return; }
+  const oldH = anim ? box.offsetHeight : 0;
 
   let html = "";
   for(let i=0;i<level && i<q.aides.length;i++){
@@ -8340,10 +8392,11 @@ function drawAid(level){
     </button>`;
   }
   box.innerHTML = html;
+  if(anim) animH(box, oldH, box.scrollHeight, 440);
   const b=$("aid-btn");
   if(b) b.onclick=()=>{
     DB.aides=(DB.aides||0)+1; R.aides++; save();
-    drawAid(level+1);
+    drawAid(level+1, true);
   };
 }
 
@@ -8414,6 +8467,7 @@ function openExp(win,text,regle){
     ${regle?`<div class="rule"><b>À retenir.</b> ${regle}</div>`:``}
     ${!win?`<div class="rule" style="color:var(--miss)">Réessaie.</div>`:``}`;
   box.classList.add("open");
+  box.style.maxHeight = box.scrollHeight + "px";
 }
 
 function finishQ(){

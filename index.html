@@ -16,7 +16,8 @@
   --e:cubic-bezier(.215,.61,.355,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+#toc{scroll-margin-top:74px}
 body{
   background:var(--canvas); color:var(--ink);
   font:400 17px/1.7 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
@@ -188,6 +189,46 @@ tr:last-child td{border-bottom:0}
 }
 .up:hover{background:var(--mist)}
 .up:active{transform:scale(.97)}
+
+
+/* ── плавающая кнопка «наверх» ── */
+.fab{
+  position:fixed; right:18px; z-index:50;
+  bottom:calc(18px + env(safe-area-inset-bottom));
+  width:52px; height:52px; border-radius:50%;
+  background:#fff; border:1px solid var(--mist);
+  box-shadow:0 4px 16px rgba(36,31,27,.13);
+  display:grid; place-items:center; cursor:pointer;
+  color:var(--charcoal); text-decoration:none;
+  opacity:0; transform:translateY(14px) scale(.9); pointer-events:none;
+  transition:opacity .22s var(--e), transform .26s var(--e);
+}
+.fab.on{opacity:1; transform:none; pointer-events:auto}
+.fab:active{transform:scale(.93)}
+
+/* ── навигация в конце раздела ── */
+.nav{
+  display:flex; gap:9px; align-items:center;
+  margin-top:8px; flex-wrap:wrap;
+}
+.nav a{
+  display:inline-flex; align-items:center; gap:7px;
+  min-height:44px; padding:0 17px; border-radius:23px;
+  text-decoration:none; font:600 13px/1 "Inter",sans-serif;
+  transition:background .18s var(--e), transform .12s var(--e);
+}
+.nav a:active{transform:scale(.97)}
+.nav .toc-b{background:var(--ember); color:#fff}
+.nav .toc-b:active{background:var(--ember-d)}
+.nav .sib{background:var(--dust); color:var(--charcoal)}
+.nav .sib:hover{background:var(--mist)}
+.nav .sib.off{opacity:.35; pointer-events:none}
+
+@media (max-width:560px){
+  .nav a{padding:0 14px; font-size:12.5px}
+  .nav .sib span{display:none}
+  .fab{right:15px; width:50px; height:50px}
+}
 
 /* ── низ ── */
 .foot{
@@ -1008,11 +1049,13 @@ const T = {
   ru:{ sub:"Première · Terminale", toc:"Содержание",
        titre:"Последовательности<br>с самого начала",
        sous:"Всё, что нужно знать по теме, разобрано на пальцах — с примерами из жизни и готовыми формулировками для контрольной.",
-       up:"К содержанию", foot:"Перейти к упражнениям", neuf:"НОВОЕ" },
+       up:"Содержание", foot:"Перейти к упражнениям", neuf:"НОВОЕ",
+       prev:"Назад", next:"Далее" },
   fr:{ sub:"Première · Terminale", toc:"Sommaire",
        titre:"Les suites,<br>depuis le début",
        sous:"Tout le programme expliqué simplement — avec des images concrètes et les formulations à écrire en devoir.",
-       up:"Sommaire", foot:"Aux exercices", neuf:"NOUVEAU" }
+       up:"Sommaire", foot:"Aux exercices", neuf:"NOUVEAU",
+       prev:"Retour", next:"Suite" }
 };
 
 function txt(o){ return (o && typeof o === "object") ? (o[L] || o.ru || "") : (o || ""); }
@@ -1054,10 +1097,20 @@ function dessine(){
       <h2>${txt(s.t)}</h2>
       ${s.st ? `<p class="sec-s">${txt(s.st)}</p>` : ""}
       ${(s.b||[]).map(bloc).join("")}
-      <a class="up" href="#toc">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-        ${T[L].up}
-      </a>
+      <div class="nav">
+        <a class="sib${s.n===1?" off":""}" href="#s${s.n-1}" title="${T[L].prev}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>${T[L].prev}</span>
+        </a>
+        <a class="toc-b" href="#toc">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          ${T[L].up}
+        </a>
+        <a class="sib${s.n===COURS.length?" off":""}" href="#s${s.n+1}" title="${T[L].next}">
+          <span>${T[L].next}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
     </section>`).join("");
 }
 
@@ -1072,7 +1125,86 @@ function setLang(l){
 $("b-ru").onclick = ()=> setLang("ru");
 $("b-fr").onclick = ()=> setLang("fr");
 
+
+/* ── плавающая кнопка: появляется после первого экрана ── */
+(function(){
+  const fab = $("fab");
+  if(!fab) return;
+
+  const seuil = ()=> Math.max(320, innerHeight * 0.75);
+
+  const check = ()=>{
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    fab.classList.toggle("on", y > seuil());
+  };
+
+  let tick = false;
+  const onScroll = ()=>{
+    if(tick) return;
+    tick = true;
+    requestAnimationFrame(()=>{ check(); tick = false; });
+  };
+
+  addEventListener("scroll", onScroll, {passive:true});
+  addEventListener("resize", check, {passive:true});
+  check();
+
+  fab.addEventListener("click", e=>{
+    e.preventDefault();
+    const toc = $("toc");
+    if(toc) toc.scrollIntoView({behavior:"smooth", block:"start"});
+    history.replaceState(null, "", "#toc");
+  });
+})();
+
+/* ── клавиши на ноутбуке ── */
+addEventListener("keydown", e=>{
+  if(e.metaKey || e.ctrlKey || e.altKey) return;
+  const actif = document.activeElement;
+  if(actif && /INPUT|TEXTAREA|SELECT/.test(actif.tagName)) return;
+
+  /* Échap ou Début → sommaire */
+  if(e.key === "Escape" || e.key === "Home"){
+    e.preventDefault();
+    $("toc").scrollIntoView({behavior:"smooth", block:"start"});
+    return;
+  }
+
+  /* flèches gauche / droite → partie précédente / suivante */
+  if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
+    const secs = [...document.querySelectorAll(".sec")];
+    if(!secs.length) return;
+    /* quelle partie occupe le haut de l'écran ? */
+    let idx = 0;
+    secs.forEach((s,i)=>{ if(s.getBoundingClientRect().top <= 90) idx = i; });
+    const cible = e.key === "ArrowRight"
+      ? Math.min(idx+1, secs.length-1)
+      : Math.max(idx-1, 0);
+    if(cible !== idx){
+      e.preventDefault();
+      secs[cible].scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  }
+});
+
+/* ── défilement doux pour tous les liens internes ── */
+document.addEventListener("click", e=>{
+  const a = e.target.closest('a[href^="#"]');
+  if(!a) return;
+  const cible = document.querySelector(a.getAttribute("href"));
+  if(!cible) return;
+  e.preventDefault();
+  cible.scrollIntoView({behavior:"smooth", block:"start"});
+  history.replaceState(null, "", a.getAttribute("href"));
+});
+
+
 dessine();
 </script>
+<a class="fab" id="fab" href="#toc" aria-label="Sommaire">
+  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6h16M4 12h16M4 18h10"/>
+  </svg>
+</a>
 </body>
 </html>

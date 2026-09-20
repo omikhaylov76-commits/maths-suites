@@ -634,6 +634,28 @@ to{opacity:1;transform:translateX(0)}
 .bil-n{font:600 15.5px/1.3 "Inter",sans-serif;color:var(--ink)}
 .bil-s{font-size:12.5px;color:var(--soft);margin-top:4px}
 
+
+/* ── вкладки годов ── */
+.tabs{display:flex;gap:4px;background:var(--dust);border-radius:14px;
+  padding:4px;margin:0 0 22px}
+.tabs button{flex:1;border:0;background:none;cursor:pointer;
+  padding:11px 10px;border-radius:11px;
+  font:600 13.5px/1.25 "Inter",sans-serif;color:var(--soft);
+  transition:background .22s var(--e),color .22s var(--e),box-shadow .22s var(--e)}
+.tabs button b{display:block;font-weight:600}
+.tabs button i{display:block;font-style:normal;font-size:10.5px;
+  color:var(--slate);margin-top:3px;font-weight:400}
+.tabs button.on{background:#fff;color:var(--ink);
+  box-shadow:0 1px 4px rgba(36,31,27,.09)}
+.tabs button.on i{color:var(--ember)}
+.tabs button:active{transform:scale(.98)}
+
+/* ── заголовок блока ── */
+.bloc-t{font:600 10px/1 "Inter",sans-serif;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--slate);
+  margin:22px 0 10px;padding-left:2px}
+.bloc-t:first-child{margin-top:4px}
+
 /* ── suivi parent ── */
 .pstate{display:flex;gap:14px;align-items:flex-start;background:#fff;
   border:1px solid var(--mist);border-radius:16px;padding:18px 20px}
@@ -791,6 +813,8 @@ to{opacity:1;transform:translateX(0)}
         </div>
         <p class="sub">Première spécialité · programme 2026</p>
       </div>
+      <div class="tabs" id="tabs"></div>
+
       <div class="meter">
         <div class="meter-top">
           <span class="meter-lbl" id="m-lbl2">PROGRESSION</span>
@@ -3923,64 +3947,129 @@ const CH_TERM_B = [
 /* главы Terminale добавляются в общий список */
 CHAPITRES.push(...CH_TERM_A, ...CH_TERM_B);
 
-const MODULES = [
-  {
-    id:"suites",
-    nom:"Suites numériques",
-    sous:"Algèbre · période 2",
-    periode:2,
-    pret:true,
-    chapitres:[1,2,3,4,5,6,7,8]
-  },
-  {
-    id:"suites-term",
-    nom:"Suites · Terminale",
-    sous:"Analyse · limites et récurrence",
-    periode:1,
-    pret:true,
-    chapitres:[11,12,13,14,15,16,17,18]
-  },
-  {
-    id:"second-degre",
-    nom:"Second degré",
-    sous:"Algèbre · période 1",
-    periode:1,
-    pret:false,
-    chapitres:[]
-  },
-  {
-    id:"derivation",
-    nom:"Dérivation",
-    sous:"Analyse · période 3",
-    periode:3,
-    pret:false,
-    chapitres:[]
-  },
-  {
-    id:"expo-trigo",
-    nom:"Exponentielle et trigonométrie",
-    sous:"Analyse · période 4",
-    periode:4,
-    pret:false,
-    chapitres:[]
-  },
-  {
-    id:"produit-scalaire",
-    nom:"Produit scalaire",
-    sous:"Géométrie · période 2",
-    periode:2,
-    pret:false,
-    chapitres:[]
-  },
-  {
-    id:"probas",
-    nom:"Probabilités",
-    sous:"Probabilités · période 3",
-    periode:3,
-    pret:false,
-    chapitres:[]
-  }
+const ANNEES = [
+  { id:"prem", nom:"Première", sous:"L'an dernier · les bases" },
+  { id:"term", nom:"Terminale", sous:"Cette année · le bac" }
 ];
+
+const MODULES = [
+
+/* ═══════════ PREMIÈRE ═══════════ */
+  { id:"suites", annee:"prem", nom:"Suites numériques",
+    sous:"Algèbre · arithmétiques, géométriques",
+    bloc:"Algèbre", pret:true, chapitres:[1,2,3,4,5,6,7,8] },
+
+  { id:"second-degre", annee:"prem", nom:"Second degré",
+    sous:"Algèbre · trinôme, discriminant",
+    bloc:"Algèbre", pret:false, chapitres:[] },
+
+  { id:"derivation-1", annee:"prem", nom:"Dérivation",
+    sous:"Analyse · nombre dérivé, tangente",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"variations", annee:"prem", nom:"Variations et courbes",
+    sous:"Analyse · étude de fonctions",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"expo-1", annee:"prem", nom:"Fonction exponentielle",
+    sous:"Analyse · exp(x), propriétés",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"trigo-1", annee:"prem", nom:"Fonctions trigonométriques",
+    sous:"Analyse · cercle, sinus, cosinus",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"produit-scalaire", annee:"prem", nom:"Produit scalaire",
+    sous:"Géométrie · vecteurs, angles",
+    bloc:"Géométrie", pret:false, chapitres:[] },
+
+  { id:"geo-reperee", annee:"prem", nom:"Géométrie repérée",
+    sous:"Géométrie · droites, cercles",
+    bloc:"Géométrie", pret:false, chapitres:[] },
+
+  { id:"proba-cond-1", annee:"prem", nom:"Probabilités conditionnelles",
+    sous:"Probabilités · arbres, indépendance",
+    bloc:"Probabilités", pret:false, chapitres:[] },
+
+  { id:"var-alea-1", annee:"prem", nom:"Variables aléatoires",
+    sous:"Probabilités · espérance, variance",
+    bloc:"Probabilités", pret:false, chapitres:[] },
+
+  { id:"algo-1", annee:"prem", nom:"Algorithmique et Python",
+    sous:"Transversal · boucles, fonctions",
+    bloc:"Transversal", pret:false, chapitres:[] },
+
+/* ═══════════ TERMINALE ═══════════ */
+  { id:"suites-term", annee:"term", nom:"Suites : récurrence et limites",
+    sous:"Analyse · convergence, gendarmes",
+    bloc:"Analyse", pret:true, chapitres:[11,12,13,14,15,16,17,18] },
+
+  { id:"limites-fct", annee:"term", nom:"Limites de fonctions",
+    sous:"Analyse · asymptotes, opérations",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"continuite", annee:"term", nom:"Continuité et TVI",
+    sous:"Analyse · théorème des valeurs intermédiaires",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"derivation-2", annee:"term", nom:"Dérivation et convexité",
+    sous:"Analyse · dérivée seconde, points d'inflexion",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"logarithme", annee:"term", nom:"Fonction logarithme",
+    sous:"Analyse · ln, croissances comparées",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"trigo-2", annee:"term", nom:"Fonctions sinus et cosinus",
+    sous:"Analyse · dérivées, équations",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"primitives", annee:"term", nom:"Primitives et équations différentielles",
+    sous:"Analyse · y' = ay + b",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"integrales", annee:"term", nom:"Calcul intégral",
+    sous:"Analyse · aires, intégration par parties",
+    bloc:"Analyse", pret:false, chapitres:[] },
+
+  { id:"combinatoire", annee:"term", nom:"Combinatoire et dénombrement",
+    sous:"Algèbre · factorielles, combinaisons",
+    bloc:"Algèbre et géométrie", pret:false, chapitres:[] },
+
+  { id:"espace-vect", annee:"term", nom:"Vecteurs, droites et plans",
+    sous:"Géométrie · l'espace en 3D",
+    bloc:"Algèbre et géométrie", pret:false, chapitres:[] },
+
+  { id:"orthogonalite", annee:"term", nom:"Orthogonalité et distances",
+    sous:"Géométrie · produit scalaire dans l'espace",
+    bloc:"Algèbre et géométrie", pret:false, chapitres:[] },
+
+  { id:"equations-cart", annee:"term", nom:"Représentations paramétriques",
+    sous:"Géométrie · équations cartésiennes",
+    bloc:"Algèbre et géométrie", pret:false, chapitres:[] },
+
+  { id:"bernoulli", annee:"term", nom:"Schéma de Bernoulli",
+    sous:"Probabilités · épreuves indépendantes",
+    bloc:"Probabilités", pret:false, chapitres:[] },
+
+  { id:"sommes-va", annee:"term", nom:"Sommes de variables aléatoires",
+    sous:"Probabilités · espérance, variance",
+    bloc:"Probabilités", pret:false, chapitres:[] },
+
+  { id:"grands-nombres", annee:"term", nom:"Concentration, loi des grands nombres",
+    sous:"Probabilités · inégalités",
+    bloc:"Probabilités", pret:false, chapitres:[] },
+
+  { id:"algo-2", annee:"term", nom:"Algorithmique et Python",
+    sous:"Transversal · seuils, listes",
+    bloc:"Transversal", pret:false, chapitres:[] }
+];
+
+/* année ouverte : mémorisée entre les sessions */
+let ANNEE = "term";
+try{ ANNEE = localStorage.getItem("suites.annee") || "term"; }catch(e){}
+
+function modulesAnnee(a){ return MODULES.filter(m=>m.annee === (a || ANNEE)); }
 
 function moduleStats(m){
   const chs = m.chapitres.map(n=>CHAPITRES.find(c=>c.n===n)).filter(Boolean);
@@ -6796,9 +6885,9 @@ function finirBilan(){
     if(r.ok) parCh[r.ch].ok++;
   });
 
-  const chs = MODULES[0].chapitres
+  const chs = (MODULES.find(m=>m.id==="suites") || {chapitres:[]}).chapitres
     .map(n=>CHAPITRES.find(c=>c.n===n))
-    .filter(c=>c && c.pret);
+    .filter(Boolean);
 
   const lignes = chs.map(c=>{
     const p = parCh[c.n] || { ok:0, tot:0 };
@@ -6914,7 +7003,7 @@ function drawParent(){
 
   /* ── progression par chapitre ── */
   const box = $("p-chs"); box.innerHTML = "";
-  const chs = MODULES[0].chapitres.map(n=>CHAPITRES.find(c=>c.n===n)).filter(c=>c&&c.pret);
+  const chs = MODULES.filter(m=>m.pret).flatMap(m=>m.chapitres).map(n=>CHAPITRES.find(c=>c.n===n)).filter(Boolean);
   chs.forEach(c=>{
     const d = DB.ch[c.n] || {};
     const vus = (d.vus||[]).length;
@@ -6950,15 +7039,39 @@ function frDate(cle){
 
 /* ═══════════ ÉCRAN MODULES ═══════════ */
 
-let MOD = MODULES[0];   /* module ouvert */
+let MOD = modulesAnnee().find(m=>m.pret) || MODULES[0];   /* module ouvert */
 
 function drawMods(){
-  /* progression globale */
-  const all = MODULES.filter(m=>m.pret);
+  /* ── onglets d'année ── */
+  const tb = $("tabs");
+  if(tb){
+    tb.innerHTML = ANNEES.map(a=>{
+      const ms = modulesAnnee(a.id).filter(m=>m.pret);
+      let tot=0, dn=0;
+      ms.forEach(m=>{ const s=moduleStats(m); tot+=s.total; dn+=s.done; });
+      const sous = ms.length ? dn + " / " + tot + " chapitres" : a.sous;
+      return `<button data-a="${a.id}" class="${a.id===ANNEE?"on":""}">
+        <b>${a.nom}</b><i>${sous}</i></button>`;
+    }).join("");
+    tb.querySelectorAll("button").forEach(b=>{
+      b.onclick = ()=>{
+        ANNEE = b.dataset.a;
+        try{ localStorage.setItem("suites.annee", ANNEE); }catch(e){}
+        drawMods();
+      };
+    });
+  }
+
+  const liste = modulesAnnee();
+
+  /* ── progression de l'année affichée ── */
+  const prets = liste.filter(m=>m.pret);
   let tot=0, dn=0;
-  all.forEach(m=>{ const s=moduleStats(m); tot+=s.total; dn+=s.done; });
-  $("mm-val").textContent = dn + " / " + tot + (dn>0 ? "  ·  " + Math.round(dn/tot*100) + "%" : "");
-  setTimeout(()=>{ $("mm-fill").style.width = (tot? dn/tot*100 : 0) + "%"; }, 60);
+  prets.forEach(m=>{ const s=moduleStats(m); tot+=s.total; dn+=s.done; });
+  $("mm-val").textContent = tot
+    ? dn + " / " + tot + (dn>0 ? "  ·  " + Math.round(dn/tot*100) + "%" : "")
+    : "bientôt";
+  setTimeout(()=>{ $("mm-fill").style.width = (tot ? dn/tot*100 : 0) + "%"; }, 60);
 
   if(DB.streak>0){
     $("mm-streak").style.display="inline-flex";
@@ -6966,47 +7079,63 @@ function drawMods(){
     $("mm-streak-w").textContent = DB.streak===1 ? "jour d'affilée" : "jours d'affilée";
   }
 
-  /* pastille sur la cloche si les rappels ne sont pas encore actifs */
+  /* pastille sur la cloche */
   const bd = $("bell-dot");
   if(bd){
     const fait = Object.keys(DB.ch||{}).length > 0;
     bd.classList.toggle("on", fait && !rappelConf().actif);
   }
 
+  /* ── modules groupés par bloc ── */
   const box = $("mods"); box.innerHTML = "";
-  MODULES.forEach(m=>{
-    const s = moduleStats(m);
-    const b = document.createElement("button");
-    b.className = "mod" + (m.pret ? " open" : " lock");
-    const pct = s.total ? Math.round(s.done/s.total*100) : 0;
+  const blocs = [];
+  liste.forEach(m=>{ if(!blocs.includes(m.bloc)) blocs.push(m.bloc); });
 
-    b.innerHTML = `
-      <div class="mod-top">
-        <span class="mod-ic">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="${m.pret?'#f67748':'#9da3af'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            ${m.pret
-              ? `<path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M8 7h8M8 11h8M8 15h5"/>`
-              : `<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>`}
-          </svg>
-        </span>
-        <span class="mod-b">
-          <span class="mod-n">${m.nom}</span>
-          <span class="mod-s">${m.sous}</span>
-        </span>
-        ${m.pret ? `<span class="mod-go">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-        </span>` : ``}
-      </div>
-      ${m.pret ? `
-        <div class="mod-bar"><div class="mod-fill" style="width:${pct}%"></div></div>
-        <div class="mod-cnt">
-          <span><b>${s.done}</b> / ${s.total} chapitres</span>
-          <span>${s.exos} exercices</span>
-        </div>`
-      : `<span class="mod-soon">BIENTÔT</span>`}`;
+  blocs.forEach(bloc=>{
+    const titre = document.createElement("p");
+    titre.className = "bloc-t";
+    titre.textContent = bloc;
+    box.appendChild(titre);
 
-    if(m.pret) b.onclick = ()=> openModule(m);
-    box.appendChild(b);
+    liste.filter(m=>m.bloc===bloc).forEach(m=>{
+      const s = moduleStats(m);
+      const b = document.createElement("button");
+      b.className = "mod" + (m.pret ? " open" : " lock");
+      const pct = s.total ? Math.round(s.done/s.total*100) : 0;
+      let ex = 0;
+      if(m.pret) m.chapitres.forEach(n=>{
+        const c = CHAPITRES.find(x=>x.n===n);
+        if(c) ex += poolOf(n).length + defisOf(n).length;
+      });
+
+      b.innerHTML = `
+        <div class="mod-top">
+          <span class="mod-ic">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="${m.pret?'#f67748':'#9da3af'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              ${m.pret
+                ? `<path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M8 7h8M8 11h8M8 15h5"/>`
+                : `<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>`}
+            </svg>
+          </span>
+          <span class="mod-b">
+            <span class="mod-n">${m.nom}</span>
+            <span class="mod-s">${m.sous}</span>
+          </span>
+          ${m.pret ? `<span class="mod-go">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </span>` : ``}
+        </div>
+        ${m.pret ? `
+          <div class="mod-bar"><div class="mod-fill" style="width:${pct}%"></div></div>
+          <div class="mod-cnt">
+            <span><b>${s.done}</b> / ${s.total} chapitres</span>
+            <span>${ex} exercices</span>
+          </div>`
+        : `<span class="mod-soon">BIENTÔT</span>`}`;
+
+      if(m.pret) b.onclick = ()=> openModule(m);
+      box.appendChild(b);
+    });
   });
 }
 

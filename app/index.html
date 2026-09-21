@@ -139,10 +139,20 @@ sub,sup{font-size:.7em;line-height:0}
   text-align:left;width:100%;transition:transform var(--t-fast) var(--e),border-color .18s,background .18s;
 }
 .ch:active{transform:scale(.985)}
-.ch.next{border-color:var(--ember);border-width:1.5px;background:var(--card)}
+.ch.next{border-color:var(--ember);border-width:1.5px;
+  background:linear-gradient(180deg,#fff,var(--warm))}
+.ch.dim{opacity:.58}
 .ch.done{background:var(--dust);border-color:transparent}
 .ch.done .ch-name{color:var(--charcoal)}
 .ch.lock{opacity:.62}
+.next-tag{display:inline-flex;align-items:center;margin-left:7px;padding:2px 7px;
+  border-radius:6px;background:var(--ember);color:#fff;
+  font:700 9px/1.5 "Inter",sans-serif;letter-spacing:.07em;vertical-align:2px}
+.due-badge{display:inline-flex;align-items:center;gap:4px;margin-left:7px;
+  padding:1px 7px;border-radius:8px;background:var(--warm);
+  border:1px solid rgba(214,122,78,.45);color:var(--ember);
+  font:700 10.5px/1.6 "Inter",sans-serif;vertical-align:2px}
+.dim-hint{color:var(--slate);font-weight:600}
 .ds-tag{
   display:inline-block;margin-left:7px;padding:3px 8px;
   background:var(--ember);color:#fff;border-radius:99px;
@@ -7809,16 +7819,23 @@ function drawHome(){
 
   const box=$("chs"); box.innerHTML="";
   const firstTodo = chs.find(x=>x.pret && !(DB.ch[x.n]&&DB.ch[x.n].done));
+  const idxTodo = firstTodo ? chs.findIndex(x=>x.n===firstTodo.n) : chs.length;
+  /* combien d'exercices attendent une révision, chapitre par chapitre */
+  const dus = {};
+  fichesDues().forEach(d=>{ dus[d.ch] = (dus[d.ch]||0) + 1; });
   chs.forEach((c,idx)=>{
     const d = DB.ch[c.n];
+    const apres = c.pret && idx > idxTodo;            /* au-delà de la suivante : estompé */
+    const estSuivante = !!(firstTodo && firstTodo.n===c.n);
+    const du = dus[c.n] || 0;
     const b=document.createElement("button");
-    b.className="ch"+(d&&d.done?" done":"")+(firstTodo&&firstTodo.n===c.n?" next":"")+(!c.pret?" lock":"");
+    b.className="ch"+(d&&d.done?" done":"")+(estSuivante?" next":"")+(!c.pret?" lock":"")+(apres?" dim":"");
     const etat = DB.bilan && DB.bilan.etats ? DB.bilan.etats[c.n] : null;
     const a = c.pret ? avanceCh(c.n) : null;
     const meta = !c.pret ? "bientôt"
       : (a && a.vus > 0)
         ? a.vus + " / " + a.tot + " exercices" + (a.acq ? "  ·  " + a.acq + " acquis" : "")
-        : c.sous;
+        : c.sous + (apres && firstTodo ? ` <span class="dim-hint">· d'abord ${firstTodo.nom}</span>` : "");
 
     const barre = (c.pret && a && a.vus > 0)
       ? `<span class="ch-bar"><span class="ch-vu" style="width:${a.pv}%"></span><span class="ch-acq" style="width:${a.pa}%"></span></span>`
@@ -7829,7 +7846,9 @@ function drawHome(){
       <span class="ch-body">
         <span class="ch-name">${c.nom}${c.ds?`<span class="ds-tag">DS</span>`:``}${
           etat==="creux" ? `<span class="gap-tag">À REPRENDRE</span>` :
-          etat==="fragile" ? `<span class="gap-tag faible">À REVOIR</span>` : ``}</span>
+          etat==="fragile" ? `<span class="gap-tag faible">À REVOIR</span>` : ``}${
+          estSuivante ? `<span class="next-tag">À SUIVRE</span>` : ``}${
+          du > 0 ? `<span class="due-badge">⟳ ${du}</span>` : ``}</span>
         <span class="ch-meta">${meta}</span>
         ${barre}
       </span>
